@@ -709,7 +709,7 @@ public class ProfileActivity extends AppCompatActivity {
 
             Functions functions = new Functions();
 
-            functions.About(ProfileActivity.this);
+             functions.About(ProfileActivity.this);
 
             return(true);
 
