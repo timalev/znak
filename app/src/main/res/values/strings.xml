@@ -1,0 +1,12 @@
+<resources>
+    <string name="app_name">Элитные Знакомства</string>
+    <string name="title_activity_maps">Map</string>
+    <string name="title_activity_second_screen">SecondScreenActivity</string>
+    <string name="hello">My Main Title</string>
+    <string name="title_activity_video">VideoActivity</string>
+    <string name="action_settings">Обновить аватарку</string>
+    <string name="about">О приложении</string>
+    <string name="tomap">На карту</string>
+    <string name="users">Участники</string>
+    <string name="title_activity_ban">BanActivity</string>
+</resources>

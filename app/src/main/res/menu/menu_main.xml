@@ -1,0 +1,50 @@
+<?xml version="1.0" encoding="utf-8"?>
+<menu xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    xmlns:tools="http://schemas.android.com/tools">
+    <item
+        android:id="@+id/friends"
+        android:orderInCategory="100"
+        android:title="Поиск анкет"
+        app:showAsAction="never"/>
+    <item
+        android:id="@+id/index"
+        android:orderInCategory="300"
+        android:title="Моя анкета"
+        app:showAsAction="never"/>
+    <item
+        android:id="@+id/messages"
+        android:orderInCategory="200"
+        android:title="Мои сообщения"
+        app:showAsAction="never"/>
+
+    <item
+        android:id="@+id/about"
+        android:orderInCategory="400"
+        android:title="@string/about"
+        app:showAsAction="never"/>
+
+    <item
+        android:id="@+id/revert" android:icon="@android:drawable/ic_menu_revert" app:showAsAction="always" android:title="к сообщениям">
+    </item>
+
+    <!--
+    <item
+        android:id="@+id/pho" android:icon="@android:drawable/ic_menu_camera" app:showAsAction="always" android:title="фото">
+    </item>
+
+    <item
+        android:id="@+id/myplace" android:icon="@android:drawable/ic_menu_myplaces" app:showAsAction="always" android:title="моё местоположение">
+    </item>
+
+    <item
+        android:id="@+id/mapmode" android:icon="@android:drawable/ic_menu_mapmode" app:showAsAction="always"   android:title="показать на карте">
+    </item>
+
+    <item
+        android:id="@+id/send" android:icon="@android:drawable/ic_menu_send" app:showAsAction="always" android:title="написать письмо">
+    </item>
+-->
+
+
+</menu>

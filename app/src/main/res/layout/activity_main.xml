@@ -1,0 +1,73 @@
+<?xml version="1.0" encoding="utf-8"?>
+
+<!--
+<android.support.design.widget.CoordinatorLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    xmlns:tools="http://schemas.android.com/tools"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    tools:context="io.cordova.test2_6720b.UsersActivity">
+-->
+<FrameLayout
+    xmlns:android="http://schemas.android.com/apk/res/android"
+    android:orientation="vertical"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    android:background="@color/grey">
+
+    <TextView
+        android:id="@+id/nousers"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:text="Пока в вашем радиусе никого нет, попробуйте зайти в другой раз.."
+        android:layout_marginLeft="10dp"
+        android:textAppearance="?android:attr/textAppearanceLarge"
+        android:layout_marginTop="?android:attr/actionBarSize"
+        android:visibility="gone"
+        />
+
+
+    <LinearLayout
+        android:layout_width="match_parent"
+        android:layout_height="80dp"
+        android:layout_gravity="bottom"
+        android:gravity="center"
+        android:orientation="horizontal">
+        <ImageButton
+            android:id="@+id/rejectBtn"
+            android:layout_width="50dp"
+            android:layout_height="50dp"
+            android:background="@drawable/ic_cancel"/>
+        <ImageButton
+            android:id="@+id/acceptBtn"
+            android:layout_width="50dp"
+            android:layout_height="50dp"
+            android:layout_marginLeft="30dp"
+            android:background="@drawable/ic_heart"/>
+    </LinearLayout>
+    <com.mindorks.placeholderview.SwipePlaceHolderView
+        android:id="@+id/swipeView"
+        android:layout_width="match_parent"
+        android:layout_height="match_parent">
+
+        <TextView
+            android:id="@+id/textView3"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:text="TextView" />
+
+        <TextView
+            android:id="@+id/textView4"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:text="TextView" />
+    </com.mindorks.placeholderview.SwipePlaceHolderView>
+    <include android:id="@+id/toolbar2"
+        layout="@layout/toolbar" />
+</FrameLayout>
+
+<!--
+<include android:id="@+id/toolbar2"
+layout="@layout/toolbar" />
+</android.support.design.widget.CoordinatorLayout>
+-->

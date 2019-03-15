@@ -1,0 +1,10 @@
+<menu xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto">
+
+    <item
+        android:id="@+id/tomap"
+        android:orderInCategory="100"
+        android:title="@string/tomap"
+        app:showAsAction="never"
+        android:visible="true" />
+    </menu>

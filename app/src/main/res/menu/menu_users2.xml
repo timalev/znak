@@ -1,0 +1,38 @@
+<menu xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    xmlns:tools="http://schemas.android.com/tools" tools:context=".UsersActivity">
+<!--
+    <item
+        android:id="@+id/add" android:icon="@android:drawable/ic_menu_mapmode" app:showAsAction="always"   android:title="add"/>
+    <item
+        android:id="@+id/reset" android:icon="@android:drawable/ic_menu_revert" app:showAsAction="always|withText" android:title="reset"/>
+    <item
+        android:id="@+id/about" android:icon="@android:drawable/ic_menu_camera" app:showAsAction="always" android:title="about">
+    </item>
+    <item
+        android:id="@+id/place" android:icon="@android:drawable/ic_menu_myplaces" app:showAsAction="always" android:title="myplace">
+    </item>
+
+    <item
+        android:id="@+id/mail" android:icon="@android:drawable/ic_dialog_email" app:showAsAction="always" android:title="email">
+    </item>
+-->
+
+    <item
+        android:id="@+id/index"
+        android:orderInCategory="100"
+        android:title="Моя анкета"
+        app:showAsAction="never"/>
+
+    <item
+        android:id="@+id/messages"
+        android:orderInCategory="300"
+        android:title="Мои сообщения"
+        app:showAsAction="never"/>
+
+    <item
+        android:id="@+id/about"
+        android:orderInCategory="400"
+        android:title="@string/about"
+        app:showAsAction="never"/>
+</menu>
