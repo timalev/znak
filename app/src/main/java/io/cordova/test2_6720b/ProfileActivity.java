@@ -706,7 +706,11 @@ public class ProfileActivity extends AppCompatActivity {
             return true;
 
         case R.id.about:
-            //add the function to perform here
+
+            Functions functions = new Functions();
+
+            functions.About(ProfileActivity.this);
+
             return(true);
 
     }
