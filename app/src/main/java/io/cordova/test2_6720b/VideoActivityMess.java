@@ -244,7 +244,29 @@ public class VideoActivityMess extends AppCompatActivity implements View.OnClick
         }
 
         return true;
+    }
+    @Override
+    public boolean onPrepareOptionsMenu (Menu menu) {
 
+
+        final MenuItem delphoto = menu.findItem(R.id.delphoto);
+        final MenuItem banuser = menu.findItem(R.id.banuser);
+
+
+                if (FirebaseAuth.getInstance().getCurrentUser().getUid().equals("1qMMra5pItbJOtbIKcyQPHCaS7Q2"))
+                {
+                    delphoto.setVisible(true);
+                    banuser.setVisible(true);
+
+                }else
+                {
+                    delphoto.setVisible(false);
+                    banuser.setVisible(false);
+                }
+
+
+
+        return true;
     }
 
     final String SAVED_TEXT = "saved_text";
@@ -379,6 +401,71 @@ public class VideoActivityMess extends AppCompatActivity implements View.OnClick
                     public void onCancelled(DatabaseError databaseError) {
                     }
                 });
+
+                return true;
+
+            case R.id.banuser:
+
+                FirebaseDatabase.getInstance().getReference().child(new Config2().tab_users).child(curruser).addValueEventListener(new ValueEventListener() {
+
+                    @Override
+                    public void onDataChange(DataSnapshot dataSnapshot) {
+
+                        FirebaseDatabase.getInstance().getReference().child(new Config2().tab_banlist).child(dataSnapshot.child("device_token").getValue().toString()).setValue(1);
+
+                        FirebaseDatabase.getInstance().getReference().child(new Config2().tab_users).child(curruser).child("profile_photo").removeValue()
+
+                                .addOnSuccessListener(new OnSuccessListener<Void>() {
+                                    @Override
+                                    public void onSuccess(Void aVoid) {
+
+                                        Toast.makeText(getApplicationContext(), "Юзер забанен!", Toast.LENGTH_SHORT).show();
+                                    }
+                                })
+                                .addOnFailureListener(new OnFailureListener() {
+                                    @Override
+                                    public void onFailure(@NonNull Exception e) {
+
+                                        Toast.makeText(getApplicationContext(), "Ошибка с баном юзера.", Toast.LENGTH_SHORT).show();
+
+                                    }
+                                }); //
+
+                    }
+
+                    @Override
+                    public void onCancelled(DatabaseError databaseError) {
+                    }});
+
+
+                return true;
+
+            case R.id.delphoto:
+
+                FirebaseDatabase.getInstance().getReference().child(new Config2().tab_users).child(curruser).child("profile_photo").removeValue()
+
+                        .addOnSuccessListener(new OnSuccessListener<Void>() {
+                            @Override
+                            public void onSuccess(Void aVoid) {
+
+                                Toast.makeText(getApplicationContext(), "Фото удалено!", Toast.LENGTH_SHORT).show();
+                            }
+                        })
+                        .addOnFailureListener(new OnFailureListener() {
+                            @Override
+                            public void onFailure(@NonNull Exception e) {
+
+                                Toast.makeText(getApplicationContext(), "Ошибка с удалением фото.", Toast.LENGTH_SHORT).show();
+
+                            }
+                        }); //
+
+
+
+
+
+               // Toast.makeText(this, "Фото удалено!", Toast.LENGTH_SHORT).show();
+
 
                 return true;
 
@@ -659,9 +746,6 @@ if (dataSnapshot.getValue()!=null) {
         Toolbar toolbar = (Toolbar) findViewById(R.id.toolbar);
         setSupportActionBar(toolbar);
 
-
-
-
         Button send = (Button) findViewById(R.id.send);
         send.setOnClickListener(this);
 
@@ -703,6 +787,48 @@ if (dataSnapshot.getValue()!=null) {
             curruser = getIntent().getExtras().getString("curruser");
             currname = getIntent().getExtras().getString("currname");
         }
+
+        // Смотрим фотку если мы админы
+
+        if (FirebaseAuth.getInstance().getCurrentUser().getUid().equals("1qMMra5pItbJOtbIKcyQPHCaS7Q2")) {
+
+            final ImageView imageView = (ImageView) findViewById(R.id.UserPho);
+            imageView.setVisibility(View.VISIBLE);
+
+            final TextView textView = (TextView) findViewById(R.id.UserGeo);
+            textView.setVisibility(View.VISIBLE);
+
+
+
+
+            FirebaseDatabase.getInstance().getReference().child(new Config2().tab_users).child(curruser).addListenerForSingleValueEvent(new ValueEventListener() {
+
+                @Override
+                public void onDataChange(DataSnapshot dataSnapshot) {
+
+                    textView.setText(dataSnapshot.child("profile_country").getValue().toString());
+
+
+                    Glide
+                            .with(getApplicationContext())
+                            .load(dataSnapshot.child("profile_photo").getValue())
+                            .error(R.drawable.noavatar)
+                            .into(imageView);
+
+
+                    //Toast.makeText(getApplication(), String.valueOf(dataSnapshot.child("profile_photo").getValue()), Toast.LENGTH_LONG).show();
+                }
+
+                @Override
+                public void onCancelled(DatabaseError databaseError) {
+
+                }
+            });
+        }
+
+        // Смотрим фотку если мы админы end
+
+
 
         setTitle(currname);
 

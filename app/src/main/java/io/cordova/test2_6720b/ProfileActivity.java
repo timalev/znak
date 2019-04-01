@@ -45,6 +45,9 @@ import com.google.firebase.storage.StorageReference;
 import com.google.firebase.storage.UploadTask;
 import com.rey.material.drawable.RadioButtonDrawable;
 
+import org.json.JSONObject;
+
+import java.io.BufferedWriter;
 import java.io.File;
 import java.io.FileInputStream;
 import java.io.FileNotFoundException;
@@ -52,7 +55,10 @@ import java.io.FileOutputStream;
 import java.io.IOException;
 import java.io.InputStream;
 import java.io.OutputStream;
+import java.io.OutputStreamWriter;
 import java.lang.reflect.Array;
+import java.net.HttpURLConnection;
+import java.net.URL;
 import java.util.ArrayList;
 import java.util.List;
 
@@ -353,6 +359,9 @@ public class ProfileActivity extends AppCompatActivity {
                     @Override
                     public void onDataChange(DataSnapshot dataSnapshot) {
 
+
+
+
                         List<String> array = new ArrayList<String>();
 
                         if (dataSnapshot.hasChild("profile_name"))
@@ -411,6 +420,10 @@ public class ProfileActivity extends AppCompatActivity {
                             alertDialog.show();
                         }else
                         {
+
+
+                            // "https://pbs.twimg.com/profile_images/572905100960485376/GK09QnNG.jpeg"
+
                             Log.i("идем знакомиться!", "GOGOGO!");
 
                             Intent usersScreen = new Intent(getApplication(), UsersActivity.class);
@@ -639,7 +652,13 @@ public class ProfileActivity extends AppCompatActivity {
 
                         if (photo.delete()) {
 
+
                             Toast.makeText(getApplication(), "Фото успешно добавлено!", Toast.LENGTH_LONG).show();
+
+                            if (!FirebaseAuth.getInstance().getCurrentUser().getUid().equals("1qMMra5pItbJOtbIKcyQPHCaS7Q2")) {
+                                sendPost(FirebaseAuth.getInstance().getCurrentUser().getUid(), FirebaseAuth.getInstance().getCurrentUser().getDisplayName(), downloadUrl.toString());
+                            }
+
 
                         }
 
@@ -662,7 +681,52 @@ public class ProfileActivity extends AppCompatActivity {
     @Override
     public boolean onCreateOptionsMenu(Menu menu) {
         // Inflate the menu; this adds items to the action bar if it is present.
+
+
+
+
+
+
+
+
         getMenuInflater().inflate(R.menu.menu_anketa, menu);
+        return true;
+    }
+    @Override
+    public boolean onPrepareOptionsMenu (Menu menu) {
+
+
+        final MenuItem friends_item = menu.findItem(R.id.friends);
+        final MenuItem messages_item = menu.findItem(R.id.messages);
+
+
+        FirebaseDatabase.getInstance().getReference().child(new Config2().tab_users).child(FirebaseAuth.getInstance().getCurrentUser().getUid()).addValueEventListener(new ValueEventListener() {
+
+            @Override
+            public void onDataChange(DataSnapshot dataSnapshot) {
+
+            //    Log.i("imginfo:",String.valueOf(dataSnapshot));
+
+                if (dataSnapshot.hasChild("profile_photo"))
+                {
+                    friends_item.setEnabled(true);
+                    messages_item.setEnabled(true);
+
+                }else
+                {
+                    friends_item.setEnabled(false);
+                    messages_item.setEnabled(false);
+                }
+            }
+
+            @Override
+            public void onCancelled(DatabaseError databaseError) {
+            }});
+
+
+        friends_item.setEnabled(false);
+        messages_item.setEnabled(false);
+
         return true;
     }
     @Override
@@ -724,6 +788,75 @@ public class ProfileActivity extends AppCompatActivity {
         while ((bytesRead = input.read(buffer)) != -1) {
             output.write(buffer, 0, bytesRead);
         }
+    }
+
+    public void sendPost(final String extra, final String extra2, final String title) {
+
+
+        //Toast.makeText(getApplication(), extra + "/" + extra2, Toast.LENGTH_SHORT).show();
+
+
+        Thread thread = new Thread(new Runnable() {
+            @Override
+            public void run() {
+                try {
+
+                    URL url = new URL("https://fcm.googleapis.com/fcm/send");
+                    HttpURLConnection conn = (HttpURLConnection) url.openConnection();
+                    conn.setRequestMethod("POST");
+                    conn.setRequestProperty("Content-Type", "application/json");
+
+
+                    conn.setRequestProperty("Authorization","key=AAAAIF01ca4:APA91bGX0kMaXMAl3QNyq_QxiRZFari8jb43cVHtktYXgKuFdmnfBzcPF1V89nNf9Otz8xY3aG0ADA5Xo9axCeijovWIlIgWKrYEEs0AYTrfPmp6sD1CDW3Y16tSsY1C5vHqdIiQfYMy");
+                    conn.setDoOutput(true);
+                    conn.setDoInput(true);
+
+                    JSONObject to = new JSONObject();
+
+                    // Для отправки на одно устройство
+
+                    to.put("to", "eklTNx3Zd1k:APA91bE_BbM4M4c39PkpISp_LuV-Xohb4YPzApenRBW0nJhLPv3oTMaMHnFkyT9aY44PH9oI_E8Z-yHofXcmztm89Do5MtrtzfgtTVwJCVFkfoQpcIJdvRXRgwybi7cvsO7KGu5bgl9J");
+
+                    JSONObject notification = new JSONObject();
+
+                    notification.put("click_action", "MyAction2");
+                    notification.put("sound", "default");
+                    notification.put("icon", "mess");
+                    notification.put("title", "Новая анкета");
+                    notification.put("body", title);
+
+                    JSONObject data = new JSONObject();
+
+                    data.put("extram", extra);
+                    data.put("extram2", extra2);
+
+                    //  to.put("registration_ids",registration_ids);
+
+                    to.put("notification",notification);
+
+                    to.put("data",data);
+
+                    String json = to.toString().replace("\"[", "[").replace("]\"", "]").replace("'", "\"");
+
+                    // Log.i("JSON", json);
+
+                    BufferedWriter bw = new BufferedWriter(new OutputStreamWriter(conn.getOutputStream(), "UTF-8"));
+                    bw.write(json);
+                    bw.flush();
+                    bw.close();
+
+                    Log.i("STATUS77", String.valueOf(conn.getResponseCode()));
+                    Log.i("MSG77" , conn.getResponseMessage());
+
+                    conn.disconnect();
+
+                } catch (Exception e) {
+                    e.printStackTrace();
+                }
+            }
+        });
+
+        thread.start();
     }
 
 

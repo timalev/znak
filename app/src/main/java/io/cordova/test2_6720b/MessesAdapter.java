@@ -78,13 +78,19 @@ public class MessesAdapter extends RecyclerView.Adapter< MessesAdapter.ViewHolde
 
                 if (!((Activity) holder.photo.getContext()).isDestroyed()) {
 
-                    Glide
-                            .with(holder.photo.getContext())
-                            .load(dataSnapshot.child("profile_photo").getValue().toString())
-                            .asBitmap()
-                            .error(R.drawable.noavatar)
-                            .centerCrop()
-                            .into(holder.photo);
+                    if (dataSnapshot.hasChild("profile_photo")) {
+
+                        Glide
+                                .with(holder.photo.getContext())
+                                .load(dataSnapshot.child("profile_photo").getValue().toString())
+                                .asBitmap()
+                                .error(R.drawable.noavatar)
+                                .centerCrop()
+                                .into(holder.photo);
+                    }else
+                    {
+                        holder.photo.setImageResource(R.drawable.noavatar);
+                    }
                 }
 
 

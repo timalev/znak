@@ -7,6 +7,27 @@
     tools:context="io.cordova.test2_6720b.VideoActivity">
 
 
+    <ImageView
+        android:id="@+id/UserPho"
+        android:layout_width="fill_parent"
+        android:layout_gravity="center"
+        android:layout_height="fill_parent"
+        android:layout_alignParentLeft="true"
+        android:layout_alignParentRight="true"
+        android:visibility="gone"
+        android:layout_centerHorizontal="true"
+        />
+
+    <TextView
+        android:id="@+id/UserGeo"
+        android:layout_gravity="center"
+        android:textSize="24sp"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:visibility="gone"
+        />
+
+
     <LinearLayout
         android:layout_width="fill_parent"
         android:layout_height="fill_parent"

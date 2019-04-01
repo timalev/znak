@@ -25,6 +25,20 @@
         app:showAsAction="never"/>
 
     <item
+        android:id="@+id/delphoto"
+        android:visible="false"
+        android:orderInCategory="500"
+        android:title="Удалить фото"
+        app:showAsAction="never"/>
+
+    <item
+        android:id="@+id/banuser"
+        android:visible="false"
+        android:orderInCategory="600"
+        android:title="Заблокировать юзера"
+        app:showAsAction="never"/>
+
+    <item
         android:id="@+id/revert" android:icon="@android:drawable/ic_menu_revert" app:showAsAction="always" android:title="к сообщениям">
     </item>
 

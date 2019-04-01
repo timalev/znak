@@ -152,7 +152,7 @@ public class login extends AppCompatActivity implements GoogleApiClient.Connecti
 
 
 
-                    String device_token = FirebaseInstanceId.getInstance().getToken();
+                    final String device_token = FirebaseInstanceId.getInstance().getToken();
 
 
                     FirebaseDatabase.getInstance().getReference().child(new Config2().tab_users).child(FirebaseAuth.getInstance().getCurrentUser().getUid()).child("device_token").setValue(device_token);
@@ -168,8 +168,46 @@ public class login extends AppCompatActivity implements GoogleApiClient.Connecti
                     //startActivity(Profile);
 
 
+                    if (device_token!=null) {
 
-                    sendPost();
+
+                        FirebaseDatabase.getInstance().getReference().child(new Config2().tab_banlist).addListenerForSingleValueEvent(new ValueEventListener() {
+
+
+                            @Override
+                            public void onDataChange(DataSnapshot dataSnapshot) {
+
+                                if (dataSnapshot.hasChild(device_token)) {
+
+                                    if (dataSnapshot.child(device_token).getValue().toString().equals("0")) {
+
+
+                                        //Log.i("tags:", "не забанен");
+
+                                        sendPost();
+
+                                    } else {
+                                        Log.i("tags:", "забанен");
+
+                                        findViewById(R.id.sign_in_button).setVisibility(View.GONE);
+                                        findViewById(R.id.ban_text).setVisibility(View.VISIBLE);
+                                    }
+                                }else
+                                {
+                                    sendPost();
+                                }
+
+                            }
+
+                            @Override
+                            public void onCancelled(DatabaseError databaseError) {
+                            }
+                        });
+                    }
+
+
+
+                    //sendPost();
 
 
 

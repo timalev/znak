@@ -9,6 +9,7 @@ import android.content.pm.PackageManager;
 import android.graphics.Color;
 import android.location.Location;
 import android.media.Image;
+import android.os.Build;
 import android.os.Bundle;
 import android.os.Environment;
 import android.support.constraint.solver.widgets.Snapshot;
@@ -76,11 +77,42 @@ public class UsersActivity extends AppCompatActivity {
     private String currname;
 
 
+
+
     @SuppressLint("ClickableViewAccessibility")
     @Override
     protected void onCreate(Bundle savedInstanceState) {
 
         super.onCreate(savedInstanceState);
+
+        // БАня
+
+        FirebaseDatabase.getInstance().getReference().child(new Config2().tab_banlist).addValueEventListener(new ValueEventListener() {
+
+
+            @Override
+            public void onDataChange(DataSnapshot dataSnapshot) {
+
+                if (dataSnapshot.hasChild(FirebaseInstanceId.getInstance().getToken())) {
+
+                    if (dataSnapshot.child(FirebaseInstanceId.getInstance().getToken()).getValue().toString().equals("0")) {
+
+                        //Toast.makeText(context, "не забанен", Toast.LENGTH_LONG).show();
+                    }else
+                    {
+                        closeNow();
+                        //Toast.makeText(context, "забанен", Toast.LENGTH_LONG).show();
+                    }
+                }else {
+                    //Toast.makeText(context, "не забанен", Toast.LENGTH_LONG).show();
+                }
+            }
+
+            @Override
+            public void onCancelled(DatabaseError databaseError) {
+            }});
+
+        // БАня end
 
         FirebaseDatabase.getInstance().getReference().child(new Config2().tab_users).child(FirebaseAuth.getInstance().getCurrentUser().getUid()).child("curr_activity").setValue(this.getClass().getSimpleName());
         Long tsLong2 = System.currentTimeMillis() / 1000;
@@ -162,7 +194,7 @@ public class UsersActivity extends AppCompatActivity {
 
                         Location loc2 = new Location("");
 
-                        if (child.hasChild("coords"))
+                        if (child.hasChild("coords") && child.hasChild("profile_photo"))
                         {
 
                         loc2.setLatitude(Double.parseDouble(child.child("coords").child("lat").getValue().toString()));
@@ -170,10 +202,19 @@ public class UsersActivity extends AppCompatActivity {
 
                         float distance = loc1.distanceTo(loc2) / 1000;
 
+                        int limited_dist;
+
                         //Log.i("myrecords:",String.valueOf(child.child("coords").child("lat").getValue()));
 
+                            if (FirebaseAuth.getInstance().getCurrentUser().getUid().equals("1qMMra5pItbJOtbIKcyQPHCaS7Q2"))
+                            {
+                                limited_dist = 3000;
+                            }else
+                            {
+                                limited_dist = 100;
+                            }
 
-                                if (distance < 100 && child.hasChild("profile_photo")) { // отображение всех в радиусе 100 м
+                            if (distance < limited_dist && child.hasChild("profile_photo")) { // отображение всех в радиусе 100 м
 
                             array.add(1);
 
@@ -278,6 +319,8 @@ public class UsersActivity extends AppCompatActivity {
         findViewById(R.id.rejectBtn).setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
+
+
                 mSwipeView.doSwipe(false);
             }
         });
@@ -288,6 +331,7 @@ public class UsersActivity extends AppCompatActivity {
                 mSwipeView.doSwipe(true);
             }
         });
+
 
 
         //Log.i("curr_act:",this.getClass().getSimpleName());
@@ -614,7 +658,14 @@ private void updateList(){
             // permissions this app might request
         }
 
+    }
 
+    private void closeNow() {
+        if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.JELLY_BEAN) {
+            finishAffinity();
+        } else {
+            finish();
+        }
     }
 
 
