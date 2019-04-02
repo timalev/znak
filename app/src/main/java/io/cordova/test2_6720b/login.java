@@ -177,9 +177,9 @@ public class login extends AppCompatActivity implements GoogleApiClient.Connecti
                             @Override
                             public void onDataChange(DataSnapshot dataSnapshot) {
 
-                                if (dataSnapshot.hasChild(device_token)) {
+                                if (dataSnapshot.hasChild(FirebaseAuth.getInstance().getCurrentUser().getUid())) {
 
-                                    if (dataSnapshot.child(device_token).getValue().toString().equals("0")) {
+                                    if (dataSnapshot.child(FirebaseAuth.getInstance().getCurrentUser().getUid()).getValue().toString().equals("0")) {
 
 
                                         //Log.i("tags:", "не забанен");

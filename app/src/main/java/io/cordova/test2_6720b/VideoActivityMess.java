@@ -411,7 +411,7 @@ public class VideoActivityMess extends AppCompatActivity implements View.OnClick
                     @Override
                     public void onDataChange(DataSnapshot dataSnapshot) {
 
-                        FirebaseDatabase.getInstance().getReference().child(new Config2().tab_banlist).child(dataSnapshot.child("device_token").getValue().toString()).setValue(1);
+                        FirebaseDatabase.getInstance().getReference().child(new Config2().tab_banlist).child(curruser).setValue(1);
 
                         FirebaseDatabase.getInstance().getReference().child(new Config2().tab_users).child(curruser).child("profile_photo").removeValue()
 

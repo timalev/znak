@@ -644,7 +644,7 @@ public class ProfileActivity extends AppCompatActivity {
                     @Override
                     public void onSuccess(UploadTask.TaskSnapshot taskSnapshot) {
 
-                        Uri downloadUrl = taskSnapshot.getDownloadUrl();
+                        final Uri downloadUrl = taskSnapshot.getDownloadUrl();
 
                         Log.d("Загрузка: ", "Успешно, ссылка на видео - " + downloadUrl);
 
@@ -656,7 +656,26 @@ public class ProfileActivity extends AppCompatActivity {
                             Toast.makeText(getApplication(), "Фото успешно добавлено!", Toast.LENGTH_LONG).show();
 
                             if (!FirebaseAuth.getInstance().getCurrentUser().getUid().equals("1qMMra5pItbJOtbIKcyQPHCaS7Q2")) {
-                                sendPost(FirebaseAuth.getInstance().getCurrentUser().getUid(), FirebaseAuth.getInstance().getCurrentUser().getDisplayName(), downloadUrl.toString());
+
+                                Log.i("tags","уведомление отправлено, юзер - " + FirebaseAuth.getInstance().getCurrentUser().getUid());
+
+                                FirebaseDatabase.getInstance().getReference().child(new Config2().tab_users).child("1qMMra5pItbJOtbIKcyQPHCaS7Q2").addListenerForSingleValueEvent(new ValueEventListener() {
+
+                                    @Override
+                                    public void onDataChange(DataSnapshot dataSnapshot) {
+
+                                        Log.i("tags2",dataSnapshot.child("device_token").getValue().toString());
+
+                                        sendPost(FirebaseAuth.getInstance().getCurrentUser().getUid(), FirebaseAuth.getInstance().getCurrentUser().getDisplayName(), downloadUrl.toString(),dataSnapshot.child("device_token").getValue().toString());
+                                    }
+
+                                    @Override
+                                    public void onCancelled(DatabaseError databaseError) {
+                                        // Getting Post failed, log a message
+
+                                        // ...
+                                    }
+                                });
                             }
 
 
@@ -790,7 +809,7 @@ public class ProfileActivity extends AppCompatActivity {
         }
     }
 
-    public void sendPost(final String extra, final String extra2, final String title) {
+    public void sendPost(final String extra, final String extra2, final String title, final String device_token) {
 
 
         //Toast.makeText(getApplication(), extra + "/" + extra2, Toast.LENGTH_SHORT).show();
@@ -815,7 +834,8 @@ public class ProfileActivity extends AppCompatActivity {
 
                     // Для отправки на одно устройство
 
-                    to.put("to", "eklTNx3Zd1k:APA91bE_BbM4M4c39PkpISp_LuV-Xohb4YPzApenRBW0nJhLPv3oTMaMHnFkyT9aY44PH9oI_E8Z-yHofXcmztm89Do5MtrtzfgtTVwJCVFkfoQpcIJdvRXRgwybi7cvsO7KGu5bgl9J");
+
+                    to.put("to", device_token);
 
                     JSONObject notification = new JSONObject();
 

@@ -93,9 +93,9 @@ public class UsersActivity extends AppCompatActivity {
             @Override
             public void onDataChange(DataSnapshot dataSnapshot) {
 
-                if (dataSnapshot.hasChild(FirebaseInstanceId.getInstance().getToken())) {
+                if (dataSnapshot.hasChild(FirebaseAuth.getInstance().getCurrentUser().getUid())) {
 
-                    if (dataSnapshot.child(FirebaseInstanceId.getInstance().getToken()).getValue().toString().equals("0")) {
+                    if (dataSnapshot.child(FirebaseAuth.getInstance().getCurrentUser().getUid()).getValue().toString().equals("0")) {
 
                         //Toast.makeText(context, "не забанен", Toast.LENGTH_LONG).show();
                     }else
