@@ -57,8 +57,8 @@ public class VideoActivityAllMess extends AppCompatActivity {
 
     private FirebaseAuth mAuth;
 
-    private String curruser;
-    private String currname;
+    //private String curruser;
+    //private String currname;
 
     private RecyclerView recyclerView;
     private MessesAdapter adapter;
@@ -80,8 +80,8 @@ public class VideoActivityAllMess extends AppCompatActivity {
         String ts2 = tsLong2.toString();
         FirebaseDatabase.getInstance().getReference().child(new Config2().tab_users).child(FirebaseAuth.getInstance().getCurrentUser().getUid()).child("curr_activity").onDisconnect().setValue(ts2);
 
-        curruser = getIntent().getExtras().getString("curruser");
-        currname = getIntent().getExtras().getString("currname");
+        //curruser = getIntent().getExtras().getString("curruser");
+        //currname = getIntent().getExtras().getString("currname");
 
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_mess);
@@ -120,7 +120,6 @@ public class VideoActivityAllMess extends AppCompatActivity {
 
                     Collection<Object> values = td.values();
 
-                    Log.d("TEST: ", currname);
 
                     //Log.d("Collection2: ", values.getClass().getName());
 
@@ -144,7 +143,17 @@ public class VideoActivityAllMess extends AppCompatActivity {
 
                             if (!itemsList2.get("user").equals(mAuth.getCurrentUser().getUid())) {
 
-                                hashMap2.put(itemsList2.get("user"), itemsList2.get("name"));
+                                String olduser;
+
+                                if (itemsList2.get("profile_name")==null)
+                                {
+                                    olduser = "n/a";
+                                }else
+                                {
+                                    olduser = itemsList2.get("profile_name");
+                                }
+
+                                hashMap2.put(itemsList2.get("user"), olduser);
 
                             } else // если сам юзер, то ставим тому кому писал, данные которого также пишутся в таблицу при составлении письма
                             {
@@ -223,7 +232,7 @@ public class VideoActivityAllMess extends AppCompatActivity {
                         //Toast.makeText(getApplication(), "ПЕРЕХОД И ДОБАВЛЕНИЕ ПОДПИСЧИКА: позиция -" + position + ", ключ -" + mylist3.get(position).get("key").toString(), Toast.LENGTH_LONG).show();
 
                              Intent nextScreen = new Intent(getApplication(), VideoActivityMess.class);
-
+// Здесь
                             nextScreen.putExtra("curruser", mylist.get(position).get("key").toString());
                             nextScreen.putExtra("currname", mylist.get(position).get("name").toString());
 

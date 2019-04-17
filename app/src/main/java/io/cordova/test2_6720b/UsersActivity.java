@@ -208,7 +208,8 @@ public class UsersActivity extends AppCompatActivity {
 
                             if (FirebaseAuth.getInstance().getCurrentUser().getUid().equals("1qMMra5pItbJOtbIKcyQPHCaS7Q2"))
                             {
-                                limited_dist = 3000;
+                                limited_dist = 100;
+                               // limited_dist = 3000;
                             }else
                             {
                                 limited_dist = 100;
@@ -471,8 +472,8 @@ public class UsersActivity extends AppCompatActivity {
 
                         Intent allmess = new Intent(getApplication(), VideoActivityAllMess.class);
 
-                        allmess.putExtra("curruser", FirebaseAuth.getInstance().getCurrentUser().getUid());
-                        allmess.putExtra("currname", FirebaseAuth.getInstance().getCurrentUser().getDisplayName());
+                        //allmess.putExtra("curruser", FirebaseAuth.getInstance().getCurrentUser().getUid());
+                        //allmess.putExtra("currname", FirebaseAuth.getInstance().getCurrentUser().getDisplayName());
 
                         startActivity(allmess);
 

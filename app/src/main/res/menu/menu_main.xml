@@ -13,6 +13,11 @@
         android:title="Моя анкета"
         app:showAsAction="never"/>
     <item
+        android:id="@+id/zal"
+        android:orderInCategory="250"
+        android:title="Пожаловаться"
+        app:showAsAction="never"/>
+    <item
         android:id="@+id/messages"
         android:orderInCategory="200"
         android:title="Мои сообщения"
@@ -42,11 +47,11 @@
         android:id="@+id/revert" android:icon="@android:drawable/ic_menu_revert" app:showAsAction="always" android:title="к сообщениям">
     </item>
 
-    <!--
+
     <item
         android:id="@+id/pho" android:icon="@android:drawable/ic_menu_camera" app:showAsAction="always" android:title="фото">
     </item>
-
+<!--
     <item
         android:id="@+id/myplace" android:icon="@android:drawable/ic_menu_myplaces" app:showAsAction="always" android:title="моё местоположение">
     </item>

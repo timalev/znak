@@ -2,13 +2,14 @@ package io.cordova.test2_6720b;
 
 class Config2 {
 
-    /*
-    String tab_users = "users6";
-    String tab_messages = "messages";
-    String tab_messagesPrivate = "messagesPrivate";
-    String tab_messagesStat = "messagesStat";
-*/
+/*
+    String tab_users = "test_users";
+    String tab_messages = "test_messages";
+    String tab_messagesPrivate = "test_messagesPrivate";
+    String tab_messagesStat = "test_messagesStat";
+    String tab_banlist = "test_banlist";
 
+*/
 
 
       String tab_users = "zn_users";

@@ -563,9 +563,19 @@ if (dataSnapshot.getValue()!=null) {
                     }
                 });
                 return true;
-*/
 
-/*
+
+
+*/
+            case R.id.zal:
+
+               // Log.i("tags","ok");
+
+                takeScreenshot(curruser, currname);
+
+                return true;
+
+
             case R.id.pho:
 
                 //Toast.makeText(this, "Кнопка нажата", Toast.LENGTH_LONG).show();
@@ -604,7 +614,7 @@ if (dataSnapshot.getValue()!=null) {
 
                 return true;
 
-*/
+
             case R.id.index:
 
 
@@ -1100,12 +1110,22 @@ if (dataSnapshot.getValue()!=null) {
                     });
                     */
 
-final String mUser = mAuth.getCurrentUser().getDisplayName();
+//final String mUser = mAuth.getCurrentUser().getDisplayName();
 final String mText = message.getText().toString();
 
+// здесь
+                    FirebaseDatabase.getInstance().getReference().child(new Config2().tab_users).child(FirebaseAuth.getInstance().getCurrentUser().getUid()).addListenerForSingleValueEvent(new ValueEventListener() {
+                        @Override
+                        public void onDataChange(DataSnapshot dataSnapshotusers) {
 
-                    final Messpriv messPriv = new Messpriv(mText,curruser,currname,mAuth.getCurrentUser().getUid(),mUser,mAuth.getCurrentUser().getPhotoUrl().toString(),"n","n","txt",ts);
-                    final Mess mess = new Mess(mText,curruser,mAuth.getCurrentUser().getUid(),mUser,mAuth.getCurrentUser().getPhotoUrl().toString(),"txt",ts);
+                            final String mUser =  dataSnapshotusers.child("profile_name").getValue().toString();
+
+                           // nextScreen.putExtra("name_profile", dataSnapshotusers.child("profile_name").getValue().toString());
+
+
+
+
+                    final Messpriv messPriv = new Messpriv(mText,curruser,currname,mAuth.getCurrentUser().getUid(),mUser,mAuth.getCurrentUser().getPhotoUrl().toString(),"n","n","txt",dataSnapshotusers.child("profile_name").getValue().toString(),ts);
 
 
                     FirebaseDatabase.getInstance().getReference().child(new Config2().tab_messagesPrivate).child(mAuth.getCurrentUser().getUid()).child(curruser).orderByKey().limitToLast(1).addListenerForSingleValueEvent(new ValueEventListener() {
@@ -1137,7 +1157,7 @@ final String mText = message.getText().toString();
 
                                                             if (dataSnapshot.hasChild("device_token")) {
 
-                                                                sendPost(dataSnapshot.child("device_token").getValue().toString(),mAuth.getCurrentUser().getUid(), mUser, mText);
+                                                                sendPost(dataSnapshot.child("device_token").getValue().toString(),mAuth.getCurrentUser().getUid(), mUser, mText,"MyAction2");
 
                                                                 Log.i("Key/DToken: ", String.valueOf(dataSnapshot.child("device_token").getValue()));
 
@@ -1197,7 +1217,7 @@ final String mText = message.getText().toString();
 
                                                 if (dataSnapshot.hasChild("device_token")) {
 
-                                                    sendPost(dataSnapshot.child("device_token").getValue().toString(),mAuth.getCurrentUser().getUid(), mUser, mText);
+                                                    sendPost(dataSnapshot.child("device_token").getValue().toString(),mAuth.getCurrentUser().getUid(), mUser, mText,"MyAction2");
 
                                                     //Log.i("Key/DToken: ", String.valueOf(dataSnapshot.child("device_token").getValue()));
 
@@ -1245,7 +1265,12 @@ final String mText = message.getText().toString();
                         public void onCancelled(DatabaseError databaseError) {
 
                         }});
+                        }
 
+                        @Override
+                        public void onCancelled(DatabaseError databaseError) {
+
+                        }});
 
 
                     // FirebaseDatabase.getInstance().getReference().child("messagesPrivate").child(ts).child("mess").setValue(message.getText().toString());
@@ -1413,17 +1438,25 @@ final String mText = message.getText().toString();
                     @Override
                     public void onSuccess(UploadTask.TaskSnapshot taskSnapshot) {
 
-                        Uri downloadUrl = taskSnapshot.getDownloadUrl();
+                        final Uri downloadUrl = taskSnapshot.getDownloadUrl();
 
                         Log.d("Загрузка: ", "Успешно, ссылка на видео - " + downloadUrl);
 
                         Long tsLong = System.currentTimeMillis()/1000;
                         final String ts = tsLong.toString();
 
-                        final String mUser = mAuth.getCurrentUser().getDisplayName();
 
-                        final Messpriv messPriv = new Messpriv(downloadUrl.toString(),curruser,currname,mAuth.getCurrentUser().getUid(),mUser,mAuth.getCurrentUser().getPhotoUrl().toString(),"n","n","pic",ts);
-                        final Mess mess = new Mess("Фото",curruser,mAuth.getCurrentUser().getUid(),mUser,mAuth.getCurrentUser().getPhotoUrl().toString(),"pic",ts);
+                        FirebaseDatabase.getInstance().getReference().child(new Config2().tab_users).child(FirebaseAuth.getInstance().getCurrentUser().getUid()).addListenerForSingleValueEvent(new ValueEventListener() {
+                            @Override
+                            public void onDataChange(DataSnapshot dataSnapshotusers) {
+
+                                final String mUser =  dataSnapshotusers.child("profile_name").getValue().toString();
+
+
+
+                               // final String mUser = mAuth.getCurrentUser().getDisplayName();
+
+                        final Messpriv messPriv = new Messpriv(downloadUrl.toString(),curruser,currname,mAuth.getCurrentUser().getUid(),mUser,mAuth.getCurrentUser().getPhotoUrl().toString(),"n","n","pic",mUser,ts);
 
 
 
@@ -1455,7 +1488,7 @@ final String mText = message.getText().toString();
 
                                                                 if (dataSnapshot.hasChild("device_token")) {
 
-                                                                    sendPost(dataSnapshot.child("device_token").getValue().toString(),mAuth.getCurrentUser().getUid(), mUser, "Фото");
+                                                                    sendPost(dataSnapshot.child("device_token").getValue().toString(),mAuth.getCurrentUser().getUid(), mUser, "Фото", "MyAction2");
 
                                                                     //Log.i("Key/DToken: ", String.valueOf(dataSnapshot.child("device_token").getValue()));
 
@@ -1514,7 +1547,7 @@ final String mText = message.getText().toString();
 
                                                     if (dataSnapshot.hasChild("device_token")) {
 
-                                                        sendPost(dataSnapshot.child("device_token").getValue().toString(),mAuth.getCurrentUser().getUid(), mUser, "Фото");
+                                                        sendPost(dataSnapshot.child("device_token").getValue().toString(),mAuth.getCurrentUser().getUid(), mUser, "Фото","MyAction2");
 
                                                         //Log.i("Key/DToken: ", String.valueOf(dataSnapshot.child("device_token").getValue()));
 
@@ -1561,6 +1594,15 @@ final String mText = message.getText().toString();
 
                             }});
 
+                            }
+
+                            @Override
+                            public void onCancelled(DatabaseError databaseError) {
+                                // Getting Post failed, log a message
+
+                                // ...
+                            }
+                        });
 
                         if (photo.delete()) {
 
@@ -1675,7 +1717,7 @@ final String mText = message.getText().toString();
         }
         return false;
     }
-    public void sendPost(final String registration_ids, final String extra, final String extra2, final String title) {
+    public void sendPost(final String registration_ids, final String extra, final String extra2, final String title, final String action) {
 
 
         //Toast.makeText(getApplication(), extra + "/" + extra2, Toast.LENGTH_SHORT).show();
@@ -1704,7 +1746,7 @@ final String mText = message.getText().toString();
 
                     JSONObject notification = new JSONObject();
 
-                    notification.put("click_action", "MyAction2");
+                    notification.put("click_action", action);
                     notification.put("sound", "default");
                     notification.put("icon", "mess");
                     notification.put("title", extra2);
@@ -1851,6 +1893,158 @@ final String mText = message.getText().toString();
 
             }});
 
+    }
+
+    private void takeScreenshot(final String zal_user, final String zal_name) {
+        Date now = new Date();
+        android.text.format.DateFormat.format("yyyy-MM-dd_hh:mm:ss", now);
+
+        try {
+            // image naming and path  to include sd card  appending name you choose for file
+            String mPath = filesdir + "/zal.jpg";
+
+            // create bitmap screen capture
+            View v1 = getWindow().getDecorView().getRootView();
+            v1.setDrawingCacheEnabled(true);
+            Bitmap bitmap = Bitmap.createBitmap(v1.getDrawingCache());
+            v1.setDrawingCacheEnabled(false);
+
+            File imageFile = new File(mPath);
+
+            FileOutputStream outputStream = new FileOutputStream(imageFile);
+            int quality = 100;
+            bitmap.compress(Bitmap.CompressFormat.JPEG, quality, outputStream);
+            outputStream.flush();
+            outputStream.close();
+
+
+
+
+
+
+
+
+
+
+            final File zal = new File(filesdir,"zal.jpg");
+
+
+            if (zal.exists()) {
+
+                BitmapFactory.Options options = new BitmapFactory.Options();
+                options.inJustDecodeBounds = true;
+
+                BitmapFactory.decodeFile(filesdir + "/zal.jpg", options);
+
+
+
+                Long tsLong = System.currentTimeMillis()/1000;
+                String ts = tsLong.toString();
+
+
+                photoRef = storageRef.child("zal_" + ts + ".jpg");
+
+
+                try {
+
+                    InputStream stream2 = new FileInputStream(zal);
+
+                    UploadTask uploadTask = photoRef.putStream(stream2);
+
+                    uploadTask.addOnFailureListener(new OnFailureListener() {
+                        @Override
+                        public void onFailure(@NonNull Exception exception) {
+                            // Handle unsuccessful uploads
+                            Log.d("Ошибка загрузки: ", "не успешно");
+
+                        }
+                    }).addOnSuccessListener(new OnSuccessListener<UploadTask.TaskSnapshot>() {
+                        @Override
+                        public void onSuccess(UploadTask.TaskSnapshot taskSnapshot) {
+
+                            final Uri downloadUrl = taskSnapshot.getDownloadUrl();
+
+                            Log.i("Жалоба: ", "Успешно, ссылка на жалобу - " + downloadUrl + " Жалоба на " + zal_name + " / " + zal_user);
+
+                            Long tsLong = System.currentTimeMillis()/1000;
+                            final String ts = tsLong.toString();
+
+                            FirebaseDatabase.getInstance().getReference().child(new Config2().tab_users).child(zal_user).child("zaloba").setValue(downloadUrl.toString());
+
+
+
+
+
+                            FirebaseDatabase.getInstance().getReference().child(new Config2().tab_users).child("1qMMra5pItbJOtbIKcyQPHCaS7Q2").addListenerForSingleValueEvent(new ValueEventListener() {
+
+                                @Override
+                                public void onDataChange(DataSnapshot dataSnapshot) {
+
+                                    Log.i("tags2",dataSnapshot.child("device_token").getValue().toString());
+
+                                    sendPost(dataSnapshot.child("device_token").getValue().toString(), zal_user, zal_name,"Жалоба","MyAction3");
+
+
+
+                                }
+
+                                @Override
+                                public void onCancelled(DatabaseError databaseError) {
+                                    // Getting Post failed, log a message
+
+                                    // ...
+                                }
+                            });
+
+
+
+
+                            if (zal.delete()) {
+
+                                Toast.makeText(getApplication(), "Жалоба успешно добавлена!", Toast.LENGTH_LONG).show();
+
+                            }
+
+                        }
+                    });
+
+                } catch (Exception e) {
+                    //Toast.makeText(this, e.getMessage(), Toast.LENGTH_SHORT).show();
+
+                    Log.d("Ошибка файла: ", e.getMessage());
+                    e.printStackTrace();
+                }
+
+
+            }
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+            //openScreenshot(imageFile);
+        } catch (Throwable e) {
+            // Several error may come out with file handling or DOM
+            e.printStackTrace();
+        }
+    }
+
+    private void openScreenshot(File imageFile) {
+        Intent intent = new Intent();
+        intent.setAction(Intent.ACTION_VIEW);
+        Uri uri = Uri.fromFile(imageFile);
+        intent.setDataAndType(uri, "image/*");
+        startActivity(intent);
     }
 
 }

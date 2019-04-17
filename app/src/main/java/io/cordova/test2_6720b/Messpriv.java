@@ -16,13 +16,14 @@ class Messpriv {
     public String read;
     public String read2;
     public String type;
+    public String profile_name;
     public String currtime;
 
     public Messpriv() {
         // Default constructor required for calls to DataSnapshot.getValue(User.class)
     }
 
-    public Messpriv(String mess, String page_for_comment, String currname, String user, String name, String avatar, String read, String read2, String type, String currtime) {
+    public Messpriv(String mess, String page_for_comment, String currname, String user, String name, String avatar, String read, String read2, String type,String profile_name, String currtime) {
         this.mess = mess;
         this.page_for_comment = page_for_comment;
         this.currname = currname;
@@ -32,6 +33,7 @@ class Messpriv {
         this.read = read;
         this.read2 = read2;
         this.type = type;
+        this.profile_name = profile_name;
         this.currtime = currtime;
 
     }
