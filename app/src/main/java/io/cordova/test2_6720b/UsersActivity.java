@@ -166,10 +166,29 @@ public class UsersActivity extends AppCompatActivity {
                 loc1.setLongitude(Double.parseDouble(currlng));
 
 
+                FirebaseDatabase.getInstance().getReference().child(new Config2().tab_users).child(FirebaseAuth.getInstance().getCurrentUser().getUid()).addListenerForSingleValueEvent(new ValueEventListener() {
+
+                    @Override
+                    public void onDataChange(DataSnapshot dataSnapshot2) {
+
+                        String curr_sex;
+
+                       // Log.i("sex:", dataSnapshot2.getKey() + "/");
 
 
 
-                FirebaseDatabase.getInstance().getReference().child(new Config2().tab_users).addListenerForSingleValueEvent(new ValueEventListener() {
+                        final String Sex = dataSnapshot2.child("profile_gender").getValue().toString();
+
+                        if (Sex.equals("m"))
+                        {
+                            curr_sex = "f";
+                        }else
+                            curr_sex = "m";
+
+                       // FirebaseDatabase.getInstance().getReference().child(new Config2().tab_users).addListenerForSingleValueEvent(new ValueEventListener() {
+
+
+                FirebaseDatabase.getInstance().getReference().child(new Config2().tab_users).orderByChild("profile_gender").equalTo(curr_sex).addListenerForSingleValueEvent(new ValueEventListener() {
 
             @Override
             public void onDataChange(DataSnapshot dataSnapshot) {
@@ -220,7 +239,7 @@ public class UsersActivity extends AppCompatActivity {
                             array.add(1);
 
 
-                            String profile_name;
+                            final String profile_name;
 
 
                                     if (child.hasChild("profile_name")) {
@@ -232,10 +251,10 @@ public class UsersActivity extends AppCompatActivity {
                                     }
 
 
-                                       String profile_photo = child.child("profile_photo").getValue().toString();
+                                       final String profile_photo = child.child("profile_photo").getValue().toString();
 
 
-                                    String profile_age;
+                                    final String profile_age;
 
 
                                     if (child.hasChild("profile_age")) {
@@ -246,7 +265,7 @@ public class UsersActivity extends AppCompatActivity {
                                         profile_age = "n/a";
                                     }
 
-                            String profile_country;
+                            final String profile_country;
 
                             if (child.hasChild("profile_country")) {
 
@@ -256,7 +275,30 @@ public class UsersActivity extends AppCompatActivity {
                                 profile_country = "";
                             }
 
-                            Log.i("currlat/lng", profile_photo + "--" + currlat + "," + currlng + "-" + child.child("coords").child("lat").getValue().toString() + "," + child.child("coords").child("lng").getValue().toString() + " /" + CommText + ": " + String.valueOf(distance));
+                                String profile_gender;
+
+                                if (child.hasChild("profile_gender")) {
+
+                                    profile_gender = child.child("profile_gender").getValue().toString();
+                                }else
+                                {
+                                    profile_gender = "";
+                                }
+
+
+                          //  Log.i("currlat/lng", profile_photo + "--" + currlat + "," + currlng + "-" + child.child("coords").child("lat").getValue().toString() + "," + child.child("coords").child("lng").getValue().toString() + " /" + CommText + ": " + String.valueOf(distance));
+
+
+
+
+
+
+                                       // Log.i("sex:", Sex + "/" + profile_gender + " / " + Key);
+
+
+
+
+                                        //  for (DataSnapshot child : dataSnapshot.getChildren()) {
 
                             HashMap<String, String> map = new HashMap<String, String>();
 
@@ -266,6 +308,8 @@ public class UsersActivity extends AppCompatActivity {
                             Profile3 profile3 = new Profile3(profile_name, profile_photo, profile_age, profile_country, Key);
 
                             mSwipeView.addView(new TinderCard(mContext, profile3, mSwipeView));
+
+
 
 
                             /*
@@ -299,6 +343,15 @@ public class UsersActivity extends AppCompatActivity {
                 // ...
             }
         });
+                    }
+
+                    @Override
+                    public void onCancelled(DatabaseError databaseError) {
+                        // Getting Post failed, log a message
+
+                        // ...
+                    }
+                });
             }
 
             @Override
