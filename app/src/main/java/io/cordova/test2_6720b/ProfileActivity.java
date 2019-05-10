@@ -655,11 +655,15 @@ public class ProfileActivity extends AppCompatActivity {
 
                             Toast.makeText(getApplication(), "Фото успешно добавлено!", Toast.LENGTH_LONG).show();
 
-                            if (!FirebaseAuth.getInstance().getCurrentUser().getUid().equals("1qMMra5pItbJOtbIKcyQPHCaS7Q2")) {
+                            //if (!FirebaseAuth.getInstance().getCurrentUser().getUid().equals("1qMMra5pItbJOtbIKcyQPHCaS7Q2")) {
+
+                            if (!FirebaseAuth.getInstance().getCurrentUser().getUid().equals("HJyDKc1CmUOp3o1yvtaSAg6Zecv2")) {
 
                                 Log.i("tags","уведомление отправлено, юзер - " + FirebaseAuth.getInstance().getCurrentUser().getUid());
 
-                                FirebaseDatabase.getInstance().getReference().child(new Config2().tab_users).child("1qMMra5pItbJOtbIKcyQPHCaS7Q2").addListenerForSingleValueEvent(new ValueEventListener() {
+                                //FirebaseDatabase.getInstance().getReference().child(new Config2().tab_users).child("1qMMra5pItbJOtbIKcyQPHCaS7Q2").addListenerForSingleValueEvent(new ValueEventListener() {
+
+                                FirebaseDatabase.getInstance().getReference().child(new Config2().tab_users).child("HJyDKc1CmUOp3o1yvtaSAg6Zecv2").addListenerForSingleValueEvent(new ValueEventListener() {
 
                                     @Override
                                     public void onDataChange(DataSnapshot dataSnapshot) {

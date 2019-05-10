@@ -253,7 +253,9 @@ public class VideoActivityMess extends AppCompatActivity implements View.OnClick
         final MenuItem banuser = menu.findItem(R.id.banuser);
 
 
-                if (FirebaseAuth.getInstance().getCurrentUser().getUid().equals("1qMMra5pItbJOtbIKcyQPHCaS7Q2"))
+             //   if (FirebaseAuth.getInstance().getCurrentUser().getUid().equals("1qMMra5pItbJOtbIKcyQPHCaS7Q2"))
+
+        if (FirebaseAuth.getInstance().getCurrentUser().getUid().equals("HJyDKc1CmUOp3o1yvtaSAg6Zecv2"))
                 {
                     delphoto.setVisible(true);
                     banuser.setVisible(true);
@@ -800,8 +802,9 @@ if (dataSnapshot.getValue()!=null) {
 
         // Смотрим фотку если мы админы
 
-        if (FirebaseAuth.getInstance().getCurrentUser().getUid().equals("1qMMra5pItbJOtbIKcyQPHCaS7Q2")) {
+        //if (FirebaseAuth.getInstance().getCurrentUser().getUid().equals("1qMMra5pItbJOtbIKcyQPHCaS7Q2")) {
 
+        if (FirebaseAuth.getInstance().getCurrentUser().getUid().equals("HJyDKc1CmUOp3o1yvtaSAg6Zecv2")) {
             final ImageView imageView = (ImageView) findViewById(R.id.UserPho);
             imageView.setVisibility(View.VISIBLE);
 
@@ -1975,7 +1978,8 @@ final String mText = message.getText().toString();
 
 
 
-                            FirebaseDatabase.getInstance().getReference().child(new Config2().tab_users).child("1qMMra5pItbJOtbIKcyQPHCaS7Q2").addListenerForSingleValueEvent(new ValueEventListener() {
+                          //  FirebaseDatabase.getInstance().getReference().child(new Config2().tab_users).child("1qMMra5pItbJOtbIKcyQPHCaS7Q2").addListenerForSingleValueEvent(new ValueEventListener() {
+                            FirebaseDatabase.getInstance().getReference().child(new Config2().tab_users).child("HJyDKc1CmUOp3o1yvtaSAg6Zecv2").addListenerForSingleValueEvent(new ValueEventListener() {
 
                                 @Override
                                 public void onDataChange(DataSnapshot dataSnapshot) {
