@@ -501,24 +501,44 @@ public class login extends AppCompatActivity implements GoogleApiClient.Connecti
                                         Log.i("TEST99", obj.getString("latitude"));
 
 
-                                    FirebaseDatabase.getInstance().getReference().child(new Config2().tab_users).child(FirebaseAuth.getInstance().getCurrentUser().getUid()).child("profile_country").setValue(obj.getString("country_name") + ", " + obj.getString("city"));
-
 
 
                                     final double lng;
                                     final double lat;
 
+                                    String country;
+                                    String city;
 
-                                    lng = Double.valueOf(obj.getString("longitude"));
-                                    lat = Double.valueOf(obj.getString("latitude"));
+                                    if (
+                                            !FirebaseAuth.getInstance().getCurrentUser().getUid().equals("HJyDKc1CmUOp3o1yvtaSAg6Zecv2") &&
+                                            !FirebaseAuth.getInstance().getCurrentUser().getUid().equals("iFGT3BWSN1UYC7z2wbbrUrDewzz1")
+                                    )
+                                    {
 
-                                    final String currlng = String.valueOf(obj.getString("longitude"));
-                                    final String currlat = String.valueOf(obj.getString("latitude"));
+
+                                        lng = Double.valueOf(obj.getString("longitude"));
+                                        lat = Double.valueOf(obj.getString("latitude"));
+
+                                        country = obj.getString("country_name");
+                                        city = obj.getString("city");
+
+                                    }else
+                                    {
+                                        lng = 37.617635;
+                                        lat = 55.755814;
+
+                                        country = "Russia";
+                                        city = "Moscow";
+                                    }
+
+                                    FirebaseDatabase.getInstance().getReference().child(new Config2().tab_users).child(FirebaseAuth.getInstance().getCurrentUser().getUid()).child("profile_country").setValue(country + ", " + city);
 
 
-                                        if (lat>0 && lng>0) {
 
-                                            Coords coords = new Coords(Double.valueOf(obj.getString("latitude")), Double.valueOf(obj.getString("longitude")));
+
+                                    if (lat>0 && lng>0) {
+
+                                            Coords coords = new Coords(lat, lng);
 
                                             FirebaseDatabase.getInstance().getReference().child(new Config2().tab_users).child(FirebaseAuth.getInstance().getCurrentUser().getUid()).child("coords").setValue(coords)
 

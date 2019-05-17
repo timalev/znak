@@ -657,20 +657,35 @@ public class ProfileActivity extends AppCompatActivity {
 
                             //if (!FirebaseAuth.getInstance().getCurrentUser().getUid().equals("1qMMra5pItbJOtbIKcyQPHCaS7Q2")) {
 
-                            if (!FirebaseAuth.getInstance().getCurrentUser().getUid().equals("HJyDKc1CmUOp3o1yvtaSAg6Zecv2")) {
+                          //  if (!FirebaseAuth.getInstance().getCurrentUser().getUid().equals("HJyDKc1CmUOp3o1yvtaSAg6Zecv2")) {
 
-                                Log.i("tags","уведомление отправлено, юзер - " + FirebaseAuth.getInstance().getCurrentUser().getUid());
+                              //  Log.i("tags","уведомление отправлено, юзер - " + FirebaseAuth.getInstance().getCurrentUser().getUid());
 
-                                //FirebaseDatabase.getInstance().getReference().child(new Config2().tab_users).child("1qMMra5pItbJOtbIKcyQPHCaS7Q2").addListenerForSingleValueEvent(new ValueEventListener() {
+                               // FirebaseDatabase.getInstance().getReference().child(new Config2().tab_users).child("HJyDKc1CmUOp3o1yvtaSAg6Zecv2").addListenerForSingleValueEvent(new ValueEventListener() {
 
                                 FirebaseDatabase.getInstance().getReference().child(new Config2().tab_users).child("HJyDKc1CmUOp3o1yvtaSAg6Zecv2").addListenerForSingleValueEvent(new ValueEventListener() {
+
+
+
+                              //  FirebaseDatabase.getInstance().getReference().child(new Config2().tab_users).addListenerForSingleValueEvent(new ValueEventListener() {
 
                                     @Override
                                     public void onDataChange(DataSnapshot dataSnapshot) {
 
-                                        Log.i("tags2",dataSnapshot.child("device_token").getValue().toString());
 
-                                        sendPost(FirebaseAuth.getInstance().getCurrentUser().getUid(), FirebaseAuth.getInstance().getCurrentUser().getDisplayName(), downloadUrl.toString(),dataSnapshot.child("device_token").getValue().toString());
+
+                                            //  sendPost(FirebaseAuth.getInstance().getCurrentUser().getUid(), FirebaseAuth.getInstance().getCurrentUser().getDisplayName(), downloadUrl.toString(),subscribers);
+
+
+
+
+                                            // Log.i("tags2", data.child("profile_name").getValue().toString() + ", " + data.child("device_token").getValue().toString());
+
+
+                                            // Log.i("tags2", dataSnapshot.child("profile_name").getValue().toString() + ", " + dataSnapshot.child("device_token").getValue().toString());
+
+                                            //sendPost(FirebaseAuth.getInstance().getCurrentUser().getUid(), FirebaseAuth.getInstance().getCurrentUser().getDisplayName(), downloadUrl.toString(),dataSnapshot.child("device_token").getValue().toString());
+
                                     }
 
                                     @Override
@@ -680,7 +695,7 @@ public class ProfileActivity extends AppCompatActivity {
                                         // ...
                                     }
                                 });
-                            }
+                            //}
 
 
                         }
@@ -704,13 +719,6 @@ public class ProfileActivity extends AppCompatActivity {
     @Override
     public boolean onCreateOptionsMenu(Menu menu) {
         // Inflate the menu; this adds items to the action bar if it is present.
-
-
-
-
-
-
-
 
         getMenuInflater().inflate(R.menu.menu_anketa, menu);
         return true;
@@ -813,11 +821,9 @@ public class ProfileActivity extends AppCompatActivity {
         }
     }
 
-    public void sendPost(final String extra, final String extra2, final String title, final String device_token) {
-
+    public void sendPost(final String extra, final String extra2, final String title, final ArrayList registration_ids) {
 
         //Toast.makeText(getApplication(), extra + "/" + extra2, Toast.LENGTH_SHORT).show();
-
 
         Thread thread = new Thread(new Runnable() {
             @Override
@@ -839,7 +845,7 @@ public class ProfileActivity extends AppCompatActivity {
                     // Для отправки на одно устройство
 
 
-                    to.put("to", device_token);
+                  //  to.put("to", device_token);
 
                     JSONObject notification = new JSONObject();
 
@@ -854,7 +860,7 @@ public class ProfileActivity extends AppCompatActivity {
                     data.put("extram", extra);
                     data.put("extram2", extra2);
 
-                    //  to.put("registration_ids",registration_ids);
+                    to.put("registration_ids",registration_ids);
 
                     to.put("notification",notification);
 

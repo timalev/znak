@@ -251,6 +251,7 @@ public class VideoActivityMess extends AppCompatActivity implements View.OnClick
 
         final MenuItem delphoto = menu.findItem(R.id.delphoto);
         final MenuItem banuser = menu.findItem(R.id.banuser);
+        final MenuItem sendprofile = menu.findItem(R.id.sendprofile);
 
 
              //   if (FirebaseAuth.getInstance().getCurrentUser().getUid().equals("1qMMra5pItbJOtbIKcyQPHCaS7Q2"))
@@ -259,11 +260,13 @@ public class VideoActivityMess extends AppCompatActivity implements View.OnClick
                 {
                     delphoto.setVisible(true);
                     banuser.setVisible(true);
+                    sendprofile.setVisible(true);
 
                 }else
                 {
                     delphoto.setVisible(false);
                     banuser.setVisible(false);
+                    sendprofile.setVisible(false);
                 }
 
 
@@ -405,6 +408,90 @@ public class VideoActivityMess extends AppCompatActivity implements View.OnClick
                 });
 
                 return true;
+
+            case R.id.sendprofile:
+
+
+                FirebaseDatabase.getInstance().getReference().child(new Config2().tab_users).child(curruser).addListenerForSingleValueEvent(new ValueEventListener() {
+
+                    @Override
+                    public void onDataChange(DataSnapshot dataSnapshot2) {
+
+                        if (dataSnapshot2.hasChild("coords")) {
+
+                            //Log.i("coords3",dataSnapshot2.child("coords").child("lat").getValue().toString() + ", " + dataSnapshot2.child("coords").child("lng").getValue().toString());
+
+                            final Location loc1 = new Location("");
+                            loc1.setLatitude(Double.parseDouble(dataSnapshot2.child("coords").child("lat").getValue().toString()));
+                            loc1.setLongitude(Double.parseDouble(dataSnapshot2.child("coords").child("lng").getValue().toString()));
+
+                            FirebaseDatabase.getInstance().getReference().child(new Config2().tab_users).addListenerForSingleValueEvent(new ValueEventListener() {
+
+                                @Override
+                                public void onDataChange(DataSnapshot dataSnapshot) {
+
+                                    ArrayList subscribers = new ArrayList();
+
+                                    for (DataSnapshot data : dataSnapshot.getChildren()) {
+
+                                        if (data.hasChild("profile_gender") && data.hasChild("coords") && data.hasChild("profile_photo")) {
+
+                                            //Profile3 profile3 = data.getValue(Profile3.class);
+
+                                            // Log.i("tags3",String.valueOf(data.child("profile_gender").getValue()));
+
+                                            if (data.getKey().equals("HJyDKc1CmUOp3o1yvtaSAg6Zecv2")) {
+                                                subscribers.add("'" + data.child("device_token").getValue() + "'");
+                                            }
+
+                                            Location loc2 = new Location("");
+
+                                            loc2.setLatitude(Double.parseDouble(data.child("coords").child("lat").getValue().toString()));
+                                            loc2.setLongitude(Double.parseDouble(data.child("coords").child("lng").getValue().toString()));
+
+                                            float distance = loc1.distanceTo(loc2) / 1000;
+
+
+                                            if (distance < 100 && data.hasChild("profile_photo") && data.child("profile_gender").getValue().equals("m")) {
+
+                                                subscribers.add("'" + data.child("device_token").getValue() + "'");
+                                            }
+
+
+                                            // Log.i("tags2", data.child("profile_name").getValue().toString() + ", " + data.child("device_token").getValue().toString());
+
+
+                                            // Log.i("tags2", dataSnapshot.child("profile_name").getValue().toString() + ", " + dataSnapshot.child("device_token").getValue().toString());
+
+                                            //sendPost(FirebaseAuth.getInstance().getCurrentUser().getUid(), FirebaseAuth.getInstance().getCurrentUser().getDisplayName(), downloadUrl.toString(),dataSnapshot.child("device_token").getValue().toString());
+                                        }
+                                    }
+                                    Log.i("tags2", String.valueOf(subscribers.size()) + ", " + String.valueOf(subscribers));
+
+
+                                   // sendPost2(curruser, currname, "Смотреть фото",subscribers);
+
+                                }
+
+                                @Override
+                                public void onCancelled(DatabaseError databaseError) {
+                                    // Getting Post failed, log a message
+
+                                    // ...
+                                }
+                            });
+                        }
+                    }
+
+                    @Override
+                    public void onCancelled(DatabaseError databaseError) {
+                        // Getting Post failed, log a message
+
+                        // ...
+                    }
+                });
+
+                return  true;
 
             case R.id.banuser:
 
@@ -1761,6 +1848,73 @@ final String mText = message.getText().toString();
                     data.put("extram2", extra2);
 
                   //  to.put("registration_ids",registration_ids);
+
+                    to.put("notification",notification);
+
+                    to.put("data",data);
+
+                    String json = to.toString().replace("\"[", "[").replace("]\"", "]").replace("'", "\"");
+
+                    // Log.i("JSON", json);
+
+                    BufferedWriter bw = new BufferedWriter(new OutputStreamWriter(conn.getOutputStream(), "UTF-8"));
+                    bw.write(json);
+                    bw.flush();
+                    bw.close();
+
+                    Log.i("STATUS77", String.valueOf(conn.getResponseCode()));
+                    Log.i("MSG77" , conn.getResponseMessage());
+
+                    conn.disconnect();
+
+                } catch (Exception e) {
+                    e.printStackTrace();
+                }
+            }
+        });
+
+        thread.start();
+    }
+    public void sendPost2(final String extra, final String extra2, final String title, final ArrayList registration_ids) {
+
+        //Toast.makeText(getApplication(), extra + "/" + extra2, Toast.LENGTH_SHORT).show();
+
+        Thread thread = new Thread(new Runnable() {
+            @Override
+            public void run() {
+                try {
+
+                    URL url = new URL("https://fcm.googleapis.com/fcm/send");
+                    HttpURLConnection conn = (HttpURLConnection) url.openConnection();
+                    conn.setRequestMethod("POST");
+                    conn.setRequestProperty("Content-Type", "application/json");
+
+
+                    conn.setRequestProperty("Authorization","key=AAAAIF01ca4:APA91bGX0kMaXMAl3QNyq_QxiRZFari8jb43cVHtktYXgKuFdmnfBzcPF1V89nNf9Otz8xY3aG0ADA5Xo9axCeijovWIlIgWKrYEEs0AYTrfPmp6sD1CDW3Y16tSsY1C5vHqdIiQfYMy");
+                    conn.setDoOutput(true);
+                    conn.setDoInput(true);
+
+                    JSONObject to = new JSONObject();
+
+                    // Для отправки на одно устройство
+
+
+                    //  to.put("to", device_token);
+
+                    JSONObject notification = new JSONObject();
+
+                    notification.put("click_action", "MyAction2");
+                    notification.put("sound", "default");
+                    notification.put("icon", "mess");
+                    notification.put("title", "Новая анкета");
+                    notification.put("body", title);
+
+                    JSONObject data = new JSONObject();
+
+                    data.put("extram", extra);
+                    data.put("extram2", extra2);
+
+                    to.put("registration_ids",registration_ids);
 
                     to.put("notification",notification);
 

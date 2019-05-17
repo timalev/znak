@@ -42,6 +42,12 @@
         android:orderInCategory="600"
         android:title="Заблокировать юзера"
         app:showAsAction="never"/>
+    <item
+        android:id="@+id/sendprofile"
+        android:visible="false"
+        android:orderInCategory="700"
+        android:title="Разослать юзера"
+        app:showAsAction="never"/>
 
     <item
         android:id="@+id/revert" android:icon="@android:drawable/ic_menu_revert" app:showAsAction="always" android:title="к сообщениям">
