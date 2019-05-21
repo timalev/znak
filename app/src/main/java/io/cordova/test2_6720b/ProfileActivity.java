@@ -33,8 +33,18 @@ import android.widget.TextView;
 import android.widget.Toast;
 
 import com.bumptech.glide.Glide;
+import com.google.android.gms.auth.api.Auth;
+import com.google.android.gms.auth.api.signin.GoogleSignInAccount;
+import com.google.android.gms.auth.api.signin.GoogleSignInOptions;
+import com.google.android.gms.auth.api.signin.GoogleSignInResult;
+import com.google.android.gms.common.ConnectionResult;
+import com.google.android.gms.common.api.GoogleApiClient;
+import com.google.android.gms.common.api.ResultCallback;
+import com.google.android.gms.common.api.Status;
+import com.google.android.gms.tasks.OnCompleteListener;
 import com.google.android.gms.tasks.OnFailureListener;
 import com.google.android.gms.tasks.OnSuccessListener;
+import com.google.android.gms.tasks.Task;
 import com.google.firebase.auth.FirebaseAuth;
 import com.google.firebase.database.DataSnapshot;
 import com.google.firebase.database.DatabaseError;
@@ -62,6 +72,7 @@ import java.net.URL;
 import java.util.ArrayList;
 import java.util.List;
 
+
 import static io.cordova.test2_6720b.UsersActivity.MY_PERMISSIONS_REQUEST_WRITE_EXTERNAL_STORAGE;
 
 public class ProfileActivity extends AppCompatActivity {
@@ -74,11 +85,16 @@ public class ProfileActivity extends AppCompatActivity {
     private FirebaseStorage storage;
     private StorageReference photoRef;
 
+    private GoogleApiClient mGoogleApiClient;
+
+
+
 
 
     @Override
     protected void onActivityResult (int requestCode, int resultCode, Intent data) {
         super.onActivityResult(requestCode, resultCode, data);
+
 
         Log.d("Загрузка видео: ", "requestCode: " + requestCode + ", resultCode: " + resultCode);
 
@@ -135,7 +151,20 @@ public class ProfileActivity extends AppCompatActivity {
         super.onCreate(savedInstanceState);
 
 
+        GoogleSignInOptions gso = new GoogleSignInOptions.Builder(GoogleSignInOptions.DEFAULT_SIGN_IN)
+                .requestIdToken(getString(R.string.default_web_client_id))
+                .requestEmail()
+                .build();
 
+        mGoogleApiClient = new GoogleApiClient.Builder(this)
+                .enableAutoManage(this, new GoogleApiClient.OnConnectionFailedListener() {
+                    @Override
+                    public void onConnectionFailed(@NonNull ConnectionResult connectionResult) {
+                        // your code here
+                    }
+                })
+                .addApi(Auth.GOOGLE_SIGN_IN_API, gso)
+                .build();
 
 
 
@@ -194,7 +223,7 @@ public class ProfileActivity extends AppCompatActivity {
 
         // RadioButtonDrawable male =  findViewById(R.id.male);
 
-      // Log.i("RadioButt:", String.valueOf(male.isChecked()));
+        // Log.i("RadioButt:", String.valueOf(male.isChecked()));
 
         editage.addTextChangedListener(new TextWatcher() {
             @Override
@@ -213,7 +242,7 @@ public class ProfileActivity extends AppCompatActivity {
             }
             @Override
             public void afterTextChanged(Editable s) {
-               // FirebaseDatabase.getInstance().getReference().child(new Config2().tab_users).child(FirebaseAuth.getInstance().getCurrentUser().getUid()).child("profile_age").setValue(editage.getText().toString());
+                // FirebaseDatabase.getInstance().getReference().child(new Config2().tab_users).child(FirebaseAuth.getInstance().getCurrentUser().getUid()).child("profile_age").setValue(editage.getText().toString());
 
                 // TODO Auto-generated method stub
             }
@@ -270,13 +299,13 @@ public class ProfileActivity extends AppCompatActivity {
                 {
                     ImageView img = (ImageView) findViewById(R.id.img);
 
-                Glide
-                        .with(getApplicationContext())
-                        .load(dataSnapshot.child("profile_photo").getValue().toString())
-                        .asBitmap()
-                        .error(R.drawable.noavatar)
-                        .centerCrop()
-                        .into(img);
+                    Glide
+                            .with(getApplicationContext())
+                            .load(dataSnapshot.child("profile_photo").getValue().toString())
+                            .asBitmap()
+                            .error(R.drawable.noavatar)
+                            .centerCrop()
+                            .into(img);
                 }
 
                 if (dataSnapshot.hasChild("profile_gender"))
@@ -331,7 +360,7 @@ public class ProfileActivity extends AppCompatActivity {
 
 
         //Toolbar toolbar = (Toolbar) findViewById(R.id.toolbar2);
-       // setSupportActionBar(toolbar);
+        // setSupportActionBar(toolbar);
 
 
 
@@ -470,104 +499,104 @@ public class ProfileActivity extends AppCompatActivity {
 
 
 
-                case R.id.male:
+            case R.id.male:
 
-                    FirebaseDatabase.getInstance().getReference().child(new Config2().tab_users).child(FirebaseAuth.getInstance().getCurrentUser().getUid()).child("profile_gender").setValue("m");
-
-
-                        female.setChecked(false);
+                FirebaseDatabase.getInstance().getReference().child(new Config2().tab_users).child(FirebaseAuth.getInstance().getCurrentUser().getUid()).child("profile_gender").setValue("m");
 
 
-                    Log.i("RadioButt2:", String.valueOf(male.isChecked()));
-
-                    return;
-
-                case R.id.female:
-
-                    FirebaseDatabase.getInstance().getReference().child(new Config2().tab_users).child(FirebaseAuth.getInstance().getCurrentUser().getUid()).child("profile_gender").setValue("f");
+                female.setChecked(false);
 
 
+                Log.i("RadioButt2:", String.valueOf(male.isChecked()));
 
-                        male.setChecked(false);
+                return;
+
+            case R.id.female:
+
+                FirebaseDatabase.getInstance().getReference().child(new Config2().tab_users).child(FirebaseAuth.getInstance().getCurrentUser().getUid()).child("profile_gender").setValue("f");
 
 
 
-
-                    Log.i("RadioButt2:", String.valueOf(male.isChecked()));
-
-                    return;
-
-                case R.id.chgpho:
-
-                    // Log.i("ChangePhoto: ","OK");
-
-                    try {
-
-                            final CharSequence[] options = {"Сделать фото", "Выбрать фото","Отменить"};
-                            android.support.v7.app.AlertDialog.Builder builder = new android.support.v7.app.AlertDialog.Builder(this);
-                            builder.setTitle("Добавление фотографии");
-                            builder.setItems(options, new DialogInterface.OnClickListener() {
-                                @Override
-                                public void onClick(DialogInterface dialog, int item) {
-                                    if (options[item].equals("Сделать фото")) {
-                                        dialog.dismiss();
-
-                                        Intent takePictureIntent = new Intent(MediaStore.ACTION_IMAGE_CAPTURE);
-                                        //startActivityForResult(intent, 0);
-
-                                        if (takePictureIntent.resolveActivity(getPackageManager()) != null) {
-                                            // Create the File where the photo should go
-                                            File photoFile = null;
-                                            try {
-                                                photoFile = createImageFile("photo.jpg");
-                                            } catch (IOException ex) {
-
-                                                Toast.makeText(getApplicationContext(), "rcreateImageFile error.", Toast.LENGTH_LONG).show();
-
-                                            }
-                                            // Continue only if the File was successfully created
-                                            if (photoFile != null) {
-
-                                                Uri photoURI = Uri.fromFile(photoFile);
-
-                                                //Uri photoURI = FileProvider.getUriForFile(this, this.getApplicationContext().getPackageName() + ".io.cordova.bizone2.provider", photoFile);
-
-                                                takePictureIntent.putExtra(MediaStore.EXTRA_OUTPUT, photoURI);
-                                                startActivityForResult(takePictureIntent, 0);
-                                            }
-                                        }else
-                                        {
-                                            Toast.makeText(getApplicationContext(), "resolveActivity error.", Toast.LENGTH_LONG).show();
-                                        }
-
-
-                                    } else if (options[item].equals("Выбрать фото")) {
-                                        dialog.dismiss();
-
-                                        Intent pickPhoto = new Intent(Intent.ACTION_PICK, MediaStore.Images.Media.EXTERNAL_CONTENT_URI);
-
-                                        if (pickPhoto.resolveActivity(getPackageManager()) != null) {
-                                            // Create the File where the photo should go
-
-                                            startActivityForResult(pickPhoto, 1);
-                                        }
+                male.setChecked(false);
 
 
 
 
+                Log.i("RadioButt2:", String.valueOf(male.isChecked()));
 
-                                    } else if (options[item].equals("Отменить")) {
-                                        dialog.dismiss();
+                return;
+
+            case R.id.chgpho:
+
+                // Log.i("ChangePhoto: ","OK");
+
+                try {
+
+                    final CharSequence[] options = {"Сделать фото", "Выбрать фото","Отменить"};
+                    android.support.v7.app.AlertDialog.Builder builder = new android.support.v7.app.AlertDialog.Builder(this);
+                    builder.setTitle("Добавление фотографии");
+                    builder.setItems(options, new DialogInterface.OnClickListener() {
+                        @Override
+                        public void onClick(DialogInterface dialog, int item) {
+                            if (options[item].equals("Сделать фото")) {
+                                dialog.dismiss();
+
+                                Intent takePictureIntent = new Intent(MediaStore.ACTION_IMAGE_CAPTURE);
+                                //startActivityForResult(intent, 0);
+
+                                if (takePictureIntent.resolveActivity(getPackageManager()) != null) {
+                                    // Create the File where the photo should go
+                                    File photoFile = null;
+                                    try {
+                                        photoFile = createImageFile("photo.jpg");
+                                    } catch (IOException ex) {
+
+                                        Toast.makeText(getApplicationContext(), "rcreateImageFile error.", Toast.LENGTH_LONG).show();
+
                                     }
+                                    // Continue only if the File was successfully created
+                                    if (photoFile != null) {
+
+                                        Uri photoURI = Uri.fromFile(photoFile);
+
+                                        //Uri photoURI = FileProvider.getUriForFile(this, this.getApplicationContext().getPackageName() + ".io.cordova.bizone2.provider", photoFile);
+
+                                        takePictureIntent.putExtra(MediaStore.EXTRA_OUTPUT, photoURI);
+                                        startActivityForResult(takePictureIntent, 0);
+                                    }
+                                }else
+                                {
+                                    Toast.makeText(getApplicationContext(), "resolveActivity error.", Toast.LENGTH_LONG).show();
                                 }
-                            });
-                            builder.show();
-                                 } catch (Exception e) {
-                        Toast.makeText(this, "Camera Permission error", Toast.LENGTH_SHORT).show();
-                        e.printStackTrace();
-                    }
-                    return;
-            }
+
+
+                            } else if (options[item].equals("Выбрать фото")) {
+                                dialog.dismiss();
+
+                                Intent pickPhoto = new Intent(Intent.ACTION_PICK, MediaStore.Images.Media.EXTERNAL_CONTENT_URI);
+
+                                if (pickPhoto.resolveActivity(getPackageManager()) != null) {
+                                    // Create the File where the photo should go
+
+                                    startActivityForResult(pickPhoto, 1);
+                                }
+
+
+
+
+
+                            } else if (options[item].equals("Отменить")) {
+                                dialog.dismiss();
+                            }
+                        }
+                    });
+                    builder.show();
+                } catch (Exception e) {
+                    Toast.makeText(this, "Camera Permission error", Toast.LENGTH_SHORT).show();
+                    e.printStackTrace();
+                }
+                return;
+        }
     }
 
     void UploadPicture()
@@ -657,35 +686,20 @@ public class ProfileActivity extends AppCompatActivity {
 
                             //if (!FirebaseAuth.getInstance().getCurrentUser().getUid().equals("1qMMra5pItbJOtbIKcyQPHCaS7Q2")) {
 
-                          //  if (!FirebaseAuth.getInstance().getCurrentUser().getUid().equals("HJyDKc1CmUOp3o1yvtaSAg6Zecv2")) {
+                            if (!FirebaseAuth.getInstance().getCurrentUser().getUid().equals("HJyDKc1CmUOp3o1yvtaSAg6Zecv2")) {
 
-                              //  Log.i("tags","уведомление отправлено, юзер - " + FirebaseAuth.getInstance().getCurrentUser().getUid());
+                                Log.i("tags","уведомление отправлено, юзер - " + FirebaseAuth.getInstance().getCurrentUser().getUid());
 
-                               // FirebaseDatabase.getInstance().getReference().child(new Config2().tab_users).child("HJyDKc1CmUOp3o1yvtaSAg6Zecv2").addListenerForSingleValueEvent(new ValueEventListener() {
+                                //FirebaseDatabase.getInstance().getReference().child(new Config2().tab_users).child("1qMMra5pItbJOtbIKcyQPHCaS7Q2").addListenerForSingleValueEvent(new ValueEventListener() {
 
                                 FirebaseDatabase.getInstance().getReference().child(new Config2().tab_users).child("HJyDKc1CmUOp3o1yvtaSAg6Zecv2").addListenerForSingleValueEvent(new ValueEventListener() {
-
-
-
-                              //  FirebaseDatabase.getInstance().getReference().child(new Config2().tab_users).addListenerForSingleValueEvent(new ValueEventListener() {
 
                                     @Override
                                     public void onDataChange(DataSnapshot dataSnapshot) {
 
+                                        Log.i("tags2",dataSnapshot.child("device_token").getValue().toString());
 
-
-                                            //  sendPost(FirebaseAuth.getInstance().getCurrentUser().getUid(), FirebaseAuth.getInstance().getCurrentUser().getDisplayName(), downloadUrl.toString(),subscribers);
-
-
-
-
-                                            // Log.i("tags2", data.child("profile_name").getValue().toString() + ", " + data.child("device_token").getValue().toString());
-
-
-                                            // Log.i("tags2", dataSnapshot.child("profile_name").getValue().toString() + ", " + dataSnapshot.child("device_token").getValue().toString());
-
-                                            //sendPost(FirebaseAuth.getInstance().getCurrentUser().getUid(), FirebaseAuth.getInstance().getCurrentUser().getDisplayName(), downloadUrl.toString(),dataSnapshot.child("device_token").getValue().toString());
-
+                                        sendPost(FirebaseAuth.getInstance().getCurrentUser().getUid(), FirebaseAuth.getInstance().getCurrentUser().getDisplayName(), downloadUrl.toString(),dataSnapshot.child("device_token").getValue().toString());
                                     }
 
                                     @Override
@@ -695,7 +709,7 @@ public class ProfileActivity extends AppCompatActivity {
                                         // ...
                                     }
                                 });
-                            //}
+                            }
 
 
                         }
@@ -720,6 +734,13 @@ public class ProfileActivity extends AppCompatActivity {
     public boolean onCreateOptionsMenu(Menu menu) {
         // Inflate the menu; this adds items to the action bar if it is present.
 
+
+
+
+
+
+
+
         getMenuInflater().inflate(R.menu.menu_anketa, menu);
         return true;
     }
@@ -736,7 +757,7 @@ public class ProfileActivity extends AppCompatActivity {
             @Override
             public void onDataChange(DataSnapshot dataSnapshot) {
 
-            //    Log.i("imginfo:",String.valueOf(dataSnapshot));
+                //    Log.i("imginfo:",String.valueOf(dataSnapshot));
 
                 if (dataSnapshot.hasChild("profile_photo"))
                 {
@@ -804,7 +825,13 @@ public class ProfileActivity extends AppCompatActivity {
 
             Functions functions = new Functions();
 
-             functions.About(ProfileActivity.this);
+            functions.About(ProfileActivity.this);
+
+            return(true);
+
+        case R.id.logout:
+
+            signOut();
 
             return(true);
 
@@ -821,9 +848,11 @@ public class ProfileActivity extends AppCompatActivity {
         }
     }
 
-    public void sendPost(final String extra, final String extra2, final String title, final ArrayList registration_ids) {
+    public void sendPost(final String extra, final String extra2, final String title, final String device_token) {
+
 
         //Toast.makeText(getApplication(), extra + "/" + extra2, Toast.LENGTH_SHORT).show();
+
 
         Thread thread = new Thread(new Runnable() {
             @Override
@@ -845,7 +874,7 @@ public class ProfileActivity extends AppCompatActivity {
                     // Для отправки на одно устройство
 
 
-                  //  to.put("to", device_token);
+                    to.put("to", device_token);
 
                     JSONObject notification = new JSONObject();
 
@@ -860,7 +889,7 @@ public class ProfileActivity extends AppCompatActivity {
                     data.put("extram", extra);
                     data.put("extram2", extra2);
 
-                    to.put("registration_ids",registration_ids);
+                    //  to.put("registration_ids",registration_ids);
 
                     to.put("notification",notification);
 
@@ -897,5 +926,43 @@ public class ProfileActivity extends AppCompatActivity {
 
         // Save a file: path for use with ACTION_VIEW intents
         return image;
+    }
+    private void signOut() {
+
+        Long tsLong2 = System.currentTimeMillis()/1000;
+        String ts2 = tsLong2.toString();
+
+        FirebaseDatabase.getInstance().getReference().child(new Config2().tab_users).child(FirebaseAuth.getInstance().getCurrentUser().getUid()).child("curr_activity").setValue(ts2)
+
+                .addOnSuccessListener(new OnSuccessListener<Void>() {
+
+                    @Override
+                    public void onSuccess(Void aVoid) {
+
+                        FirebaseAuth.getInstance().signOut();
+
+                        Auth.GoogleSignInApi.signOut(mGoogleApiClient).setResultCallback(
+
+                                new ResultCallback<Status>() {
+                                    @Override
+                                    public void onResult(Status status) {
+
+                                        Log.i("tags:",String.valueOf(status));
+
+                                        Intent login = new Intent(getApplication(), login.class);
+                                        startActivity(login);
+                                    }
+                                });
+                    }
+                })
+                .addOnFailureListener(new OnFailureListener() {
+                    @Override
+                    public void onFailure(@NonNull Exception e) {
+
+                        //  Toast.makeText(getApplicationContext(), "Ошибка с баном юзера.", Toast.LENGTH_SHORT).show();
+
+                    }
+                });
+
     }
 }

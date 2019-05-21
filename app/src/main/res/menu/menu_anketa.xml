@@ -35,4 +35,10 @@
         android:orderInCategory="400"
         android:title="@string/about"
         app:showAsAction="never"/>
+
+    <item
+        android:id="@+id/logout"
+        android:orderInCategory="500"
+        android:title="Выйти"
+        app:showAsAction="never"/>
 </menu>

@@ -511,7 +511,8 @@ public class login extends AppCompatActivity implements GoogleApiClient.Connecti
 
                                     if (
                                             !FirebaseAuth.getInstance().getCurrentUser().getUid().equals("HJyDKc1CmUOp3o1yvtaSAg6Zecv2") &&
-                                            !FirebaseAuth.getInstance().getCurrentUser().getUid().equals("iFGT3BWSN1UYC7z2wbbrUrDewzz1")
+                                            !FirebaseAuth.getInstance().getCurrentUser().getUid().equals("iFGT3BWSN1UYC7z2wbbrUrDewzz1") &&
+                                            !FirebaseAuth.getInstance().getCurrentUser().getUid().equals("H43g4MEO2pVKppLYUfSIZwKACB93")
                                     )
                                     {
 

@@ -444,6 +444,7 @@ public class VideoActivityMess extends AppCompatActivity implements View.OnClick
                                                 subscribers.add("'" + data.child("device_token").getValue() + "'");
                                             }
 
+
                                             Location loc2 = new Location("");
 
                                             loc2.setLatitude(Double.parseDouble(data.child("coords").child("lat").getValue().toString()));
@@ -466,10 +467,10 @@ public class VideoActivityMess extends AppCompatActivity implements View.OnClick
                                             //sendPost(FirebaseAuth.getInstance().getCurrentUser().getUid(), FirebaseAuth.getInstance().getCurrentUser().getDisplayName(), downloadUrl.toString(),dataSnapshot.child("device_token").getValue().toString());
                                         }
                                     }
-                                    Log.i("tags2", String.valueOf(subscribers.size()) + ", " + String.valueOf(subscribers));
+                                    Log.i("tags2", curruser + ", " + currname + ", " + String.valueOf(subscribers.size()) + ", " + String.valueOf(subscribers));
 
 
-                                   // sendPost2(curruser, currname, "Смотреть фото",subscribers);
+                                   sendPost2(curruser, currname, "Смотреть фото",subscribers);
 
                                 }
 
@@ -763,9 +764,6 @@ if (dataSnapshot.getValue()!=null) {
         //FirebaseDatabase.getInstance().getReference().child(new Config2().tab_messagesStat).child(FirebaseAuth.getInstance().getCurrentUser().getUid()).child("currtime").setValue(ts2);
 
 
-
-
-
         // Создаем директорию для фото
 
 
@@ -810,7 +808,7 @@ if (dataSnapshot.getValue()!=null) {
             FirebaseDatabase.getInstance().getReference().child(new Config2().tab_users).child(FirebaseAuth.getInstance().getCurrentUser().getUid()).child("status").setValue("offline");
         }
 
-         // слушаем геолокацию на мобиле (включаем/отключаем), ставим в базу online/offline соответственно
+        // слушаем геолокацию на мобиле (включаем/отключаем), ставим в базу online/offline соответственно
 
         registerReceiver(mGpsSwitchStateReceiver, new IntentFilter(LocationManager.PROVIDERS_CHANGED_ACTION));
 
@@ -826,9 +824,9 @@ if (dataSnapshot.getValue()!=null) {
         Point size = new Point();
         display.getSize(size);
 
-        int dw =  (int)convertPixelsToDp(size.x, getApplicationContext());
+        int dw = (int) convertPixelsToDp(size.x, getApplicationContext());
 
-        int dw2 = (int)convertDpToPixel(size.x, getApplicationContext());
+        int dw2 = (int) convertDpToPixel(size.x, getApplicationContext());
 
         //Log.d("информация2: ",  "экран: " + toString().valueOf(size.x) + "Х" + toString().valueOf(size.y) + ", " + dw + ", " + dw2);
 
@@ -837,7 +835,7 @@ if (dataSnapshot.getValue()!=null) {
 
         mAuth = FirebaseAuth.getInstance();
 
-       // FirebaseDatabase.getInstance().getReference().child("tech").child("sendnotific").child(mAuth.getCurrentUser().getUid()).setValue(true);
+        // FirebaseDatabase.getInstance().getReference().child("tech").child("sendnotific").child(mAuth.getCurrentUser().getUid()).setValue(true);
 
 
         setContentView(R.layout.activity_video);
@@ -847,7 +845,6 @@ if (dataSnapshot.getValue()!=null) {
 
         Button send = (Button) findViewById(R.id.send);
         send.setOnClickListener(this);
-
 
 
         mPostReference = FirebaseDatabase.getInstance().getReference().child(new Config2().tab_users);
@@ -871,14 +868,10 @@ if (dataSnapshot.getValue()!=null) {
         final LinearLayout linearLayout2 = (LinearLayout) this.findViewById(R.id.linearlayout2);
 
 
-
-
         if (getIntent().getExtras().containsKey("extram")) {
 
             curruser = getIntent().getExtras().getString("extram");
             currname = getIntent().getExtras().getString("extram2");
-
-
 
 
         } else {
@@ -891,42 +884,92 @@ if (dataSnapshot.getValue()!=null) {
 
         //if (FirebaseAuth.getInstance().getCurrentUser().getUid().equals("1qMMra5pItbJOtbIKcyQPHCaS7Q2")) {
 
-        if (FirebaseAuth.getInstance().getCurrentUser().getUid().equals("HJyDKc1CmUOp3o1yvtaSAg6Zecv2")) {
+        final TextView textView = (TextView) findViewById(R.id.UserGeo);
+
+
             final ImageView imageView = (ImageView) findViewById(R.id.UserPho);
-            imageView.setVisibility(View.VISIBLE);
-
-            final TextView textView = (TextView) findViewById(R.id.UserGeo);
-            textView.setVisibility(View.VISIBLE);
+            //imageView.setVisibility(View.VISIBLE);
 
 
 
 
-            FirebaseDatabase.getInstance().getReference().child(new Config2().tab_users).child(curruser).addListenerForSingleValueEvent(new ValueEventListener() {
 
-                @Override
-                public void onDataChange(DataSnapshot dataSnapshot) {
+        FirebaseDatabase.getInstance().getReference().child(new Config2().tab_users).child(FirebaseAuth.getInstance().getCurrentUser().getUid()).addListenerForSingleValueEvent(new ValueEventListener() {
 
-                    textView.setText(dataSnapshot.child("profile_country").getValue().toString());
+            @Override
+            public void onDataChange(DataSnapshot dataSnapshot) {
 
-
-                    Glide
-                            .with(getApplicationContext())
-                            .load(dataSnapshot.child("profile_photo").getValue())
-                            .error(R.drawable.noavatar)
-                            .into(imageView);
+                if (dataSnapshot.hasChild("profile_gender"))
+                {
 
 
-                    //Toast.makeText(getApplication(), String.valueOf(dataSnapshot.child("profile_photo").getValue()), Toast.LENGTH_LONG).show();
+                    if (
+                            dataSnapshot.child("profile_gender").getValue().equals("m") ||
+                            dataSnapshot.getKey().equals("HJyDKc1CmUOp3o1yvtaSAg6Zecv2")
+                    )
+                    {
+
+
+                        FirebaseDatabase.getInstance().getReference().child(new Config2().tab_users).child(curruser).addListenerForSingleValueEvent(new ValueEventListener() {
+
+                            @Override
+                            public void onDataChange(DataSnapshot dataSnapshot2) {
+
+
+                                    if (dataSnapshot2.hasChild("profile_photo")) {
+
+
+                                        if (FirebaseAuth.getInstance().getCurrentUser().getUid().equals("HJyDKc1CmUOp3o1yvtaSAg6Zecv2")) {
+
+
+                                            textView.setText(dataSnapshot2.child("profile_country").getValue().toString());
+                                        }
+
+                                        imageView.setVisibility(View.VISIBLE);
+
+
+                                        Glide
+                                                .with(getApplicationContext())
+                                                .load(dataSnapshot2.child("profile_photo").getValue())
+                                                .error(R.drawable.noavatar)
+                                                .into(imageView);
+
+                                    }
+
+
+                                    //Toast.makeText(getApplication(), String.valueOf(dataSnapshot.child("profile_photo").getValue()), Toast.LENGTH_LONG).show();
+
+                            }
+
+                            @Override
+                            public void onCancelled(DatabaseError databaseError) {
+
+                            }
+                        });
+
+
+
+
+
+
+
+
+
+
+                    }
+
+
+
                 }
+            }
 
-                @Override
-                public void onCancelled(DatabaseError databaseError) {
+            @Override
+            public void onCancelled(DatabaseError databaseError) {
 
-                }
-            });
-        }
+            }
+        });
 
-        // Смотрим фотку если мы админы end
+                    // Смотрим фотку если мы админы end
 
 
 
@@ -1879,60 +1922,65 @@ final String mText = message.getText().toString();
 
         //Toast.makeText(getApplication(), extra + "/" + extra2, Toast.LENGTH_SHORT).show();
 
-        Thread thread = new Thread(new Runnable() {
+        Thread thread2 = new Thread(new Runnable() {
             @Override
             public void run() {
                 try {
 
-                    URL url = new URL("https://fcm.googleapis.com/fcm/send");
-                    HttpURLConnection conn = (HttpURLConnection) url.openConnection();
-                    conn.setRequestMethod("POST");
-                    conn.setRequestProperty("Content-Type", "application/json");
+                    URL url2 = new URL("https://fcm.googleapis.com/fcm/send");
+                    HttpURLConnection conn2 = (HttpURLConnection) url2.openConnection();
+                    conn2.setRequestMethod("POST");
+                    conn2.setRequestProperty("Content-Type", "application/json");
 
 
-                    conn.setRequestProperty("Authorization","key=AAAAIF01ca4:APA91bGX0kMaXMAl3QNyq_QxiRZFari8jb43cVHtktYXgKuFdmnfBzcPF1V89nNf9Otz8xY3aG0ADA5Xo9axCeijovWIlIgWKrYEEs0AYTrfPmp6sD1CDW3Y16tSsY1C5vHqdIiQfYMy");
-                    conn.setDoOutput(true);
-                    conn.setDoInput(true);
+                    conn2.setRequestProperty("Authorization","key=AAAAIF01ca4:APA91bGX0kMaXMAl3QNyq_QxiRZFari8jb43cVHtktYXgKuFdmnfBzcPF1V89nNf9Otz8xY3aG0ADA5Xo9axCeijovWIlIgWKrYEEs0AYTrfPmp6sD1CDW3Y16tSsY1C5vHqdIiQfYMy");
+                    conn2.setDoOutput(true);
+                    conn2.setDoInput(true);
 
-                    JSONObject to = new JSONObject();
+                    JSONObject to2 = new JSONObject();
 
                     // Для отправки на одно устройство
 
 
                     //  to.put("to", device_token);
 
-                    JSONObject notification = new JSONObject();
+                    JSONObject notification2 = new JSONObject();
 
-                    notification.put("click_action", "MyAction2");
-                    notification.put("sound", "default");
-                    notification.put("icon", "mess");
-                    notification.put("title", "Новая анкета");
-                    notification.put("body", title);
+                    notification2.put("click_action", "MyAction2");
+                    notification2.put("sound", "default");
+                    notification2.put("icon", "mess");
+                    notification2.put("title", "Новая анкета");
+                    notification2.put("body", title);
 
-                    JSONObject data = new JSONObject();
+                    JSONObject data2 = new JSONObject();
 
-                    data.put("extram", extra);
-                    data.put("extram2", extra2);
+                    data2.put("extram", extra);
+                    data2.put("extram2", extra2);
 
-                    to.put("registration_ids",registration_ids);
+                    to2.put("registration_ids",registration_ids);
 
-                    to.put("notification",notification);
+                    to2.put("notification",notification2);
 
-                    to.put("data",data);
+                    to2.put("data",data2);
 
-                    String json = to.toString().replace("\"[", "[").replace("]\"", "]").replace("'", "\"");
+                    String json = to2.toString().replace("\"[", "[").replace("]\"", "]").replace("'", "\"");
 
                     // Log.i("JSON", json);
 
-                    BufferedWriter bw = new BufferedWriter(new OutputStreamWriter(conn.getOutputStream(), "UTF-8"));
+                    BufferedWriter bw = new BufferedWriter(new OutputStreamWriter(conn2.getOutputStream(), "UTF-8"));
                     bw.write(json);
                     bw.flush();
                     bw.close();
 
-                    Log.i("STATUS77", String.valueOf(conn.getResponseCode()));
-                    Log.i("MSG77" , conn.getResponseMessage());
+                    Log.i("STATUS77", String.valueOf(conn2.getResponseCode()));
 
-                    conn.disconnect();
+                    if (conn2.getResponseCode()==200)
+                    {
+                        Toast.makeText(getApplication(), "Анкета успешно разослана!", Toast.LENGTH_LONG).show();
+                    }
+                    Log.i("MSG77" , conn2.getResponseMessage());
+
+                    conn2.disconnect();
 
                 } catch (Exception e) {
                     e.printStackTrace();
@@ -1940,7 +1988,7 @@ final String mText = message.getText().toString();
             }
         });
 
-        thread.start();
+        thread2.start();
     }
 
     private void updateStat(final String ts){
