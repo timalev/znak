@@ -57,6 +57,7 @@ import android.widget.Toast;
 import android.widget.VideoView;
 
 import com.bumptech.glide.Glide;
+import com.bumptech.glide.load.engine.DiskCacheStrategy;
 import com.bumptech.glide.load.resource.drawable.GlideDrawable;
 import com.bumptech.glide.request.RequestListener;
 import com.bumptech.glide.request.target.Target;
@@ -905,6 +906,7 @@ if (dataSnapshot.getValue()!=null) {
 
                     if (
                             dataSnapshot.child("profile_gender").getValue().equals("m") ||
+                            dataSnapshot.child("profile_gender").getValue().equals("f") ||
                             dataSnapshot.getKey().equals("HJyDKc1CmUOp3o1yvtaSAg6Zecv2")
                     )
                     {
@@ -931,6 +933,7 @@ if (dataSnapshot.getValue()!=null) {
                                         Glide
                                                 .with(getApplicationContext())
                                                 .load(dataSnapshot2.child("profile_photo").getValue())
+                                                .diskCacheStrategy(DiskCacheStrategy.ALL)
                                                 .error(R.drawable.noavatar)
                                                 .into(imageView);
 
@@ -1010,7 +1013,7 @@ if (dataSnapshot.getValue()!=null) {
 
                // if (dataSnapshot.hasChild("mess_count")) {
 
-                MessStat2 Messstat2 = new MessStat2(0,"t");
+              //  MessStat2 Messstat2 = new MessStat2(0,"t");
 
                 Log.i("test333",FirebaseAuth.getInstance().getCurrentUser().getUid() + " / " + curruser );
 
@@ -1266,7 +1269,11 @@ final String mText = message.getText().toString();
                         public void onDataChange(DataSnapshot dataSnapshot) {
 
 
+                            Log.i("глюк2",mAuth.getCurrentUser().getUid() + " / " + curruser);
+
                             if (dataSnapshot.exists()) {
+
+
 
                                 for (DataSnapshot data : dataSnapshot.getChildren()) {
                                     Integer key = Integer.parseInt(data.getKey()); // then it has the value "4:"

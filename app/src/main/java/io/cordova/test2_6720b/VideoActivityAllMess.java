@@ -225,6 +225,8 @@ public class VideoActivityAllMess extends AppCompatActivity {
 
         recyclerView.addOnItemTouchListener(
                 new UsersActivity.RecyclerItemClickListener(this, recyclerView ,new UsersActivity.RecyclerItemClickListener.OnItemClickListener() {
+
+
                     @Override public void onItemClick(View view, int position) {
 
 // если test = 0, то значит массив выбран поумолчани и к нему лепим переход на страницу юзера, если test = 1, значит лепим переход + добавление в подписчики
@@ -247,7 +249,120 @@ public class VideoActivityAllMess extends AppCompatActivity {
                     }
 
 
-                    @Override public void onLongItemClick(View view, int position) {
+                    @Override public void onLongItemClick(View view, final int position) {
+
+
+                      //  Log.i("stiraem","1." + FirebaseAuth.getInstance().getCurrentUser().getUid() + "/" +mylist.get(position).get("key").toString() + " 2." +mylist.get(position).get("key").toString() + " / " + FirebaseAuth.getInstance().getCurrentUser().getUid());
+
+                        FirebaseDatabase.getInstance().getReference().child(new Config2().tab_messagesPrivate).child(FirebaseAuth.getInstance().getCurrentUser().getUid()).child(mylist.get(position).get("key").toString()).removeValue()
+
+                                .addOnSuccessListener(new OnSuccessListener<Void>() {
+
+                                    @Override
+                                    public void onSuccess(Void aVoid) {
+
+                                        FirebaseDatabase.getInstance().getReference().child(new Config2().tab_messagesPrivate).child(mylist.get(position).get("key").toString()).child(FirebaseAuth.getInstance().getCurrentUser().getUid()).removeValue()
+
+                                                .addOnSuccessListener(new OnSuccessListener<Void>() {
+
+                                                    @Override
+                                                    public void onSuccess(Void aVoid) {
+
+                                                        FirebaseDatabase.getInstance().getReference().child(new Config2().tab_messagesPrivate).child(mylist.get(position).get("key").toString()).child(FirebaseAuth.getInstance().getCurrentUser().getUid()).removeValue()
+
+                                                                .addOnSuccessListener(new OnSuccessListener<Void>() {
+
+                                                                    @Override
+                                                                    public void onSuccess(Void aVoid) {
+
+                                                                        FirebaseDatabase.getInstance().getReference().child(new Config2().tab_messagesStat).child(FirebaseAuth.getInstance().getCurrentUser().getUid()).child(mylist.get(position).get("key").toString()).removeValue()
+
+                                                                                .addOnSuccessListener(new OnSuccessListener<Void>() {
+
+                                                                                    @Override
+                                                                                    public void onSuccess(Void aVoid) {
+
+                                                                                        FirebaseDatabase.getInstance().getReference().child(new Config2().tab_messagesStat).child(mylist.get(position).get("key").toString()).child(FirebaseAuth.getInstance().getCurrentUser().getUid()).removeValue()
+
+                                                                                                .addOnSuccessListener(new OnSuccessListener<Void>() {
+
+                                                                                                    @Override
+                                                                                                    public void onSuccess(Void aVoid) {
+
+
+                                                                                                        mylist.remove(position);
+                                                                                                        adapter.notifyItemRemoved(position);
+
+                                                                                                     //   finish();
+                                                                                                      //  startActivity(getIntent());
+
+
+
+
+                                                                                                    }
+                                                                                                })
+                                                                                                .addOnFailureListener(new OnFailureListener() {
+                                                                                                    @Override
+                                                                                                    public void onFailure(@NonNull Exception e) {
+                                                                                                        // Write failed
+                                                                                                        // ...
+                                                                                                    }
+                                                                                                });
+
+
+
+                                                                                    }
+                                                                                })
+                                                                                .addOnFailureListener(new OnFailureListener() {
+                                                                                    @Override
+                                                                                    public void onFailure(@NonNull Exception e) {
+                                                                                        // Write failed
+                                                                                        // ...
+                                                                                    }
+                                                                                });
+
+
+
+                                                                    }
+                                                                })
+                                                                .addOnFailureListener(new OnFailureListener() {
+                                                                    @Override
+                                                                    public void onFailure(@NonNull Exception e) {
+                                                                        // Write failed
+                                                                        // ...
+                                                                    }
+                                                                });
+
+
+
+                                                    }
+                                                })
+                                                .addOnFailureListener(new OnFailureListener() {
+                                                    @Override
+                                                    public void onFailure(@NonNull Exception e) {
+                                                        // Write failed
+                                                        // ...
+                                                    }
+                                                });
+
+
+
+                                    }
+                                })
+                                .addOnFailureListener(new OnFailureListener() {
+                                    @Override
+                                    public void onFailure(@NonNull Exception e) {
+                                        // Write failed
+                                        // ...
+                                    }
+                                }); // д
+
+
+
+
+
+
+
 
                         // если test = 0, то при долгом нажатии удаляем
 

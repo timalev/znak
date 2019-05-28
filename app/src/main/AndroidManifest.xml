@@ -28,6 +28,7 @@
         android:icon="@mipmap/ic_launcher"
         android:label="@string/app_name"
         android:supportsRtl="true"
+        android:name="io.cordova.test2_6720b.MyFirebaseApp"
         android:theme="@style/AppTheme">
 
         <!-- android:theme="@style/MyTheme"> -->
@@ -140,6 +141,8 @@
                 <category android:name="android.intent.category.DEFAULT" />
             </intent-filter>
         </activity>
+
+
     </application>
 
 </manifest>

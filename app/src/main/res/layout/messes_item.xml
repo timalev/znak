@@ -34,6 +34,13 @@
 
             android:textAppearance="?android:attr/textAppearanceLarge" />
 
+        <TextView
+            android:id="@+id/mess_count"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_toRightOf="@+id/name"
+
+            android:textAppearance="?android:attr/textAppearanceLarge" />
 
 
         <TextView

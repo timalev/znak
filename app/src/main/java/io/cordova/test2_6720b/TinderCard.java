@@ -8,6 +8,7 @@ import android.widget.TextView;
 import android.widget.Toast;
 
 import com.bumptech.glide.Glide;
+import com.bumptech.glide.load.engine.DiskCacheStrategy;
 import com.mindorks.placeholderview.SwipePlaceHolderView;
 import com.mindorks.placeholderview.annotations.Layout;
 import com.mindorks.placeholderview.annotations.Resolve;
@@ -48,6 +49,7 @@ public class TinderCard {
         Glide
                 .with(mContext)
                 .load(mProfile.getImageUrl())
+                .diskCacheStrategy(DiskCacheStrategy.ALL)
                 .error(R.drawable.noavatar)
                 .into(profileImageView);
 
