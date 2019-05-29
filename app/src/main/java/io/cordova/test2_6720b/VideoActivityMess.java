@@ -327,6 +327,9 @@ public class VideoActivityMess extends AppCompatActivity implements View.OnClick
         // получим идентификатор выбранного пункта меню
         int id = item.getItemId();
 
+        DatabaseReference scoresRef =  FirebaseDatabase.getInstance().getReference().child(new Config2().tab_messagesPrivate);
+       // scoresRef.keepSynced(true);
+
         // Операции для выбранного пункта меню
         switch (id) {
             case R.id.friends:
@@ -384,7 +387,7 @@ public class VideoActivityMess extends AppCompatActivity implements View.OnClick
                */
                 case R.id.revert:
 
-                FirebaseDatabase.getInstance().getReference().child(new Config2().tab_messagesPrivate).child(mAuth.getCurrentUser().getUid()).addListenerForSingleValueEvent( new ValueEventListener() {
+                    scoresRef.child(mAuth.getCurrentUser().getUid()).addListenerForSingleValueEvent( new ValueEventListener() {
 
                     @Override
                     public void onDataChange(DataSnapshot dataSnapshot)
@@ -562,7 +565,7 @@ public class VideoActivityMess extends AppCompatActivity implements View.OnClick
 
             case R.id.messages:
 
-                FirebaseDatabase.getInstance().getReference().child(new Config2().tab_messagesPrivate).child(mAuth.getCurrentUser().getUid()).addListenerForSingleValueEvent( new ValueEventListener() {
+                scoresRef.child(mAuth.getCurrentUser().getUid()).addListenerForSingleValueEvent( new ValueEventListener() {
 
                     @Override
                     public void onDataChange(DataSnapshot dataSnapshot)
@@ -761,6 +764,10 @@ if (dataSnapshot.getValue()!=null) {
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
 
+
+
+        DatabaseReference scoresRef =  FirebaseDatabase.getInstance().getReference().child(new Config2().tab_messagesPrivate);
+        //scoresRef.keepSynced(true);
 
         //FirebaseDatabase.getInstance().getReference().child(new Config2().tab_messagesStat).child(FirebaseAuth.getInstance().getCurrentUser().getUid()).child("currtime").setValue(ts2);
 
@@ -1083,13 +1090,13 @@ if (dataSnapshot.getValue()!=null) {
 
         // Подгружаем все оообщения юзеров
 
-        FirebaseDatabase.getInstance().getReference().child(new Config2().tab_messagesPrivate).child(curruser).child(mAuth.getCurrentUser().getUid()).addListenerForSingleValueEvent(GetAllMessagesListener);
+        scoresRef.child(curruser).child(mAuth.getCurrentUser().getUid()).addListenerForSingleValueEvent(GetAllMessagesListener);
 
         final ArrayList<String> data = new ArrayList<String>();
 
         // если нет еще сообщений вносим в массив значение чтобы он отображал первое сообщение
 
-        FirebaseDatabase.getInstance().getReference().child(new Config2().tab_messagesPrivate).child(curruser).child(mAuth.getCurrentUser().getUid()).addValueEventListener(new ValueEventListener() {
+        scoresRef.child(curruser).child(mAuth.getCurrentUser().getUid()).addValueEventListener(new ValueEventListener() {
 
             @Override
             public void onDataChange(DataSnapshot dataSnapshot) {
@@ -1105,7 +1112,7 @@ if (dataSnapshot.getValue()!=null) {
         });
 
 
-        FirebaseDatabase.getInstance().getReference().child(new Config2().tab_messagesPrivate).child(curruser).child(mAuth.getCurrentUser().getUid()).limitToLast(1).addChildEventListener(new ChildEventListener() {
+        scoresRef.child(curruser).child(mAuth.getCurrentUser().getUid()).limitToLast(1).addChildEventListener(new ChildEventListener() {
             // Retrieve new posts as they are added to the database
             @Override
             public void onChildAdded(final DataSnapshot snapshot, String previousChildKey) {
@@ -1182,7 +1189,13 @@ if (dataSnapshot.getValue()!=null) {
 
 
     public void onClick(final View v){
+
+        final DatabaseReference scoresRef =  FirebaseDatabase.getInstance().getReference().child(new Config2().tab_messagesPrivate);
+        //scoresRef.keepSynced(true);
+
         switch (v.getId()) {
+
+
 
             case R.id.send:
 
@@ -1264,7 +1277,7 @@ final String mText = message.getText().toString();
                     final Messpriv messPriv = new Messpriv(mText,curruser,currname,mAuth.getCurrentUser().getUid(),mUser,mAuth.getCurrentUser().getPhotoUrl().toString(),"n","n","txt",dataSnapshotusers.child("profile_name").getValue().toString(),ts);
 
 
-                    FirebaseDatabase.getInstance().getReference().child(new Config2().tab_messagesPrivate).child(mAuth.getCurrentUser().getUid()).child(curruser).orderByKey().limitToLast(1).addListenerForSingleValueEvent(new ValueEventListener() {
+                            scoresRef.child(mAuth.getCurrentUser().getUid()).child(curruser).orderByKey().limitToLast(1).addListenerForSingleValueEvent(new ValueEventListener() {
                         @Override
                         public void onDataChange(DataSnapshot dataSnapshot) {
 
@@ -1279,8 +1292,10 @@ final String mText = message.getText().toString();
                                     Integer key = Integer.parseInt(data.getKey()); // then it has the value "4:"
                                     Integer child_name = key + 1;
 
-                                    FirebaseDatabase.getInstance().getReference().child(new Config2().tab_messagesPrivate).child(curruser).child(mAuth.getCurrentUser().getUid()).child(child_name.toString()).setValue(messPriv);
-                                    FirebaseDatabase.getInstance().getReference().child(new Config2().tab_messagesPrivate).child(mAuth.getCurrentUser().getUid()).child(curruser).child(child_name.toString()).setValue(messPriv)
+                                    Log.i("глюк3",String.valueOf(child_name));
+
+                                    scoresRef.child(curruser).child(mAuth.getCurrentUser().getUid()).child(child_name.toString()).setValue(messPriv);
+                                    scoresRef.child(mAuth.getCurrentUser().getUid()).child(curruser).child(child_name.toString()).setValue(messPriv)
 
                                             .addOnSuccessListener(new OnSuccessListener<Void>() {
                                                 @Override
@@ -1339,8 +1354,8 @@ final String mText = message.getText().toString();
                                 }
                             }else
                             {
-                                FirebaseDatabase.getInstance().getReference().child(new Config2().tab_messagesPrivate).child(curruser).child(mAuth.getCurrentUser().getUid()).child("1542770088").setValue(messPriv);
-                                FirebaseDatabase.getInstance().getReference().child(new Config2().tab_messagesPrivate).child(mAuth.getCurrentUser().getUid()).child(curruser).child("1542770088").setValue(messPriv)
+                                scoresRef.child(curruser).child(mAuth.getCurrentUser().getUid()).child("1542770088").setValue(messPriv);
+                                scoresRef.child(mAuth.getCurrentUser().getUid()).child(curruser).child("1542770088").setValue(messPriv)
 
                                         .addOnSuccessListener(new OnSuccessListener<Void>() {
                                     @Override
@@ -1510,6 +1525,9 @@ final String mText = message.getText().toString();
 
     void UploadPicture()
     {
+        final DatabaseReference scoresRef =  FirebaseDatabase.getInstance().getReference().child(new Config2().tab_messagesPrivate);
+       // scoresRef.keepSynced(true);
+
         final File photo = new File(filesdir,"photo.jpg");
         File photo2;
 
@@ -1600,7 +1618,7 @@ final String mText = message.getText().toString();
 
 
 
-                        FirebaseDatabase.getInstance().getReference().child(new Config2().tab_messagesPrivate).child(mAuth.getCurrentUser().getUid()).child(curruser).orderByKey().limitToLast(1).addListenerForSingleValueEvent(new ValueEventListener() {
+                                scoresRef.child(mAuth.getCurrentUser().getUid()).child(curruser).orderByKey().limitToLast(1).addListenerForSingleValueEvent(new ValueEventListener() {
                             @Override
                             public void onDataChange(DataSnapshot dataSnapshot) {
 
@@ -1610,8 +1628,8 @@ final String mText = message.getText().toString();
                                         Integer key = Integer.parseInt(data.getKey()); // then it has the value "4:"
                                         Integer child_name = key + 1;
 
-                                        FirebaseDatabase.getInstance().getReference().child(new Config2().tab_messagesPrivate).child(curruser).child(mAuth.getCurrentUser().getUid()).child(child_name.toString()).setValue(messPriv);
-                                        FirebaseDatabase.getInstance().getReference().child(new Config2().tab_messagesPrivate).child(mAuth.getCurrentUser().getUid()).child(curruser).child(child_name.toString()).setValue(messPriv)
+                                        scoresRef.child(curruser).child(mAuth.getCurrentUser().getUid()).child(child_name.toString()).setValue(messPriv);
+                                        scoresRef.child(mAuth.getCurrentUser().getUid()).child(curruser).child(child_name.toString()).setValue(messPriv)
 
                                                 .addOnSuccessListener(new OnSuccessListener<Void>() {
                                                     @Override
@@ -1667,8 +1685,8 @@ final String mText = message.getText().toString();
 
                                     }
                                 }else {
-                                    FirebaseDatabase.getInstance().getReference().child(new Config2().tab_messagesPrivate).child(curruser).child(mAuth.getCurrentUser().getUid()).child("1542770088").setValue(messPriv);
-                                    FirebaseDatabase.getInstance().getReference().child(new Config2().tab_messagesPrivate).child(mAuth.getCurrentUser().getUid()).child(curruser).child("1542770088").setValue(messPriv)
+                                    scoresRef.child(curruser).child(mAuth.getCurrentUser().getUid()).child("1542770088").setValue(messPriv);
+                                    scoresRef.child(mAuth.getCurrentUser().getUid()).child(curruser).child("1542770088").setValue(messPriv)
 
 
 

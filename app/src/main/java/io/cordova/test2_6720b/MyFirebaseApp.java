@@ -10,7 +10,7 @@ public class MyFirebaseApp extends android.app.Application   {
         super.onCreate();
         /* Enable disk persistence  */
         FirebaseDatabase.getInstance().setPersistenceEnabled(false);
-        DatabaseReference scoresRef = FirebaseDatabase.getInstance().getReference("test2-6720b");
-        scoresRef.keepSynced(false);
+       // DatabaseReference scoresRef = FirebaseDatabase.getInstance().getReference("test2-6720b");
+        //scoresRef.keepSynced(false);
     }
 }

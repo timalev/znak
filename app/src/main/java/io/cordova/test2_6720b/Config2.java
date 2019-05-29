@@ -8,9 +8,7 @@ class Config2 {
     String tab_messagesPrivate = "test_messagesPrivate";
     String tab_messagesStat = "test_messagesStat";
     String tab_banlist = "test_banlist";
-
 */
-
 
       String tab_users = "zn_users";
       String tab_messages = "zn_messages";
