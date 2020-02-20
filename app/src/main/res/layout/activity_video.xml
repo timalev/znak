@@ -44,7 +44,6 @@
             android:ems="10"
             android:inputType="text"
             android:imeOptions="actionSend"
-            android:hint="Написать сообщение"
         />
 
         <Button
@@ -52,7 +51,6 @@
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:layout_weight="0"
-            android:text="Отправить"
             android:textSize="11dp"/>
 
     </LinearLayout>

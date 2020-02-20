@@ -48,6 +48,7 @@ import java.util.Collection;
 import java.util.Collections;
 import java.util.HashMap;
 import java.util.List;
+import java.util.Locale;
 import java.util.Map;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
@@ -88,7 +89,11 @@ public class VideoActivityAllMess extends AppCompatActivity {
         Toolbar toolbar = (Toolbar) findViewById(R.id.toolbar2);
         setSupportActionBar(toolbar);
 
-        setTitle("Мои сообщения");
+
+            setTitle(new Languages().TitleMymessages());
+
+
+
 
         toolbar.setTitleTextColor(Color.WHITE);
 
@@ -201,6 +206,11 @@ public class VideoActivityAllMess extends AppCompatActivity {
                 {
 
                     TextView nomessages = (TextView) findViewById(R.id.nomessages);
+
+
+                        nomessages.setText(new Languages().NoMessages());
+
+
                     nomessages.setVisibility(View.VISIBLE);
 
                     //Toast.makeText(getApplication(), "Нет мессаджей!", Toast.LENGTH_SHORT).show();
@@ -386,7 +396,15 @@ public class VideoActivityAllMess extends AppCompatActivity {
     @Override
     public boolean onCreateOptionsMenu(Menu menu) {
         // Inflate the menu; this adds items to the action bar if it is present.
-        getMenuInflater().inflate(R.menu.menu_allmess, menu);
+
+
+            getMenuInflater().inflate(R.menu.menu_allmess, menu);
+
+        menu.findItem(R.id.index).setTitle(new Languages().MenuIndex());
+        menu.findItem(R.id.friends).setTitle(new Languages().MenuFriends());
+        menu.findItem(R.id.about).setTitle(new Languages().MenuAbout());
+
+
         return true;
     }
     @Override

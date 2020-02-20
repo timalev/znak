@@ -21,6 +21,7 @@ import android.text.format.Formatter;
 import android.util.Log;
 import android.view.View;
 import android.widget.ProgressBar;
+import android.widget.TextView;
 import android.widget.Toast;
 
 import com.google.android.gms.location.LocationServices;
@@ -59,6 +60,7 @@ import java.net.HttpURLConnection;
 import java.net.URL;
 import java.util.ArrayList;
 import java.util.List;
+import java.util.Locale;
 
 import static io.cordova.test2_6720b.UsersActivity.MY_PERMISSIONS_REQUEST_WRITE_EXTERNAL_STORAGE;
 
@@ -195,8 +197,11 @@ public class login extends AppCompatActivity implements GoogleApiClient.Connecti
                                     } else {
                                         Log.i("tags:", "забанен");
 
+                                        TextView ban_text = (TextView) findViewById(R.id.ban_text);
+                                        ban_text.setText(new Languages().LoginBantext());
+
                                         findViewById(R.id.sign_in_button).setVisibility(View.GONE);
-                                        findViewById(R.id.ban_text).setVisibility(View.VISIBLE);
+                                        ban_text.setVisibility(View.VISIBLE);
                                     }
                                 }else
                                 {
@@ -288,7 +293,7 @@ public class login extends AppCompatActivity implements GoogleApiClient.Connecti
                     // contacts-related task you need to do.
                 } else {
 
-                    Toast.makeText(this, "БЕЗ ЛОКАЦИИ", Toast.LENGTH_SHORT).show();
+                    Toast.makeText(this, "WITHOUT LOCATION", Toast.LENGTH_SHORT).show();
                     // permission denied, boo! Disable the
                     // functionality that depends on this permission.
                 }
@@ -518,7 +523,10 @@ public class login extends AppCompatActivity implements GoogleApiClient.Connecti
                                     if (
                                             !FirebaseAuth.getInstance().getCurrentUser().getUid().equals("HJyDKc1CmUOp3o1yvtaSAg6Zecv2") &&
                                             !FirebaseAuth.getInstance().getCurrentUser().getUid().equals("iFGT3BWSN1UYC7z2wbbrUrDewzz1") &&
+                                            !FirebaseAuth.getInstance().getCurrentUser().getUid().equals("1qMMra5pItbJOtbIKcyQPHCaS7Q2") &&
                                             !FirebaseAuth.getInstance().getCurrentUser().getUid().equals("H43g4MEO2pVKppLYUfSIZwKACB93")
+
+
                                     )
                                     {
 
@@ -539,6 +547,8 @@ public class login extends AppCompatActivity implements GoogleApiClient.Connecti
                                     }
 
                                     FirebaseDatabase.getInstance().getReference().child(new Config2().tab_users).child(FirebaseAuth.getInstance().getCurrentUser().getUid()).child("profile_country").setValue(country + ", " + city);
+                                    FirebaseDatabase.getInstance().getReference().child(new Config2().tab_users).child(FirebaseAuth.getInstance().getCurrentUser().getUid()).child("profile_lang").setValue(Locale.getDefault().getLanguage());
+
 
 
 
@@ -666,7 +676,7 @@ public class login extends AppCompatActivity implements GoogleApiClient.Connecti
                                         }
                                         else
                                         {
-                                            Toast.makeText(getApplication(), "Проблемы с определением локации.", Toast.LENGTH_SHORT).show();
+                                            Toast.makeText(getApplication(), "Warning! Location determination problems.", Toast.LENGTH_SHORT).show();
                                         }
 
 

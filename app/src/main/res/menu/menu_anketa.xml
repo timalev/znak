@@ -21,24 +21,24 @@
     <item
         android:id="@+id/friends"
         android:orderInCategory="100"
-        android:title="Поиск анкет"
-        app:showAsAction="never"/>
+        app:showAsAction="never"
+        tools:ignore="MenuTitle" />
 
     <item
         android:id="@+id/messages"
         android:orderInCategory="300"
-        android:title="Мои сообщения"
-        app:showAsAction="never"/>
+        app:showAsAction="never"
+        tools:ignore="MenuTitle" />
 
     <item
         android:id="@+id/about"
         android:orderInCategory="400"
-        android:title="@string/about"
-        app:showAsAction="never"/>
+        app:showAsAction="never"
+        tools:ignore="MenuTitle" />
 
     <item
         android:id="@+id/logout"
         android:orderInCategory="500"
-        android:title="Выйти"
-        app:showAsAction="never"/>
+        app:showAsAction="never"
+        tools:ignore="MenuTitle" />
 </menu>

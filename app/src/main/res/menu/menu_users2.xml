@@ -21,18 +21,18 @@
     <item
         android:id="@+id/index"
         android:orderInCategory="100"
-        android:title="Моя анкета"
-        app:showAsAction="never"/>
+        app:showAsAction="never"
+        tools:ignore="MenuTitle" />
 
     <item
         android:id="@+id/messages"
         android:orderInCategory="300"
-        android:title="Мои сообщения"
-        app:showAsAction="never"/>
+        app:showAsAction="never"
+        tools:ignore="MenuTitle" />
 
     <item
         android:id="@+id/about"
         android:orderInCategory="400"
-        android:title="@string/about"
-        app:showAsAction="never"/>
+        app:showAsAction="never"
+        tools:ignore="MenuTitle" />
 </menu>

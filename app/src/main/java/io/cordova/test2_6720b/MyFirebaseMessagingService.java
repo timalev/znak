@@ -33,8 +33,11 @@ import android.widget.PopupWindow;
 import android.widget.TextView;
 import android.widget.Toast;
 
+import com.google.firebase.auth.FirebaseAuth;
 import com.google.firebase.messaging.FirebaseMessagingService;
 import com.google.firebase.messaging.RemoteMessage;
+
+import java.util.Locale;
 
 
 public class MyFirebaseMessagingService extends FirebaseMessagingService {
@@ -51,7 +54,7 @@ public class MyFirebaseMessagingService extends FirebaseMessagingService {
     public void onMessageReceived(RemoteMessage message) {
 
 
-        String data = message.getData().get("extram").toString();
+        String data = message.getData().get("extram");
 
         /*
         Intent nextScreen = new Intent(getApplication(), VideoActivityMess.class);
@@ -61,27 +64,28 @@ public class MyFirebaseMessagingService extends FirebaseMessagingService {
 
         startActivity(nextScreen);
 */
+        if (!FirebaseAuth.getInstance().getCurrentUser().getUid().equals(message.getData().get("extram"))) {
 
 
-        sendMyNotification(message.getNotification().getBody(),message.getData().get("extram").toString(),message.getData().get("extram2").toString());
+            sendMyNotification(message.getNotification().getBody(), message.getData().get("extram"), message.getData().get("extram2"));
 
-        Log.i("messbody:",data);
+            Log.i("messbody:", data);
 
+            Handler handler = new Handler(Looper.getMainLooper());
+            handler.post(new Runnable() {
+                public void run() {
 
-        Handler handler = new Handler(Looper.getMainLooper());
-        handler.post(new Runnable() {
-            public void run() {
-              Toast.makeText(getApplicationContext(), "Вам новое сообщение!", Toast.LENGTH_SHORT).show();
+                    Toast.makeText(getApplicationContext(), new Languages().NewMessage(), Toast.LENGTH_SHORT).show();
 
-                //Context contex = context;
-
-
-            }
-        });
+                    //Context contex = context;
 
 
+                }
+            });
+
+
+        }
     }
-
 
     private void sendMyNotification(String message, String extram, String extram2) {
 

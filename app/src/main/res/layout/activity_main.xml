@@ -19,7 +19,6 @@
         android:id="@+id/nousers"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:text="Пока в вашем радиусе никого нет, попробуйте зайти в другой раз.."
         android:layout_marginLeft="10dp"
         android:textAppearance="?android:attr/textAppearanceLarge"
         android:layout_marginTop="?android:attr/actionBarSize"

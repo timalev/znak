@@ -51,8 +51,18 @@ public class MessesAdapter extends RecyclerView.Adapter< MessesAdapter.ViewHolde
 
     @Override
     public ViewHolder onCreateViewHolder(ViewGroup parent, int viewType) {
+
+        int lang_item;
+
+        if (Locale.getDefault().getLanguage().equals("ar"))  // верстка под языки где все справа на лево (RTL)
+        {
+            lang_item = R.layout.messes_item_ar;
+        }else
+        {
+            lang_item = R.layout.messes_item;
+        }
         View v = LayoutInflater.from(parent.getContext())
-                .inflate(R.layout.messes_item, parent, false);
+                .inflate(lang_item, parent, false);
 
 
 
@@ -107,13 +117,14 @@ public class MessesAdapter extends RecyclerView.Adapter< MessesAdapter.ViewHolde
 
                 if (dataSnapshot.hasChild("curr_activity")) {
 
+
                     // Log.i("StatTab23", String.valueOf(isNumeric(dataSnapshot.child("curr_activity").getValue().toString())));
 
                     if (isNumeric(dataSnapshot.child("curr_activity").getValue().toString()))
                     {
-                        holder.currdate.setText("Бал(а) " + getDatatime(dataSnapshot.child("curr_activity").getValue().toString()));
+                        holder.currdate.setText(new Languages().MymessagesWas() + getDatatime(dataSnapshot.child("curr_activity").getValue().toString()));
                     }else {
-                        holder.currdate.setText("Онлайн");
+                        holder.currdate.setText(new Languages().MymessagesOnline());
                     }
                 }
 
@@ -293,9 +304,13 @@ public class MessesAdapter extends RecyclerView.Adapter< MessesAdapter.ViewHolde
 
     public String getDatatime (String unixtime)
     {
+
         String restime;
         String today;
         String yestoday;
+
+        String l_today;
+        String l_yestoday;
 
         String data;
 
@@ -319,11 +334,11 @@ public class MessesAdapter extends RecyclerView.Adapter< MessesAdapter.ViewHolde
 
         if (today.equals(sdf.format(currenTimeZone)))
         {
-            data = "сегодня в";
+            data = new Languages().MymessagesToday();
         }
         else if (yestoday.equals(sdf.format(currenTimeZone)))
         {
-            data = "вчера в";
+            data = new Languages().MymessagesYestoday();
         }
         else
         {

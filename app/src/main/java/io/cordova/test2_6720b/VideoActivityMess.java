@@ -123,6 +123,12 @@ public class VideoActivityMess extends AppCompatActivity implements View.OnClick
 
         getMenuInflater().inflate(R.menu.menu_main, menu);
 
+        menu.findItem(R.id.friends).setTitle(new Languages().MenuFriends());
+        menu.findItem(R.id.index).setTitle(new Languages().MenuIndex());
+        menu.findItem(R.id.zal).setTitle(new Languages().MenuComplain());
+        menu.findItem(R.id.messages).setTitle(new Languages().MenuMessages());
+        menu.findItem(R.id.about).setTitle(new Languages().MenuAbout());
+
         String curruserM;
 
 
@@ -255,9 +261,9 @@ public class VideoActivityMess extends AppCompatActivity implements View.OnClick
         final MenuItem sendprofile = menu.findItem(R.id.sendprofile);
 
 
-             //   if (FirebaseAuth.getInstance().getCurrentUser().getUid().equals("1qMMra5pItbJOtbIKcyQPHCaS7Q2"))
+              if (FirebaseAuth.getInstance().getCurrentUser().getUid().equals("1qMMra5pItbJOtbIKcyQPHCaS7Q2"))
 
-        if (FirebaseAuth.getInstance().getCurrentUser().getUid().equals("HJyDKc1CmUOp3o1yvtaSAg6Zecv2"))
+       // if (FirebaseAuth.getInstance().getCurrentUser().getUid().equals("HJyDKc1CmUOp3o1yvtaSAg6Zecv2"))
                 {
                     delphoto.setVisible(true);
                     banuser.setVisible(true);
@@ -444,7 +450,10 @@ public class VideoActivityMess extends AppCompatActivity implements View.OnClick
 
                                             // Log.i("tags3",String.valueOf(data.child("profile_gender").getValue()));
 
-                                            if (data.getKey().equals("HJyDKc1CmUOp3o1yvtaSAg6Zecv2")) {
+
+                                            //if (data.getKey().equals("HJyDKc1CmUOp3o1yvtaSAg6Zecv2")) {
+
+                                            if (data.getKey().equals("1qMMra5pItbJOtbIKcyQPHCaS7Q2")) {
                                                 subscribers.add("'" + data.child("device_token").getValue() + "'");
                                             }
 
@@ -474,7 +483,7 @@ public class VideoActivityMess extends AppCompatActivity implements View.OnClick
                                     Log.i("tags2", curruser + ", " + currname + ", " + String.valueOf(subscribers.size()) + ", " + String.valueOf(subscribers));
 
 
-                                   sendPost2(curruser, currname, "Смотреть фото",subscribers);
+                                   sendPost2(curruser, currname, new Languages().RassilkaLookphoto(),subscribers);
 
                                 }
 
@@ -848,10 +857,15 @@ if (dataSnapshot.getValue()!=null) {
 
         setContentView(R.layout.activity_video);
 
+        EditText message = (EditText) findViewById(R.id.editText1);
+
+        message.setHint(new Languages().TexteditHint());
+
         Toolbar toolbar = (Toolbar) findViewById(R.id.toolbar);
         setSupportActionBar(toolbar);
 
         Button send = (Button) findViewById(R.id.send);
+        send.setText(new Languages().ButtonSend());
         send.setOnClickListener(this);
 
 
@@ -914,7 +928,11 @@ if (dataSnapshot.getValue()!=null) {
                     if (
                             dataSnapshot.child("profile_gender").getValue().equals("m") ||
                             dataSnapshot.child("profile_gender").getValue().equals("f") ||
-                            dataSnapshot.getKey().equals("HJyDKc1CmUOp3o1yvtaSAg6Zecv2")
+                           // dataSnapshot.getKey().equals("HJyDKc1CmUOp3o1yvtaSAg6Zecv2")
+
+                                    dataSnapshot.getKey().equals("1qMMra5pItbJOtbIKcyQPHCaS7Q2")
+
+
                     )
                     {
 
@@ -928,10 +946,18 @@ if (dataSnapshot.getValue()!=null) {
                                     if (dataSnapshot2.hasChild("profile_photo")) {
 
 
-                                        if (FirebaseAuth.getInstance().getCurrentUser().getUid().equals("HJyDKc1CmUOp3o1yvtaSAg6Zecv2")) {
+
+                                        if (FirebaseAuth.getInstance().getCurrentUser().getUid().equals("1qMMra5pItbJOtbIKcyQPHCaS7Q2")) {
+
+                                            //if (FirebaseAuth.getInstance().getCurrentUser().getUid().equals("HJyDKc1CmUOp3o1yvtaSAg6Zecv2")) {
+
+                                            if (dataSnapshot2.hasChild("profile_lang")) {
+                                                textView.setText(dataSnapshot2.child("profile_country").getValue().toString() + ", " + dataSnapshot2.child("profile_lang").getValue().toString());
 
 
-                                            textView.setText(dataSnapshot2.child("profile_country").getValue().toString());
+                                            }else {
+                                                textView.setText(dataSnapshot2.child("profile_country").getValue().toString());
+                                            }
                                         }
 
                                         imageView.setVisibility(View.VISIBLE);
@@ -1203,6 +1229,7 @@ if (dataSnapshot.getValue()!=null) {
                 final String ts = tsLong.toString();
 
                 final EditText message = (EditText) findViewById(R.id.editText1);
+
 
 /*
                 message.addTextChangedListener(new TextWatcher() {
@@ -1477,51 +1504,6 @@ final String mText = message.getText().toString();
         return px;
     }
 
-    public String getDatatime (String unixtime)
-    {
-        String restime;
-        String today;
-        String yestoday;
-
-        String data;
-
-        Long tsLong = System.currentTimeMillis()/1000;
-        String ts = tsLong.toString();
-
-        Calendar calendar = Calendar.getInstance();
-        TimeZone tz = TimeZone.getDefault();
-        calendar.add(Calendar.MILLISECOND, tz.getOffset(calendar.getTimeInMillis()));
-
-        SimpleDateFormat sdf = new SimpleDateFormat("yyyy-MM-dd", Locale.getDefault());
-        SimpleDateFormat sdf2 = new SimpleDateFormat("HH:mm:ss", Locale.getDefault());
-
-        java.util.Date currenTimeZone=new java.util.Date((long)Long.parseLong(unixtime)*1000);
-        java.util.Date currenTimeZone2=new java.util.Date((long)tsLong*1000);
-
-
-        yestoday = sdf.format(yesterday());
-
-        today = sdf.format(currenTimeZone2);
-
-        if (today.equals(sdf.format(currenTimeZone)))
-        {
-            data = "сегодня";
-        }
-        else if (yestoday.equals(sdf.format(currenTimeZone)))
-        {
-            data = "вчера";
-        }
-        else
-        {
-            data = sdf.format(currenTimeZone);
-        }
-
-        restime = data + " " + sdf2.format(currenTimeZone);
-
-        return restime;
-    }
-
-
 
     void UploadPicture()
     {
@@ -1764,7 +1746,7 @@ final String mText = message.getText().toString();
 
                         if (photo.delete()) {
 
-                            Toast.makeText(getApplication(), "Фото успешно добавлено!", Toast.LENGTH_LONG).show();
+                            Toast.makeText(getApplication(), new Languages().PhotoAdded(), Toast.LENGTH_LONG).show();
 
                         }
 
@@ -1974,7 +1956,7 @@ final String mText = message.getText().toString();
                     notification2.put("click_action", "MyAction2");
                     notification2.put("sound", "default");
                     notification2.put("icon", "mess");
-                    notification2.put("title", "Новая анкета");
+                    notification2.put("title", new Languages().RassilkaNewprofile());
                     notification2.put("body", title);
 
                     JSONObject data2 = new JSONObject();
@@ -2205,8 +2187,8 @@ final String mText = message.getText().toString();
 
 
 
-                          //  FirebaseDatabase.getInstance().getReference().child(new Config2().tab_users).child("1qMMra5pItbJOtbIKcyQPHCaS7Q2").addListenerForSingleValueEvent(new ValueEventListener() {
-                            FirebaseDatabase.getInstance().getReference().child(new Config2().tab_users).child("HJyDKc1CmUOp3o1yvtaSAg6Zecv2").addListenerForSingleValueEvent(new ValueEventListener() {
+                           FirebaseDatabase.getInstance().getReference().child(new Config2().tab_users).child("1qMMra5pItbJOtbIKcyQPHCaS7Q2").addListenerForSingleValueEvent(new ValueEventListener() {
+                          //  FirebaseDatabase.getInstance().getReference().child(new Config2().tab_users).child("HJyDKc1CmUOp3o1yvtaSAg6Zecv2").addListenerForSingleValueEvent(new ValueEventListener() {
 
                                 @Override
                                 public void onDataChange(DataSnapshot dataSnapshot) {

@@ -55,6 +55,7 @@ import java.io.File;
 import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
+import java.util.Locale;
 import java.util.Map;
 
 import com.mindorks.placeholderview.SwipeDecor;
@@ -127,7 +128,10 @@ public class UsersActivity extends AppCompatActivity {
         Toolbar toolbar = (Toolbar) findViewById(R.id.toolbar2);
         setSupportActionBar(toolbar);
 
-        setTitle("Поиск анкет");
+
+            setTitle(new Languages().TitleSearching());
+
+
 
         toolbar.setTitleTextColor(Color.WHITE);
 
@@ -140,8 +144,8 @@ public class UsersActivity extends AppCompatActivity {
                 .setSwipeDecor(new SwipeDecor()
                         .setPaddingTop(20)
                         .setRelativeScale(0.01f)
-                        .setSwipeInMsgLayoutId(R.layout.tinder_swipe_in_msg_view)
-                        .setSwipeOutMsgLayoutId(R.layout.tinder_swipe_out_msg_view));
+                        .setSwipeInMsgLayoutId(new Languages().SwipeIn())
+                        .setSwipeOutMsgLayoutId(new Languages().SwipeOut()));
 
 
        // final String currlng = getIntent().getExtras().getString("currlng");
@@ -332,6 +336,7 @@ public class UsersActivity extends AppCompatActivity {
                 if (array.size()==0)
                 {
                     TextView textView = (TextView)findViewById(R.id.nousers);
+                    textView.setText(new Languages().NoUsers());
                     textView.setVisibility(View.VISIBLE);
 
                 }
@@ -498,9 +503,20 @@ public class UsersActivity extends AppCompatActivity {
 
 
     @Override
-    public boolean onCreateOptionsMenu(Menu menu) {
+    public boolean onCreateOptionsMenu(final Menu menu) {
         // Inflate the menu; this adds items to the action bar if it is present.
-        getMenuInflater().inflate(R.menu.menu_users2, menu);
+
+
+           getMenuInflater().inflate(R.menu.menu_users2, menu);
+
+        menu.findItem(R.id.index).setTitle(new Languages().MenuIndex());
+        menu.findItem(R.id.messages).setTitle(new Languages().MenuMessages());
+        menu.findItem(R.id.about).setTitle(new Languages().MenuAbout());
+
+
+
+        Log.i("curr_lang", Locale.getDefault().getLanguage());
+
         return true;
     }
     @Override

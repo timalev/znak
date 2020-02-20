@@ -29,8 +29,8 @@ public class Functions {
             String version = pInfo.versionName;
 
             AlertDialog alertDialog = new AlertDialog.Builder(context).create();
-            alertDialog.setTitle("О приложении");
-            alertDialog.setMessage("Текущая версия приложения: " + version);
+            alertDialog.setTitle(new Languages().AboutTitle());
+            alertDialog.setMessage(new Languages().AboutBody() + version);
             alertDialog.setButton(AlertDialog.BUTTON_NEUTRAL, "OK",
                     new DialogInterface.OnClickListener() {
                         public void onClick(DialogInterface dialog, int which) {

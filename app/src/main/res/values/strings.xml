@@ -1,5 +1,5 @@
 <resources>
-    <string name="app_name">Элитные Знакомства</string>
+    <string name="app_name">Elite Dating</string>
     <string name="title_activity_maps">Map</string>
     <string name="title_activity_second_screen">SecondScreenActivity</string>
     <string name="hello">My Main Title</string>

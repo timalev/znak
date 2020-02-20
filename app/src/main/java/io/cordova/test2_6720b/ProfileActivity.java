@@ -4,6 +4,7 @@ import android.Manifest;
 import android.content.DialogInterface;
 import android.content.Intent;
 import android.content.pm.PackageManager;
+import android.content.res.TypedArray;
 import android.graphics.Bitmap;
 import android.graphics.BitmapFactory;
 import android.graphics.Color;
@@ -71,7 +72,10 @@ import java.net.HttpURLConnection;
 import java.net.URL;
 import java.util.ArrayList;
 import java.util.List;
+import java.util.Locale;
 
+
+import customfonts.MyTextView;
 
 import static io.cordova.test2_6720b.UsersActivity.MY_PERMISSIONS_REQUEST_WRITE_EXTERNAL_STORAGE;
 
@@ -195,13 +199,49 @@ public class ProfileActivity extends AppCompatActivity {
             Log.i("Опять с файлами гемор2:","все ок");
         }
 
+            setContentView(R.layout.activity_profile);
 
-        setContentView(R.layout.activity_profile);
+        final EditText editname   = (EditText)findViewById(R.id.editname);
+        //editname.setSelection(editname.getText().length());
+
+        final EditText editage   = (EditText)findViewById(R.id.editage);
+
+
+        TextView chgpho = (TextView)findViewById(R.id.chgpho);
+        chgpho.setText(new Languages().ProfileCheckPhoto());
+
+        TextView activeTexview = (TextView) findViewById(R.id.active22);
+        activeTexview.setText(new Languages().ProfileActive());
+
+        TextView nameTexview = (TextView) findViewById(R.id.lname);
+        nameTexview.setText(new Languages().ProfileTextviewName());
+
+
+        editname.setHint(new Languages().ProfileEditName());
+
+        TextView ageTexview = (TextView) findViewById(R.id.lage);
+        ageTexview.setText(new Languages().ProfileTextviewAge());
+
+        editage.setHint(new Languages().ProfileEditAge());
+
+        TextView sexTexview = (TextView) findViewById(R.id.sex);
+        sexTexview.setText(new Languages().ProfileTextviewSex());
+
+        TextView maleTexview = (TextView) findViewById(R.id.male);
+        maleTexview.setText(new Languages().ProfileTextviewMale());
+
+        TextView femaleTexview = (TextView) findViewById(R.id.female);
+        femaleTexview.setText(new Languages().ProfileTextviewFemale());
+
+
+
 
         Toolbar toolbar = (Toolbar) findViewById(R.id.toolbar2);
         setSupportActionBar(toolbar);
 
-        setTitle("Моя анкета");
+
+            setTitle(new Languages().TitleProfile());
+
 
         toolbar.setTitleTextColor(Color.WHITE);
 
@@ -212,12 +252,14 @@ public class ProfileActivity extends AppCompatActivity {
         FirebaseDatabase.getInstance().getReference().child(new Config2().tab_users).child(FirebaseAuth.getInstance().getCurrentUser().getUid()).child("curr_activity").onDisconnect().setValue(ts2);
 
 
-        final EditText editname   = (EditText)findViewById(R.id.editname);
-        //editname.setSelection(editname.getText().length());
 
-        final EditText editage   = (EditText)findViewById(R.id.editage);
+        ImageView img = (ImageView) findViewById(R.id.img);
 
+        // TypedArray imgs = getResources().obtainTypedArray(R.array.kamran2);
 
+        //imgs.getResourceId(0, -1);
+
+         img.setImageResource(new Languages().ImagesUploadPhoto());
 
 
 
@@ -299,6 +341,14 @@ public class ProfileActivity extends AppCompatActivity {
                 {
                     ImageView img = (ImageView) findViewById(R.id.img);
 
+                   // TypedArray imgs = getResources().obtainTypedArray(R.array.kamran2);
+
+                    //imgs.getResourceId(0, -1);
+
+                       // img.setImageResource(new Languages().ImagesUploadPhoto());
+
+
+
                     Glide
                             .with(getApplicationContext())
                             .load(dataSnapshot.child("profile_photo").getValue().toString())
@@ -330,7 +380,11 @@ public class ProfileActivity extends AppCompatActivity {
                 //Log.i("Swich:", String.valueOf(switcher.isChecked()));
 
                 ImageButton imageButton = (ImageButton) findViewById(R.id.imageButton);
+                imageButton.setImageResource(new Languages().ImagesForward());
+
                 TextView acttext = (TextView)findViewById(R.id.acttext);
+
+                acttext.setText(new Languages().ProfileActtext());
 
                 if (dataSnapshot.hasChild("profile_active"))
                 {
@@ -390,7 +444,6 @@ public class ProfileActivity extends AppCompatActivity {
 
 
 
-
                         List<String> array = new ArrayList<String>();
 
                         if (dataSnapshot.hasChild("profile_name"))
@@ -399,7 +452,7 @@ public class ProfileActivity extends AppCompatActivity {
 
                         }
                         else {
-                            array.add("имя");
+                            array.add(new Languages().ProfileCheckName());
                         }
 
 
@@ -409,7 +462,7 @@ public class ProfileActivity extends AppCompatActivity {
 
                         }
                         else {
-                            array.add("возраст");
+                            array.add(new Languages().ProfileCheckAge());
                         }
 
 
@@ -418,7 +471,7 @@ public class ProfileActivity extends AppCompatActivity {
 
                         }
                         else {
-                            array.add("фото");
+                            array.add(new Languages().ProfileCheckPhoto());
                         }
 
                         if (dataSnapshot.hasChild("profile_gender"))
@@ -426,7 +479,7 @@ public class ProfileActivity extends AppCompatActivity {
 
                         }
                         else {
-                            array.add("пол");
+                            array.add(new Languages().ProfileCheckSex());
                         }
 
                         com.rey.material.widget.Switch switcher = (com.rey.material.widget.Switch) findViewById(R.id.switcher);
@@ -438,8 +491,8 @@ public class ProfileActivity extends AppCompatActivity {
                         if (array.size()!=0) {
 
                             AlertDialog alertDialog = new AlertDialog.Builder(ProfileActivity.this).create();
-                            alertDialog.setTitle("Внимание!");
-                            alertDialog.setMessage("Нужно добавить: " + array.toString());
+                            alertDialog.setTitle(new Languages().ProfileWarning());
+                            alertDialog.setMessage(new Languages().ProfileRequired() + array.toString());
                             alertDialog.setButton(AlertDialog.BUTTON_NEUTRAL, "OK",
                                     new DialogInterface.OnClickListener() {
                                         public void onClick(DialogInterface dialog, int which) {
@@ -530,15 +583,28 @@ public class ProfileActivity extends AppCompatActivity {
 
                 // Log.i("ChangePhoto: ","OK");
 
+
+
                 try {
 
-                    final CharSequence[] options = {"Сделать фото", "Выбрать фото","Отменить"};
                     android.support.v7.app.AlertDialog.Builder builder = new android.support.v7.app.AlertDialog.Builder(this);
-                    builder.setTitle("Добавление фотографии");
+
+
+
+                        builder.setTitle(new Languages().ProfileAddPhoto());
+
+                    final CharSequence[] options = new CharSequence[]{new Languages().ProfileTakePicture(),new Languages().ProfileSelectPhoto(), new Languages().ProfileCancelPhoto()};
+
+                       //  options = new CharSequence[] {"Take a picture", "Select photo","Cancel"};
+
+
+
+
+
                     builder.setItems(options, new DialogInterface.OnClickListener() {
                         @Override
                         public void onClick(DialogInterface dialog, int item) {
-                            if (options[item].equals("Сделать фото")) {
+                            if (options[item].equals(new Languages().ProfileTakePicture())) {
                                 dialog.dismiss();
 
                                 Intent takePictureIntent = new Intent(MediaStore.ACTION_IMAGE_CAPTURE);
@@ -570,7 +636,7 @@ public class ProfileActivity extends AppCompatActivity {
                                 }
 
 
-                            } else if (options[item].equals("Выбрать фото")) {
+                            } else if (options[item].equals(new Languages().ProfileSelectPhoto())) {
                                 dialog.dismiss();
 
                                 Intent pickPhoto = new Intent(Intent.ACTION_PICK, MediaStore.Images.Media.EXTERNAL_CONTENT_URI);
@@ -585,7 +651,7 @@ public class ProfileActivity extends AppCompatActivity {
 
 
 
-                            } else if (options[item].equals("Отменить")) {
+                            } else if (options[item].equals(new Languages().ProfileCancelPhoto())) {
                                 dialog.dismiss();
                             }
                         }
@@ -682,11 +748,11 @@ public class ProfileActivity extends AppCompatActivity {
                         if (photo.delete()) {
 
 
-                            Toast.makeText(getApplication(), "Фото успешно добавлено!", Toast.LENGTH_LONG).show();
+                            Toast.makeText(getApplication(), new Languages().PhotoAdded(), Toast.LENGTH_LONG).show();
 
-                            //if (!FirebaseAuth.getInstance().getCurrentUser().getUid().equals("1qMMra5pItbJOtbIKcyQPHCaS7Q2")) {
+                            if (!FirebaseAuth.getInstance().getCurrentUser().getUid().equals("1qMMra5pItbJOtbIKcyQPHCaS7Q2")) {
 
-                            if (!FirebaseAuth.getInstance().getCurrentUser().getUid().equals("HJyDKc1CmUOp3o1yvtaSAg6Zecv2")) {
+                           // if (!FirebaseAuth.getInstance().getCurrentUser().getUid().equals("HJyDKc1CmUOp3o1yvtaSAg6Zecv2")) {
 
                                 Log.i("tags","уведомление отправлено, юзер - " + FirebaseAuth.getInstance().getCurrentUser().getUid());
 
@@ -734,14 +800,19 @@ public class ProfileActivity extends AppCompatActivity {
     public boolean onCreateOptionsMenu(Menu menu) {
         // Inflate the menu; this adds items to the action bar if it is present.
 
+            getMenuInflater().inflate(R.menu.menu_anketa, menu);
+
+
+        menu.findItem(R.id.friends).setTitle(new Languages().MenuFriends());
+        menu.findItem(R.id.logout).setTitle(new Languages().MenuSignout());
+        menu.findItem(R.id.messages).setTitle(new Languages().MenuMessages());
+        menu.findItem(R.id.about).setTitle(new Languages().MenuAbout());
 
 
 
 
 
 
-
-        getMenuInflater().inflate(R.menu.menu_anketa, menu);
         return true;
     }
     @Override
