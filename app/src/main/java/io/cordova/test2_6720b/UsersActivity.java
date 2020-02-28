@@ -231,6 +231,9 @@ public class UsersActivity extends AppCompatActivity {
         /* Тестовый запрос */
 
 
+
+
+
         // FirebaseDatabase.getInstance().getReference().child(new Config2().tab_users).orderByChild("subscribers/" + FirebaseAuth.getInstance().getCurrentUser().getUid()).equalTo(1).addListenerForSingleValueEvent(new ValueEventListener() {
 
         FirebaseDatabase.getInstance().getReference().child(new Config2().tab_users).child(FirebaseAuth.getInstance().getCurrentUser().getUid()).child("coords").addListenerForSingleValueEvent(new ValueEventListener() {
@@ -277,6 +280,8 @@ public class UsersActivity extends AppCompatActivity {
             public void onDataChange(DataSnapshot dataSnapshot) {
 
                 List<Integer> array = new ArrayList<Integer>();
+
+                final ArrayList catNames = new ArrayList();
 
                 for (DataSnapshot child : dataSnapshot.getChildren()) {
 
@@ -372,7 +377,7 @@ public class UsersActivity extends AppCompatActivity {
                           //  Log.i("currlat/lng", profile_photo + "--" + currlat + "," + currlng + "-" + child.child("coords").child("lat").getValue().toString() + "," + child.child("coords").child("lng").getValue().toString() + " /" + CommText + ": " + String.valueOf(distance));
 
 
-
+                                catNames.add (profile_age);
 
 
 
@@ -400,6 +405,7 @@ public class UsersActivity extends AppCompatActivity {
 
 
 
+
                             /*
 
                             if (!Key.equals(FirebaseAuth.getInstance().getCurrentUser().getUid())) {
@@ -411,6 +417,9 @@ public class UsersActivity extends AppCompatActivity {
                         }
                     }
                 }
+
+                Log.d("mass_size:",String.valueOf(catNames.size()));
+
                 // adapter.notifyDataSetChanged();
 
                 Log.i("Пользователей: ", String.valueOf(array.size()));
@@ -450,6 +459,7 @@ public class UsersActivity extends AppCompatActivity {
                 // ...
             }
         });
+
 
 
 /*
