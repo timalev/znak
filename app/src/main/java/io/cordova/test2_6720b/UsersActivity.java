@@ -21,6 +21,7 @@ import android.support.v7.widget.RecyclerView;
 import android.support.v7.widget.Toolbar;
 import android.text.Editable;
 import android.text.TextWatcher;
+import android.text.format.DateFormat;
 import android.util.Log;
 import android.view.GestureDetector;
 import android.view.LayoutInflater;
@@ -52,7 +53,10 @@ import org.json.JSONException;
 import org.json.JSONObject;
 
 import java.io.File;
+import java.text.SimpleDateFormat;
 import java.util.ArrayList;
+import java.util.Calendar;
+import java.util.Date;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Locale;
@@ -151,7 +155,80 @@ public class UsersActivity extends AppCompatActivity {
        // final String currlng = getIntent().getExtras().getString("currlng");
        // final String currlat = getIntent().getExtras().getString("currlat");
 
+/* Тестовый запрос */
 
+/*
+
+
+        FirebaseDatabase.getInstance().getReference().child(new Config2().tab_users).orderByChild("last_mess").addListenerForSingleValueEvent(new ValueEventListener() {
+
+            @Override
+            public void onDataChange(DataSnapshot dataSnapshot) {
+
+                for (DataSnapshot child : dataSnapshot.getChildren()) {
+
+                    final String Key = child.getKey();
+
+                    final String CommText = String.valueOf(child.child("name").getValue());
+
+
+                    if (child.hasChild("last_mess")) {
+
+                        final String CurrAct = child.child("last_mess").getValue().toString();
+
+                        Log.d("test_limit: ", Key + ", " + CommText + " : " + getDate(Long.parseLong(CurrAct)));
+
+                    }
+                    else
+                    {
+                        if (child.hasChild("curr_activity")) {
+
+                            String ct;
+
+                            final String CurrAct2 = child.child("curr_activity").getValue().toString();
+
+                            if (isNumeric(CurrAct2)) {
+
+                               // Log.d("test_limit2: ", Key + ", " + CommText + " : " + CurrAct2);
+
+                                ct = CurrAct2;
+
+                            }else
+                            {
+                                Long tsLong = System.currentTimeMillis()/1000;
+                                String ts = tsLong.toString();
+
+                                ct = ts;
+
+                                //Log.d("test_limit2: ", Key + ", " + CommText + " : " + ts);
+                            }
+
+                            FirebaseDatabase.getInstance().getReference().child(new Config2().tab_users).child(Key).child("last_mess").setValue(ct);
+
+
+
+                            Log.d("test_limit2: ", Key + ", " + CommText + " : " + ct);
+                        }
+
+                    }
+
+                }
+            }
+
+                @Override
+                public void onCancelled(DatabaseError databaseError) {
+                    // Getting Post failed, log a message
+
+                    // ...
+                }
+            });
+
+
+*/
+
+
+
+        /* Тестовый запрос */
 
 
         // FirebaseDatabase.getInstance().getReference().child(new Config2().tab_users).orderByChild("subscribers/" + FirebaseAuth.getInstance().getCurrentUser().getUid()).equalTo(1).addListenerForSingleValueEvent(new ValueEventListener() {
@@ -194,7 +271,7 @@ public class UsersActivity extends AppCompatActivity {
                        // FirebaseDatabase.getInstance().getReference().child(new Config2().tab_users).addListenerForSingleValueEvent(new ValueEventListener() {
 
 
-                FirebaseDatabase.getInstance().getReference().child(new Config2().tab_users).orderByChild("profile_gender").equalTo(curr_sex).addListenerForSingleValueEvent(new ValueEventListener() {
+                FirebaseDatabase.getInstance().getReference().child(new Config2().tab_users).orderByChild("last_mess").limitToLast(10000).addListenerForSingleValueEvent(new ValueEventListener() {
 
             @Override
             public void onDataChange(DataSnapshot dataSnapshot) {
@@ -276,11 +353,11 @@ public class UsersActivity extends AppCompatActivity {
                             if (child.hasChild("profile_country")) {
 
                                 profile_country = child.child("profile_country").getValue().toString();
+
                             }else
                             {
                                 profile_country = "";
                             }
-
                                 String profile_gender;
 
                                 if (child.hasChild("profile_gender")) {
@@ -299,7 +376,7 @@ public class UsersActivity extends AppCompatActivity {
 
 
 
-                                       // Log.i("sex:", Sex + "/" + profile_gender + " / " + Key);
+                                        Log.i("sex:", Sex + "/" + profile_gender + " / " + Key);
 
 
 
@@ -308,13 +385,18 @@ public class UsersActivity extends AppCompatActivity {
 
                             HashMap<String, String> map = new HashMap<String, String>();
 
-                            map.put("name", CommText);
-                            map.put("key", Key);
 
-                            Profile3 profile3 = new Profile3(profile_name, profile_photo, profile_age, profile_country, Key);
 
-                            mSwipeView.addView(new TinderCard(mContext, profile3, mSwipeView));
 
+                                if (!Sex.equals(profile_gender)) {
+
+                                    map.put("name", CommText);
+                                    map.put("key", Key);
+
+                                    Profile3 profile3 = new Profile3(profile_name, profile_photo, profile_age, profile_country, Key);
+
+                                    mSwipeView.addView(new TinderCard(mContext, profile3, mSwipeView));
+                                }
 
 
 
@@ -730,6 +812,23 @@ private void updateList(){
             // permissions this app might request
         }
 
+    }
+
+    public static boolean isNumeric(String strNum) {
+        try {
+            double d = Double.parseDouble(strNum);
+        } catch (NumberFormatException | NullPointerException nfe) {
+            return false;
+        }
+        return true;
+    }
+
+    private String getDate(long time) {
+
+        Calendar cal = Calendar.getInstance(Locale.ENGLISH);
+        cal.setTimeInMillis(time * 1000);
+        String date = DateFormat.format("dd-MM-yyyy", cal).toString();
+        return date;
     }
 
     private void closeNow() {
