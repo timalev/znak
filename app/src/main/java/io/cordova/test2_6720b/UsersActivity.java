@@ -55,7 +55,9 @@ import org.json.JSONObject;
 import java.io.File;
 import java.text.SimpleDateFormat;
 import java.util.ArrayList;
+import java.util.Arrays;
 import java.util.Calendar;
+import java.util.Collections;
 import java.util.Date;
 import java.util.HashMap;
 import java.util.List;
@@ -281,7 +283,11 @@ public class UsersActivity extends AppCompatActivity {
 
                 List<Integer> array = new ArrayList<Integer>();
 
-                final ArrayList catNames = new ArrayList();
+                //final ArrayList catNames = new ArrayList();
+
+
+                ArrayList<String> catNames;
+                catNames = new ArrayList<String>();
 
                 for (DataSnapshot child : dataSnapshot.getChildren()) {
 
@@ -377,7 +383,7 @@ public class UsersActivity extends AppCompatActivity {
                           //  Log.i("currlat/lng", profile_photo + "--" + currlat + "," + currlng + "-" + child.child("coords").child("lat").getValue().toString() + "," + child.child("coords").child("lng").getValue().toString() + " /" + CommText + ": " + String.valueOf(distance));
 
 
-                                catNames.add (profile_age);
+
 
 
 
@@ -395,12 +401,15 @@ public class UsersActivity extends AppCompatActivity {
 
                                 if (!Sex.equals(profile_gender)) {
 
+
+                                    catNames.add (Key);
+
                                     map.put("name", CommText);
                                     map.put("key", Key);
 
-                                    Profile3 profile3 = new Profile3(profile_name, profile_photo, profile_age, profile_country, Key);
+                                   // Profile3 profile3 = new Profile3(profile_name, profile_photo, profile_age, profile_country, Key);
 
-                                    mSwipeView.addView(new TinderCard(mContext, profile3, mSwipeView));
+                                    //mSwipeView.addView(new TinderCard(mContext, profile3, mSwipeView));
                                 }
 
 
@@ -418,7 +427,22 @@ public class UsersActivity extends AppCompatActivity {
                     }
                 }
 
-                Log.d("mass_size:",String.valueOf(catNames.size()));
+                Log.d("mass_size2:",String.valueOf(catNames.size()));
+
+                //Log.d("MyAndroidClass", Arrays.toString(catNames));
+
+                // https://stackoverflow.com/questions/4401850/how-to-create-a-multidimensional-arraylist-in-java
+
+                Collections.reverse(catNames);
+
+                for (String object: catNames) {
+                    Log.i("my_arr2: ", String.valueOf(object));
+
+                    Profile3 profile3 = new Profile3("profile_name", "profile_photo", "profile_age", "profile_country", object);
+
+                    mSwipeView.addView(new TinderCard(mContext, profile3, mSwipeView));
+
+                }
 
                 // adapter.notifyDataSetChanged();
 
