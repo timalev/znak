@@ -6,7 +6,7 @@ import android.graphics.Matrix;
 
 import com.bumptech.glide.load.engine.bitmap_recycle.BitmapPool;
 import com.bumptech.glide.load.resource.bitmap.BitmapTransformation;
-
+/*
 public class RotateTransformation extends BitmapTransformation {
 
     private float rotateRotationAngle = 0f;
@@ -31,3 +31,4 @@ public class RotateTransformation extends BitmapTransformation {
         return "rotate" + rotateRotationAngle;
     }
 }
+*/

@@ -32,6 +32,7 @@ import android.view.View;
 import android.widget.EditText;
 import android.widget.ImageButton;
 import android.widget.LinearLayout;
+import android.widget.ProgressBar;
 import android.widget.TextView;
 import android.widget.Toast;
 
@@ -134,6 +135,16 @@ public class UsersActivity extends AppCompatActivity {
         Toolbar toolbar = (Toolbar) findViewById(R.id.toolbar2);
         setSupportActionBar(toolbar);
 
+        final ProgressBar progressbar = (ProgressBar)findViewById(R.id.progressBar);
+
+        final LinearLayout pg_layout = (LinearLayout) findViewById(R.id.pg_layout);
+
+        final TextView seach_text = (TextView)findViewById(R.id.text_sch);
+
+        //  android:text="Идет поиск анкет в Вашем радиусе.."
+
+        seach_text.setText(new Languages().SearchText());
+
 
             setTitle(new Languages().TitleSearching());
 
@@ -159,8 +170,8 @@ public class UsersActivity extends AppCompatActivity {
 
 /* Тестовый запрос */
 
-/*
 
+/*
 
         FirebaseDatabase.getInstance().getReference().child(new Config2().tab_users).orderByChild("last_mess").addListenerForSingleValueEvent(new ValueEventListener() {
 
@@ -197,10 +208,7 @@ public class UsersActivity extends AppCompatActivity {
 
                             }else
                             {
-                                Long tsLong = System.currentTimeMillis()/1000;
-                                String ts = tsLong.toString();
-
-                                ct = ts;
+                                ct = "1000000000";
 
                                 //Log.d("test_limit2: ", Key + ", " + CommText + " : " + ts);
                             }
@@ -225,8 +233,8 @@ public class UsersActivity extends AppCompatActivity {
                 }
             });
 
-
 */
+
 
 
 
@@ -276,7 +284,7 @@ public class UsersActivity extends AppCompatActivity {
                        // FirebaseDatabase.getInstance().getReference().child(new Config2().tab_users).addListenerForSingleValueEvent(new ValueEventListener() {
 
 
-                FirebaseDatabase.getInstance().getReference().child(new Config2().tab_users).orderByChild("last_mess").limitToLast(10000).addListenerForSingleValueEvent(new ValueEventListener() {
+                FirebaseDatabase.getInstance().getReference().child(new Config2().tab_users).orderByChild("last_mess").limitToLast(3000).addListenerForSingleValueEvent(new ValueEventListener() {
 
             @Override
             public void onDataChange(DataSnapshot dataSnapshot) {
@@ -288,6 +296,11 @@ public class UsersActivity extends AppCompatActivity {
 
                 ArrayList<String> catNames;
                 catNames = new ArrayList<String>();
+
+                HashMap<String, String> M_profile_photo = new HashMap<>();
+                HashMap<String, String> M_profile_country = new HashMap<>();
+                HashMap<String, String> M_profile_name = new HashMap<>();
+                HashMap<String, String> M_profile_age = new HashMap<>();
 
                 for (DataSnapshot child : dataSnapshot.getChildren()) {
 
@@ -302,7 +315,7 @@ public class UsersActivity extends AppCompatActivity {
                             )
                     {
 
-                        Log.i("myrecords:",String.valueOf(child.child("coords").child("lat").getValue()));
+                        //Log.i("myrecords:",String.valueOf(child.child("coords").child("lat").getValue()));
 
 
                         Location loc2 = new Location("");
@@ -379,41 +392,33 @@ public class UsersActivity extends AppCompatActivity {
                                     profile_gender = "";
                                 }
 
-
                           //  Log.i("currlat/lng", profile_photo + "--" + currlat + "," + currlng + "-" + child.child("coords").child("lat").getValue().toString() + "," + child.child("coords").child("lng").getValue().toString() + " /" + CommText + ": " + String.valueOf(distance));
 
-
-
-
-
-
-                                        Log.i("sex:", Sex + "/" + profile_gender + " / " + Key);
-
-
+                                      //  Log.i("sex:", Sex + "/" + profile_gender + " / " + Key);
 
 
                                         //  for (DataSnapshot child : dataSnapshot.getChildren()) {
 
-                            HashMap<String, String> map = new HashMap<String, String>();
-
-
-
+                          //  HashMap<String, String> map = new HashMap<String, String>();
 
                                 if (!Sex.equals(profile_gender)) {
 
 
+                                    M_profile_photo.put(Key,profile_photo);
+                                    M_profile_country.put(Key,profile_country);
+                                    M_profile_name.put(Key,profile_name);
+                                    M_profile_age.put(Key,profile_age);
+
+
                                     catNames.add (Key);
 
-                                    map.put("name", CommText);
-                                    map.put("key", Key);
+                                   // map.put("name", CommText);
+                                   // map.put("key", Key);
 
                                    // Profile3 profile3 = new Profile3(profile_name, profile_photo, profile_age, profile_country, Key);
 
                                     //mSwipeView.addView(new TinderCard(mContext, profile3, mSwipeView));
                                 }
-
-
-
 
                             /*
 
@@ -435,18 +440,28 @@ public class UsersActivity extends AppCompatActivity {
 
                 Collections.reverse(catNames);
 
+                String a_age;
+
                 for (String object: catNames) {
-                    Log.i("my_arr2: ", String.valueOf(object));
+                     Log.i("my_arr2: ", String.valueOf(object) + " / " + catNames.indexOf(object) + " / " + catNames.size());
 
-                    Profile3 profile3 = new Profile3("profile_name", "profile_photo", "profile_age", "profile_country", object);
+                    if (FirebaseAuth.getInstance().getCurrentUser().getUid().equals("1qMMra5pItbJOtbIKcyQPHCaS7Q2")){
 
+                        a_age =  M_profile_age.get(object) + " " + object;
+                    }else
+                    {
+                        a_age = M_profile_age.get(object);
+                    }
+
+                    Profile3 profile3 = new Profile3(M_profile_name.get(object), M_profile_photo.get(object), a_age, M_profile_country.get(object), object);
                     mSwipeView.addView(new TinderCard(mContext, profile3, mSwipeView));
 
                 }
+                pg_layout.setVisibility(View.GONE);
 
                 // adapter.notifyDataSetChanged();
 
-                Log.i("Пользователей: ", String.valueOf(array.size()));
+                //Log.i("Пользователей: ", String.valueOf(array.size()));
 
                 if (array.size()==0)
                 {

@@ -86,7 +86,7 @@ public class zaloba extends AppCompatActivity {
                         Glide
                                 .with(getApplicationContext())
                                 .load(dataSnapshot.child("zaloba").getValue())
-                                .error(R.drawable.noavatar)
+                                //.error(R.drawable.noavatar)
                                 .into(imageView);
 
 

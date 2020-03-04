@@ -12,7 +12,7 @@ import android.widget.TextView;
 
 import com.bumptech.glide.Glide;
 import com.bumptech.glide.load.engine.DiskCacheStrategy;
-import com.bumptech.glide.load.resource.drawable.GlideDrawable;
+//import com.bumptech.glide.load.resource.drawable.GlideDrawable;
 import com.bumptech.glide.request.FutureTarget;
 import com.bumptech.glide.request.RequestListener;
 import com.bumptech.glide.request.target.Target;
@@ -97,9 +97,9 @@ public class MessesAdapter extends RecyclerView.Adapter< MessesAdapter.ViewHolde
                         Glide
                                 .with(holder.photo.getContext())
                                 .load(dataSnapshot.child("profile_photo").getValue().toString())
-                                .diskCacheStrategy(DiskCacheStrategy.ALL)
-                                .error(R.drawable.noavatar)
-                                .centerCrop()
+                                //.diskCacheStrategy(DiskCacheStrategy.ALL)
+                               // .error(R.drawable.noavatar)
+                                //.centerCrop()
                                 .into(holder.photo);
 
                        // Log.i("cache_path",getImgCachePath(dataSnapshot.child("profile_photo").getValue().toString(), holder));

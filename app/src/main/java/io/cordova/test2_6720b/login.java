@@ -147,17 +147,15 @@ public class login extends AppCompatActivity implements GoogleApiClient.Connecti
 
                     // Toast.makeText(getApplication(),  user.getPhotoUrl().toString(), Toast.LENGTH_SHORT).show();
 
-
-
-
                     String displayName = user.getDisplayName();
                     String PhotoUrl = user.getPhotoUrl().toString();
 
+                    Long tsLong2 = System.currentTimeMillis() / 1000;
+                    String ts2 = tsLong2.toString();
 
                     FirebaseDatabase.getInstance().getReference().child(new Config2().tab_users).child(FirebaseAuth.getInstance().getCurrentUser().getUid()).child("name").setValue(displayName);
                     FirebaseDatabase.getInstance().getReference().child(new Config2().tab_users).child(FirebaseAuth.getInstance().getCurrentUser().getUid()).child("avatar").setValue(PhotoUrl);
-
-
+                    FirebaseDatabase.getInstance().getReference().child(new Config2().tab_users).child(FirebaseAuth.getInstance().getCurrentUser().getUid()).child("last_mess").setValue(ts2);
 
 
                     final String device_token = FirebaseInstanceId.getInstance().getToken();

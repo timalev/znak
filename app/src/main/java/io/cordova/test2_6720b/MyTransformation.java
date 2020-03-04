@@ -8,7 +8,7 @@ import android.media.ExifInterface;
 import com.bumptech.glide.load.engine.bitmap_recycle.BitmapPool;
 import com.bumptech.glide.load.resource.bitmap.BitmapTransformation;
 import com.bumptech.glide.load.resource.bitmap.TransformationUtils;
-
+/*
 public class MyTransformation extends BitmapTransformation {
 
     private float rotate = 0f;
@@ -41,4 +41,6 @@ public class MyTransformation extends BitmapTransformation {
         }
         return exifInt;
     }
+
 }
+*/

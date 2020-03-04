@@ -459,6 +459,17 @@ public class Languages {
 
         return hashMap.get(lang);
     }
+    public String SearchText()
+    {
+        hashMap.put("ru","Идет поиск анкет в Вашем радиусе");
+        hashMap.put("en","Searching profiles in your radius");
+        hashMap.put("de","Suchen von Profilen in Ihrem Radius");
+        hashMap.put("zh","搜索您半徑範圍內的輪廓");
+        hashMap.put("es","Buscar perfiles en tu radio");
+        hashMap.put("ar","البحث في ملفات التعريف الخاصة بك في دائرة نصف قطرها");
+
+        return hashMap.get(lang);
+    }
 
     public String NoMessages()
     {

@@ -75,7 +75,7 @@ import java.util.List;
 import java.util.Locale;
 
 
-import customfonts.MyTextView;
+//import customfonts.MyTextView;
 
 import static io.cordova.test2_6720b.UsersActivity.MY_PERMISSIONS_REQUEST_WRITE_EXTERNAL_STORAGE;
 
@@ -352,9 +352,9 @@ public class ProfileActivity extends AppCompatActivity {
                     Glide
                             .with(getApplicationContext())
                             .load(dataSnapshot.child("profile_photo").getValue().toString())
-                            .asBitmap()
-                            .error(R.drawable.noavatar)
-                            .centerCrop()
+                            //.asBitmap()
+                           // .error(R.drawable.noavatar)
+                           // .centerCrop()
                             .into(img);
                 }
 

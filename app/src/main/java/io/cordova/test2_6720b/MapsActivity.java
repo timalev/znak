@@ -39,7 +39,7 @@ import android.widget.TextView;
 import android.widget.Toast;
 
 import com.bumptech.glide.Glide;
-import com.bumptech.glide.request.animation.GlideAnimation;
+//import com.bumptech.glide.request.animation.GlideAnimation;
 import com.bumptech.glide.request.target.SimpleTarget;
 import com.bumptech.glide.request.target.Target;
 import com.google.android.gms.maps.CameraUpdateFactory;
@@ -727,13 +727,15 @@ public class MapsActivity extends AppCompatActivity implements OnMapReadyCallbac
         convertView.setTag(viewHolder);
 
         viewHolder.text.setText("Position " );
-
+/*
         Glide
                 .with(this)
                 .load("https://lh5.googleusercontent.com/-QXRo-IWOCfI/AAAAAAAAAAI/AAAAAAAAABM/ioaz3ND8AWQ/s96-c/photo.jpg")
                 .asBitmap()
                 .centerCrop()
                 .into(viewHolder.icon);
+
+                */
 
         return convertView;
     }
@@ -951,6 +953,8 @@ public class MapsActivity extends AppCompatActivity implements OnMapReadyCallbac
 
         // Функция оформления маркеров на карте
 
+        /*
+
         Glide.with(this)
 
                 .load(photo)  // грузим фото на которое заменим маркер
@@ -1034,6 +1038,8 @@ public class MapsActivity extends AppCompatActivity implements OnMapReadyCallbac
                     }
 
                 });
+
+                */
 
     }
 
