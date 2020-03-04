@@ -141,6 +141,8 @@ public class UsersActivity extends AppCompatActivity {
 
         final TextView seach_text = (TextView)findViewById(R.id.text_sch);
 
+        final LinearLayout bottom_control = (LinearLayout) findViewById(R.id.bottom_control);
+
         //  android:text="Идет поиск анкет в Вашем радиусе.."
 
         seach_text.setText(new Languages().SearchText());
@@ -458,6 +460,7 @@ public class UsersActivity extends AppCompatActivity {
 
                 }
                 pg_layout.setVisibility(View.GONE);
+                bottom_control.setVisibility(View.VISIBLE);
 
                 // adapter.notifyDataSetChanged();
 
@@ -468,7 +471,6 @@ public class UsersActivity extends AppCompatActivity {
                     TextView textView = (TextView)findViewById(R.id.nousers);
                     textView.setText(new Languages().NoUsers());
                     textView.setVisibility(View.VISIBLE);
-
                 }
 
             }

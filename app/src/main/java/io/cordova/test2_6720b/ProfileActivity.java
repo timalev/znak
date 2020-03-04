@@ -4,10 +4,12 @@ import android.Manifest;
 import android.content.DialogInterface;
 import android.content.Intent;
 import android.content.pm.PackageManager;
+import android.content.res.Configuration;
 import android.content.res.TypedArray;
 import android.graphics.Bitmap;
 import android.graphics.BitmapFactory;
 import android.graphics.Color;
+import android.graphics.Matrix;
 import android.net.Uri;
 import android.os.Environment;
 import android.provider.MediaStore;
@@ -114,9 +116,11 @@ public class ProfileActivity extends AppCompatActivity {
                 Toast.makeText(this, "Take picture Error", Toast.LENGTH_SHORT).show();
             }
         }
-        else if (requestCode == 1)
+        else if (requestCode == 1) // выбранное фото, проверить на поворот
         {
             if (resultCode == RESULT_OK) {
+
+
 
                 //Toast.makeText(this, "Gallery picture OK", Toast.LENGTH_SHORT).show();
 
@@ -127,6 +131,62 @@ public class ProfileActivity extends AppCompatActivity {
                     copyStream(inputStream, fileOutputStream);
                     fileOutputStream.close();
                     inputStream.close();
+
+
+
+                    /*
+
+                    int orientation = getResources().getConfiguration().orientation;
+                    if (orientation == Configuration.ORIENTATION_LANDSCAPE) {
+                        Log.d("1 my_or: land",String.valueOf(orientation));
+                    } else {
+                        // In portrait
+                        Log.d("2 my_or: port",String.valueOf(orientation));
+                    }
+
+
+
+
+                    if (orientation==1)
+                    {
+                        String photopath = filesdir + "/photo.jpg";
+                        Bitmap bmp = BitmapFactory.decodeFile(photopath);
+
+                        Matrix matrix = new Matrix();
+                        matrix.postRotate(270);
+
+                        Log.d("tester:",photopath);
+
+                        bmp = Bitmap.createBitmap(bmp, 0, 0, bmp.getWidth(), bmp.getHeight(), matrix, true);
+
+                        FileOutputStream fOut;
+                        try {
+                            fOut = new FileOutputStream(photopath);
+                            bmp.compress(Bitmap.CompressFormat.JPEG, 85, fOut);
+                            fOut.flush();
+                            fOut.close();
+
+                        } catch (FileNotFoundException e1) {
+                            // TODO Auto-generated catch block
+                            e1.printStackTrace();
+                        } catch (IOException e) {
+                            // TODO Auto-generated catch block
+                            e.printStackTrace();
+                        }
+                    }
+
+*/
+
+
+
+
+
+
+
+
+
+
+
 
                     UploadPicture();
 
@@ -669,6 +729,57 @@ public class ProfileActivity extends AppCompatActivity {
     {
         final File photo = new File(filesdir,"photo.jpg");
         File photo2;
+
+
+
+/* Поворотная функция при фотографировании в портретном режиме (сделать по центру и на черном фоне, так как результирующее фото узкое)
+
+        int orientation = getResources().getConfiguration().orientation;
+        if (orientation == Configuration.ORIENTATION_LANDSCAPE) {
+            Log.d("1 my_or: land",String.valueOf(orientation));
+        } else {
+            // In portrait
+            Log.d("2 my_or: port",String.valueOf(orientation));
+        }
+
+
+
+
+        if (orientation==1)
+        {
+            String photopath = filesdir + "/photo.jpg";
+            Bitmap bmp = BitmapFactory.decodeFile(photopath);
+
+            Matrix matrix = new Matrix();
+            matrix.postRotate(90);
+
+            Log.d("tester:",photopath);
+
+            bmp = Bitmap.createBitmap(bmp, 0, 0, bmp.getWidth(), bmp.getHeight(), matrix, true);
+
+            FileOutputStream fOut;
+            try {
+                fOut = new FileOutputStream(photopath);
+                bmp.compress(Bitmap.CompressFormat.JPEG, 85, fOut);
+                fOut.flush();
+                fOut.close();
+
+            } catch (FileNotFoundException e1) {
+                // TODO Auto-generated catch block
+                e1.printStackTrace();
+            } catch (IOException e) {
+                // TODO Auto-generated catch block
+                e.printStackTrace();
+            }
+        }
+
+
+
+*/
+
+
+
+
 
         if (photo.exists()) {
 
