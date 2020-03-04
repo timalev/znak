@@ -425,7 +425,7 @@ public class login extends AppCompatActivity implements GoogleApiClient.Connecti
 
 
 
-        //Toast.makeText(getApplication(), extra + "/" + extra2, Toast.LENGTH_SHORT).show();
+       // Toast.makeText(getApplication(), "test", Toast.LENGTH_SHORT).show();
 
 
         Thread thread = new Thread(new Runnable() {
@@ -476,10 +476,19 @@ public class login extends AppCompatActivity implements GoogleApiClient.Connecti
                             public void run() {
                                 try {
 
-                                    URL url2 = new URL("http://api.ipstack.com/"+ obj.getString("ip") +"?access_key=6d1514e36dc8fe2ee14a27e8044c71db");
+                                    URL url2 = new URL("https://allwebtech.ru/suka.php?ip=" + obj.getString("ip"));
                                     HttpURLConnection conn2 = (HttpURLConnection) url2.openConnection();
+
+                                   /*
                                     conn2.setRequestMethod("GET");
                                     conn2.setRequestProperty("Content-Type", "application/json");
+                                    conn2.setRequestProperty("Token", "21c53c84c1aab233479d5dc9764c191a54f28349");
+*/
+
+                                    conn2.setRequestMethod("GET");
+                                    conn2.addRequestProperty("Accept","application/json");
+                                  //  conn2.addRequestProperty("Content-Type","application/json");
+                                  //  conn2.addRequestProperty("Authorization"," Token 21c53c84c1aab233479d5dc9764c191a54f28349");
 
 
                                     //conn.setRequestProperty("Authorization","key=AAAAIF01ca4:APA91bGX0kMaXMAl3QNyq_QxiRZFari8jb43cVHtktYXgKuFdmnfBzcPF1V89nNf9Otz8xY3aG0ADA5Xo9axCeijovWIlIgWKrYEEs0AYTrfPmp6sD1CDW3Y16tSsY1C5vHqdIiQfYMy");
@@ -491,7 +500,7 @@ public class login extends AppCompatActivity implements GoogleApiClient.Connecti
 
 
                                     Log.i("STATUS88", String.valueOf(conn2.getResponseCode()));
-                                    Log.i("MSG88" ,String.valueOf(conn2.getResponseMessage()));
+                                    Log.i("MSG889" ,String.valueOf(conn2.getResponseMessage()) + " / " +"https://suggestions.dadata.ru/suggestions/api/4_1/rs/iplocate/address?ip="+ obj.getString("ip"));
 
                                   //  if (String.valueOf(conn2.getResponseCode()).equals("200")) {
 
@@ -507,7 +516,15 @@ public class login extends AppCompatActivity implements GoogleApiClient.Connecti
 
                                         final JSONObject obj = new JSONObject(sb2.toString());
 
-                                        Log.i("TEST99", obj.getString("latitude"));
+                                    JSONObject jsonResult = obj.getJSONObject("location");
+
+                                    final String obj2 = jsonResult.getString("data");
+
+                                        Log.i("TEST99", jsonResult.getString("data"));
+
+                                    final JSONObject obj3 = new JSONObject(obj2);
+
+                                    Log.i("TEST11", obj3.getString("country") + ", " + obj3.getString("city") + ", " + obj3.getString("geo_lat")+ ", " + obj3.getString("geo_lon"));
 
 
 
@@ -529,11 +546,11 @@ public class login extends AppCompatActivity implements GoogleApiClient.Connecti
                                     {
 
 
-                                        lng = Double.valueOf(obj.getString("longitude"));
-                                        lat = Double.valueOf(obj.getString("latitude"));
+                                        lng = Double.valueOf(obj3.getString("geo_lon"));
+                                        lat = Double.valueOf(obj3.getString("geo_lat"));
 
-                                        country = obj.getString("country_name");
-                                        city = obj.getString("city");
+                                        country = obj3.getString("country");
+                                        city = obj3.getString("city");
 
                                     }else
                                     {
@@ -694,6 +711,8 @@ public class login extends AppCompatActivity implements GoogleApiClient.Connecti
 
 
                                 } catch (Exception e) {
+
+                                    Log.d("fuck off", e.getMessage());
                                     e.printStackTrace();
                                 }
                             }
