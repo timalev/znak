@@ -50,8 +50,8 @@
 
 
     <LinearLayout
-        android:id="@+id/bottom_control"
         android:visibility="gone"
+        android:id="@+id/bottom_control"
         android:layout_width="match_parent"
         android:layout_height="80dp"
         android:layout_gravity="bottom"
@@ -101,8 +101,8 @@
         layout="@layout/toolbar" />
 </FrameLayout>
 
-<!--
-<include android:id="@+id/toolbar2"
-layout="@layout/toolbar" />
-</android.support.design.widget.CoordinatorLayout>
--->
+    <!--
+    <include android:id="@+id/toolbar2"
+    layout="@layout/toolbar" />
+    </android.support.design.widget.CoordinatorLayout>
+    -->

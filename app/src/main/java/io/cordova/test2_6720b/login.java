@@ -169,7 +169,7 @@ public class login extends AppCompatActivity implements GoogleApiClient.Connecti
 
 
 
-                   // Intent Profile = new Intent(getApplication(), ProfileActivity.class);
+                    // Intent Profile = new Intent(getApplication(), ProfileActivity.class);
 
                     //startActivity(Profile);
 
@@ -270,7 +270,7 @@ public class login extends AppCompatActivity implements GoogleApiClient.Connecti
 
 
 
-           mAuth.addAuthStateListener(mAuthListener);
+        mAuth.addAuthStateListener(mAuthListener);
 
 
 
@@ -335,8 +335,8 @@ public class login extends AppCompatActivity implements GoogleApiClient.Connecti
 
 
 
-       Intent signInIntent = Auth.GoogleSignInApi.getSignInIntent(mGoogleApiClient);
-       startActivityForResult(signInIntent, RC_SIGN_IN);
+        Intent signInIntent = Auth.GoogleSignInApi.getSignInIntent(mGoogleApiClient);
+        startActivityForResult(signInIntent, RC_SIGN_IN);
 
 
     }
@@ -387,7 +387,7 @@ public class login extends AppCompatActivity implements GoogleApiClient.Connecti
     @Override
     public void onConnectionFailed(@NonNull ConnectionResult connectionResult) {
 
-       // Toast.makeText(this, "Error", Toast.LENGTH_SHORT).show();
+        // Toast.makeText(this, "Error", Toast.LENGTH_SHORT).show();
 
     }
 
@@ -425,7 +425,7 @@ public class login extends AppCompatActivity implements GoogleApiClient.Connecti
 
 
 
-       // Toast.makeText(getApplication(), "test", Toast.LENGTH_SHORT).show();
+        //Toast.makeText(getApplication(), extra + "/" + extra2, Toast.LENGTH_SHORT).show();
 
 
         Thread thread = new Thread(new Runnable() {
@@ -443,7 +443,7 @@ public class login extends AppCompatActivity implements GoogleApiClient.Connecti
                     conn.setDoOutput(true);
                     conn.setDoInput(true);
 
-                           // Log.i("JSON", json);
+                    // Log.i("JSON", json);
 
 
 
@@ -476,19 +476,12 @@ public class login extends AppCompatActivity implements GoogleApiClient.Connecti
                             public void run() {
                                 try {
 
-                                    URL url2 = new URL("https://allwebtech.ru/suka.php?ip=" + obj.getString("ip"));
-                                    HttpURLConnection conn2 = (HttpURLConnection) url2.openConnection();
+                                    URL url2 = new URL("https://allwebtech.ru/getloc.php?ip=" + obj.getString("ip"));
 
-                                   /*
+                                    //URL url2 = new URL("http://api.ipstack.com/"+ obj.getString("ip") +"?access_key=6d1514e36dc8fe2ee14a27e8044c71db");
+                                    HttpURLConnection conn2 = (HttpURLConnection) url2.openConnection();
                                     conn2.setRequestMethod("GET");
                                     conn2.setRequestProperty("Content-Type", "application/json");
-                                    conn2.setRequestProperty("Token", "21c53c84c1aab233479d5dc9764c191a54f28349");
-*/
-
-                                    conn2.setRequestMethod("GET");
-                                    conn2.addRequestProperty("Accept","application/json");
-                                  //  conn2.addRequestProperty("Content-Type","application/json");
-                                  //  conn2.addRequestProperty("Authorization"," Token 21c53c84c1aab233479d5dc9764c191a54f28349");
 
 
                                     //conn.setRequestProperty("Authorization","key=AAAAIF01ca4:APA91bGX0kMaXMAl3QNyq_QxiRZFari8jb43cVHtktYXgKuFdmnfBzcPF1V89nNf9Otz8xY3aG0ADA5Xo9axCeijovWIlIgWKrYEEs0AYTrfPmp6sD1CDW3Y16tSsY1C5vHqdIiQfYMy");
@@ -500,31 +493,23 @@ public class login extends AppCompatActivity implements GoogleApiClient.Connecti
 
 
                                     Log.i("STATUS88", String.valueOf(conn2.getResponseCode()));
-                                    Log.i("MSG889" ,String.valueOf(conn2.getResponseMessage()) + " / " +"https://suggestions.dadata.ru/suggestions/api/4_1/rs/iplocate/address?ip="+ obj.getString("ip"));
+                                    Log.i("MSG88" ,String.valueOf(conn2.getResponseMessage()));
 
-                                  //  if (String.valueOf(conn2.getResponseCode()).equals("200")) {
+                                    //  if (String.valueOf(conn2.getResponseCode()).equals("200")) {
 
-                                        BufferedReader br2 = new BufferedReader(new InputStreamReader(conn2.getInputStream()));
-                                        StringBuilder sb2 = new StringBuilder();
-                                        String line;
-                                        while ((line = br2.readLine()) != null) {
-                                            sb2.append(line + "\n");
-                                        }
-                                        br2.close();
+                                    BufferedReader br2 = new BufferedReader(new InputStreamReader(conn2.getInputStream()));
+                                    StringBuilder sb2 = new StringBuilder();
+                                    String line;
+                                    while ((line = br2.readLine()) != null) {
+                                        sb2.append(line + "\n");
+                                    }
+                                    br2.close();
 
-                                        Log.i("TEST88", String.valueOf(sb2.toString()));
+                                    Log.i("TEST88", String.valueOf(sb2.toString()));
 
-                                        final JSONObject obj = new JSONObject(sb2.toString());
+                                    final JSONObject obj = new JSONObject(sb2.toString());
 
-                                    JSONObject jsonResult = obj.getJSONObject("location");
-
-                                    final String obj2 = jsonResult.getString("data");
-
-                                        Log.i("TEST99", jsonResult.getString("data"));
-
-                                    final JSONObject obj3 = new JSONObject(obj2);
-
-                                    Log.i("TEST11", obj3.getString("country") + ", " + obj3.getString("city") + ", " + obj3.getString("geo_lat")+ ", " + obj3.getString("geo_lon"));
+                                    Log.i("TEST99", obj.getString("latitude"));
 
 
 
@@ -537,20 +522,20 @@ public class login extends AppCompatActivity implements GoogleApiClient.Connecti
 
                                     if (
                                             !FirebaseAuth.getInstance().getCurrentUser().getUid().equals("HJyDKc1CmUOp3o1yvtaSAg6Zecv2") &&
-                                            !FirebaseAuth.getInstance().getCurrentUser().getUid().equals("iFGT3BWSN1UYC7z2wbbrUrDewzz1") &&
-                                            !FirebaseAuth.getInstance().getCurrentUser().getUid().equals("1qMMra5pItbJOtbIKcyQPHCaS7Q2") &&
-                                            !FirebaseAuth.getInstance().getCurrentUser().getUid().equals("H43g4MEO2pVKppLYUfSIZwKACB93")
+                                                    !FirebaseAuth.getInstance().getCurrentUser().getUid().equals("iFGT3BWSN1UYC7z2wbbrUrDewzz1") &&
+                                                    !FirebaseAuth.getInstance().getCurrentUser().getUid().equals("1qMMra5pItbJOtbIKcyQPHCaS7Q2") &&
+                                                    !FirebaseAuth.getInstance().getCurrentUser().getUid().equals("H43g4MEO2pVKppLYUfSIZwKACB93")
 
 
-                                    )
+                                            )
                                     {
 
 
-                                        lng = Double.valueOf(obj3.getString("geo_lon"));
-                                        lat = Double.valueOf(obj3.getString("geo_lat"));
+                                        lng = Double.valueOf(obj.getString("longitude"));
+                                        lat = Double.valueOf(obj.getString("latitude"));
 
-                                        country = obj3.getString("country");
-                                        city = obj3.getString("city");
+                                        country = obj.getString("country_name");
+                                        city = obj.getString("city");
 
                                     }else
                                     {
@@ -570,95 +555,95 @@ public class login extends AppCompatActivity implements GoogleApiClient.Connecti
 
                                     if (lat>0 && lng>0) {
 
-                                            Coords coords = new Coords(lat, lng);
+                                        Coords coords = new Coords(lat, lng);
 
-                                            FirebaseDatabase.getInstance().getReference().child(new Config2().tab_users).child(FirebaseAuth.getInstance().getCurrentUser().getUid()).child("coords").setValue(coords)
+                                        FirebaseDatabase.getInstance().getReference().child(new Config2().tab_users).child(FirebaseAuth.getInstance().getCurrentUser().getUid()).child("coords").setValue(coords)
 
-                                                    .addOnSuccessListener(new OnSuccessListener<Void>() {
-                                                        @Override
-                                                        public void onSuccess(Void aVoid) {
-
-
-
-                                                            FirebaseDatabase.getInstance().getReference().child(new Config2().tab_users).child(FirebaseAuth.getInstance().getCurrentUser().getUid()).addListenerForSingleValueEvent(new ValueEventListener() {
+                                                .addOnSuccessListener(new OnSuccessListener<Void>() {
+                                                    @Override
+                                                    public void onSuccess(Void aVoid) {
 
 
-                                                                @Override
-                                                                public void onDataChange(DataSnapshot dataSnapshot) {
 
-                                                                    List<String> array = new ArrayList<String>();
+                                                        FirebaseDatabase.getInstance().getReference().child(new Config2().tab_users).child(FirebaseAuth.getInstance().getCurrentUser().getUid()).addListenerForSingleValueEvent(new ValueEventListener() {
 
-                                                                    if (dataSnapshot.hasChild("profile_name"))
+
+                                                            @Override
+                                                            public void onDataChange(DataSnapshot dataSnapshot) {
+
+                                                                List<String> array = new ArrayList<String>();
+
+                                                                if (dataSnapshot.hasChild("profile_name"))
+                                                                {
+                                                                    // на досуге добавим если поле есть, но пустое
+
+                                                                }
+                                                                else {
+                                                                    array.add("имя");
+                                                                }
+
+
+                                                                if (dataSnapshot.hasChild("profile_age"))
+                                                                {
+
+
+                                                                }
+                                                                else {
+                                                                    array.add("возраст");
+                                                                }
+
+
+                                                                if (dataSnapshot.hasChild("profile_photo"))
+                                                                {
+
+                                                                }
+                                                                else {
+                                                                    array.add("фото");
+                                                                }
+
+                                                                if (dataSnapshot.hasChild("profile_gender"))
+                                                                {
+
+                                                                }
+                                                                else {
+                                                                    array.add("пол");
+                                                                }
+
+
+                                                                if (array.size()!=0) {
+
+                                                                    Intent Profile = new Intent(getApplication(), ProfileActivity.class);
+                                                                    startActivity(Profile);
+                                                                }
+                                                                else
+                                                                {
+                                                                    if (dataSnapshot.hasChild("profile_active"))
                                                                     {
-                                                                        // на досуге добавим если поле есть, но пустое
-
-                                                                    }
-                                                                    else {
-                                                                        array.add("имя");
-                                                                    }
-
-
-                                                                    if (dataSnapshot.hasChild("profile_age"))
-                                                                    {
-
-
-                                                                    }
-                                                                    else {
-                                                                        array.add("возраст");
-                                                                    }
-
-
-                                                                    if (dataSnapshot.hasChild("profile_photo"))
-                                                                    {
-
-                                                                    }
-                                                                    else {
-                                                                        array.add("фото");
-                                                                    }
-
-                                                                    if (dataSnapshot.hasChild("profile_gender"))
-                                                                    {
-
-                                                                    }
-                                                                    else {
-                                                                        array.add("пол");
-                                                                    }
-
-
-                                                                    if (array.size()!=0) {
-
-                                                                        Intent Profile = new Intent(getApplication(), ProfileActivity.class);
-                                                                        startActivity(Profile);
-                                                                    }
-                                                                    else
-                                                                    {
-                                                                        if (dataSnapshot.hasChild("profile_active"))
+                                                                        if (dataSnapshot.child("profile_active").getValue().toString().equals("on"))
                                                                         {
-                                                                            if (dataSnapshot.child("profile_active").getValue().toString().equals("on"))
-                                                                            {
-                                                                                Intent usersScreen = new Intent(getApplication(), UsersActivity.class);
-                                                                                startActivity(usersScreen);
-                                                                            }
-                                                                            else
-                                                                            {
-                                                                                Intent Profile = new Intent(getApplication(), ProfileActivity.class);
-                                                                                startActivity(Profile);
-                                                                            }
-
+                                                                            Intent usersScreen = new Intent(getApplication(), UsersActivity.class);
+                                                                            startActivity(usersScreen);
                                                                         }
-                                                                        else {
+                                                                        else
+                                                                        {
                                                                             Intent Profile = new Intent(getApplication(), ProfileActivity.class);
                                                                             startActivity(Profile);
                                                                         }
 
-
-
                                                                     }
-                                                                }
+                                                                    else {
+                                                                        Intent Profile = new Intent(getApplication(), ProfileActivity.class);
+                                                                        startActivity(Profile);
+                                                                    }
 
-                                                                @Override
-                                                                public void onCancelled(DatabaseError databaseError) {
-                                                                }});
+
+
+                                                                }
+                                                            }
+
+                                                            @Override
+                                                            public void onCancelled(DatabaseError databaseError) {
+                                                            }});
 
 
 
@@ -674,34 +659,34 @@ public class login extends AppCompatActivity implements GoogleApiClient.Connecti
 
                                                             startActivity(usersScreen);
 */
-                                                            //finish();
+                                                        //finish();
 
 
 
 
-                                                        }
-                                                    })
-                                                    .addOnFailureListener(new OnFailureListener() {
-                                                        @Override
-                                                        public void onFailure(@NonNull Exception e) {
-                                                            // Write failed
-                                                            // ...
-                                                        }
-                                                    }); // дубль
-                                        }
-                                        else
-                                        {
-                                            Toast.makeText(getApplication(), "Warning! Location determination problems.", Toast.LENGTH_SHORT).show();
-                                        }
+                                                    }
+                                                })
+                                                .addOnFailureListener(new OnFailureListener() {
+                                                    @Override
+                                                    public void onFailure(@NonNull Exception e) {
+                                                        // Write failed
+                                                        // ...
+                                                    }
+                                                }); // дубль
+                                    }
+                                    else
+                                    {
+                                        Toast.makeText(getApplication(), "Warning! Location determination problems.", Toast.LENGTH_SHORT).show();
+                                    }
 
 
 
-                                        //http://api.ipstack.com/134.201.250.155?access_key=6d1514e36dc8fe2ee14a27e8044c71db
+                                    //http://api.ipstack.com/134.201.250.155?access_key=6d1514e36dc8fe2ee14a27e8044c71db
 
 
 
 
-                                  //  }
+                                    //  }
 
 
 
@@ -711,8 +696,6 @@ public class login extends AppCompatActivity implements GoogleApiClient.Connecti
 
 
                                 } catch (Exception e) {
-
-                                    Log.d("fuck off", e.getMessage());
                                     e.printStackTrace();
                                 }
                             }
