@@ -31,6 +31,7 @@ import android.view.MotionEvent;
 import android.view.View;
 import android.widget.EditText;
 import android.widget.ImageButton;
+import android.widget.ImageView;
 import android.widget.LinearLayout;
 import android.widget.ProgressBar;
 import android.widget.TextView;
@@ -131,6 +132,56 @@ public class UsersActivity extends AppCompatActivity {
 
 
         setContentView(R.layout.activity_main);
+
+        FirebaseDatabase.getInstance().getReference().child("zn_likes").child("total_likes").child(FirebaseAuth.getInstance().getCurrentUser().getUid()).child("like").addValueEventListener(new ValueEventListener() {
+            @Override
+            public void onDataChange(DataSnapshot snapshot) {
+
+
+                Toast.makeText(mContext, String.valueOf(snapshot.getValue()), Toast.LENGTH_LONG).show();
+
+                ImageButton qImageView = (ImageButton) findViewById(R.id.acceptBtn);
+
+                if (String.valueOf(snapshot.getValue()).equals("0")) {
+
+                    // Toast.makeText(mContext, mProfile.getKey(), Toast.LENGTH_LONG).show();
+
+                    qImageView.setBackgroundResource(R.drawable.ic_heart);
+                }else {
+                    qImageView.setBackgroundResource(R.drawable.ic_heart2);
+                }
+            }
+            @Override
+            public void onCancelled(DatabaseError databaseError) {
+
+            }
+        });
+
+/*
+
+        if(ans ==0 || ans == 5){
+            //   qSV.setImageResource(0);
+            qImageView.setImageResource(R.drawable.thumbs_up);
+        }
+        else
+            qImageView.setImageResource(R.drawable.thumbs_down);
+
+*/
+        FirebaseDatabase.getInstance().getReference().child("zn_likes").child("total_likes").child(FirebaseAuth.getInstance().getCurrentUser().getUid()).child("count").addValueEventListener(new ValueEventListener() {
+
+            @Override
+            public void onDataChange(DataSnapshot dataSnapshot) {
+
+                final TextView helloTextView = (TextView) findViewById(R.id.textView1);
+                helloTextView.setText(dataSnapshot.getValue().toString());
+
+            }
+
+            @Override
+            public void onCancelled(DatabaseError databaseError) {
+
+            }
+        });
 
         Toolbar toolbar = (Toolbar) findViewById(R.id.toolbar2);
         setSupportActionBar(toolbar);
@@ -444,8 +495,20 @@ public class UsersActivity extends AppCompatActivity {
 
                 String a_age;
 
+                Integer i;
+                String next_object;
+
                 for (String object: catNames) {
-                     Log.i("my_arr2: ", String.valueOf(object) + " / " + catNames.indexOf(object) + " / " + catNames.size());
+
+                    i = catNames.indexOf(object) + 1;
+
+                    if (i==catNames.size()) i = 0;
+
+
+                        next_object = catNames.get(i);
+
+
+                     Log.i("my_arr2: ", String.valueOf(object) + " / " + catNames.indexOf(object) + "/" + i + " / " + next_object);
 
                     if (FirebaseAuth.getInstance().getCurrentUser().getUid().equals("1qMMra5pItbJOtbIKcyQPHCaS7Q2")){
 
@@ -455,8 +518,10 @@ public class UsersActivity extends AppCompatActivity {
                         a_age = M_profile_age.get(object);
                     }
 
-                    Profile3 profile3 = new Profile3(M_profile_name.get(object), M_profile_photo.get(object), a_age, M_profile_country.get(object), object);
+                    Profile3 profile3 = new Profile3(M_profile_name.get(object), M_profile_photo.get(object), a_age, M_profile_country.get(object), object,next_object);
                     mSwipeView.addView(new TinderCard(mContext, profile3, mSwipeView));
+
+
 
                 }
                 pg_layout.setVisibility(View.GONE);
@@ -522,7 +587,19 @@ public class UsersActivity extends AppCompatActivity {
         findViewById(R.id.acceptBtn).setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                mSwipeView.doSwipe(true);
+                //mSwipeView.doSwipe(true);
+
+
+                View myView = findViewById(R.id.profileImageView);
+
+                myView.performClick();
+
+                //mSwipeView.doSwipe(true);
+
+
+
+                //FirebaseDatabase.getInstance().getReference().child("zn_likes").child(FirebaseAuth.getInstance().getCurrentUser().getUid()).child("coords").setValue(coords);
+
             }
         });
 
@@ -644,6 +721,7 @@ public class UsersActivity extends AppCompatActivity {
 
         menu.findItem(R.id.index).setTitle(new Languages().MenuIndex());
         menu.findItem(R.id.messages).setTitle(new Languages().MenuMessages());
+        menu.findItem(R.id.likes).setTitle(new Languages().MenuLikes());
         menu.findItem(R.id.about).setTitle(new Languages().MenuAbout());
 
 
@@ -689,6 +767,18 @@ public class UsersActivity extends AppCompatActivity {
                 public void onCancelled(DatabaseError databaseError) {
                 }
             });
+
+            return true;
+
+        case R.id.likes:
+
+                    Intent likes = new Intent(getApplication(), ActivityLikes.class);
+
+                    //allmess.putExtra("curruser", FirebaseAuth.getInstance().getCurrentUser().getUid());
+                    //allmess.putExtra("currname", FirebaseAuth.getInstance().getCurrentUser().getDisplayName());
+                    startActivity(likes);
+
+                    finish();
 
             return true;
 

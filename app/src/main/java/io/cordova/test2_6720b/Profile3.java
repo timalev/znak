@@ -8,18 +8,20 @@ public class Profile3 {
     private String profile_age;
     private String profile_country;
     private String key;
+    private String key2;
 
 
     public Profile3() {
     }
 
-    public Profile3(String profile_name, String profile_photo, String profile_age, String profile_country, String key) {
+    public Profile3(String profile_name, String profile_photo, String profile_age, String profile_country, String key, String key2) {
 
         this.profile_name = profile_name;
         this.profile_photo = profile_photo;
         this.profile_age = profile_age;
         this.profile_country = profile_country;
         this.key = key;
+        this.key2 = key2;
 
     }
 
@@ -41,6 +43,10 @@ public class Profile3 {
 
     public String getKey() {
         return key;
+    }
+
+    public String getKey2() {
+        return key2;
     }
 
 

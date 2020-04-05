@@ -23,22 +23,18 @@
     <uses-permission android:name="android.permission.READ_PHONE_STATE" />
 
     <application
+        android:name=".MyFirebaseApp"
         android:allowBackup="true"
         android:configChanges="orientation|keyboardHidden|screenSize"
         android:icon="@mipmap/ic_launcher"
         android:label="@string/app_name"
         android:supportsRtl="true"
-        android:name="io.cordova.test2_6720b.MyFirebaseApp"
         android:theme="@style/AppTheme">
-
+        <activity android:name=".ActivityLikes"></activity>
         <!-- android:theme="@style/MyTheme"> -->
-
         <meta-data
             android:name="com.google.android.geo.API_KEY"
-            android:value="@string/google_maps_key" />
-
-        <!-- <service android:name=".test" android:label="test"/> -->
-
+            android:value="@string/google_maps_key" /> <!-- <service android:name=".test" android:label="test"/> -->
         <receiver
             android:name="com.google.android.gms.gcm.GcmReceiver"
             android:exported="true"
@@ -54,7 +50,6 @@
                 <category android:name="io.cordova.test2_6720b" />
             </intent-filter>
         </receiver>
-
         <!--
         <service
             android:name=".MyGcmListenerService"
@@ -141,8 +136,6 @@
                 <category android:name="android.intent.category.DEFAULT" />
             </intent-filter>
         </activity>
-
-
     </application>
 
 </manifest>

@@ -79,6 +79,17 @@ public class Languages {
 
         return hashMap.get(lang);
     }
+    public String MenuLikes()
+    {
+        hashMap.put("ru","Мои лайки");
+        hashMap.put("en","My likes");
+        hashMap.put("de","My likes");
+        hashMap.put("zh","My likes");
+        hashMap.put("es","My likes");
+        hashMap.put("ar","My likes");
+
+        return hashMap.get(lang);
+    }
     public String MenuAbout()
     {
         hashMap.put("ru","О приложении");

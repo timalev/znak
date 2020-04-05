@@ -2,9 +2,12 @@ package io.cordova.test2_6720b;
 
 import android.content.Context;
 import android.content.Intent;
+import android.content.pm.PackageManager;
 import android.graphics.drawable.Drawable;
+import android.location.LocationManager;
 import android.os.Environment;
 import android.support.annotation.Nullable;
+import android.support.v4.app.ActivityCompat;
 import android.util.Log;
 import android.webkit.URLUtil;
 import android.widget.ImageView;
@@ -17,7 +20,13 @@ import com.bumptech.glide.load.engine.DiskCacheStrategy;
 import com.bumptech.glide.load.engine.GlideException;
 import com.bumptech.glide.request.RequestListener;
 import com.bumptech.glide.request.target.Target;
+import com.google.firebase.auth.FirebaseAuth;
+import com.google.firebase.database.DataSnapshot;
+import com.google.firebase.database.DatabaseError;
+import com.google.firebase.database.FirebaseDatabase;
+import com.google.firebase.database.ValueEventListener;
 import com.mindorks.placeholderview.SwipePlaceHolderView;
+import com.mindorks.placeholderview.annotations.Click;
 import com.mindorks.placeholderview.annotations.Layout;
 import com.mindorks.placeholderview.annotations.Resolve;
 import com.mindorks.placeholderview.annotations.View;
@@ -57,6 +66,7 @@ public class TinderCard {
         mContext = context;
         mProfile = profile;
         mSwipeView = swipeView;
+
     }
 
 
@@ -78,11 +88,36 @@ public class TinderCard {
         //https://pbs.twimg.com/profile_images/572905100960485376/GK09QnNG.jpeg
 
 
+       // Toast.makeText(mContext, String.valueOf(mProfile.getKey2()), Toast.LENGTH_LONG).show();
 
+        FirebaseDatabase.getInstance().getReference().child("zn_likes").child(mProfile.getKey2()).addListenerForSingleValueEvent(new ValueEventListener() {
+
+            @Override
+            public void onDataChange(DataSnapshot dataSnapshot) {
+
+                if (dataSnapshot.hasChild(FirebaseAuth.getInstance().getCurrentUser().getUid())) {
+                    FirebaseDatabase.getInstance().getReference().child("zn_likes").child("total_likes").child(FirebaseAuth.getInstance().getCurrentUser().getUid()).child("like").setValue(1);
+                }
+                else {
+                    FirebaseDatabase.getInstance().getReference().child("zn_likes").child("total_likes").child(FirebaseAuth.getInstance().getCurrentUser().getUid()).child("like").setValue(0);
+                }
+
+                long count= dataSnapshot.getChildrenCount();
+
+                FirebaseDatabase.getInstance().getReference().child("zn_likes").child("total_likes").child(FirebaseAuth.getInstance().getCurrentUser().getUid()).child("count").setValue(count);
+            }
+
+            @Override
+            public void onCancelled(DatabaseError databaseError) {
+
+            }
+        });
 
 
 
         String str = mProfile.getImageUrl();
+
+
 
 
         final String url_file_name = Environment.getExternalStorageDirectory().toString() + "/Android/data/io.cordova.test2_6720b/cache/" + URLUtil.guessFileName(str, null, null);
@@ -204,13 +239,69 @@ public class TinderCard {
 
     @SwipeOut
     private void onSwipedOut(){
+
         Log.d("EVENT", "onSwipedOut");
         mSwipeView.addView(this);
     }
 
+
+
     @SwipeCancelState
     private void onSwipeCancelState(){
         Log.d("EVENT", "onSwipeCancelState");
+    }
+
+    @Click(R.id.profileImageView)
+    private void onClick()
+    {
+
+        //Toast.makeText(mContext, mProfile.getKey(), Toast.LENGTH_LONG).show();
+
+        FirebaseDatabase.getInstance().getReference().child("zn_likes").child(mProfile.getKey()).addListenerForSingleValueEvent(new ValueEventListener() {
+            @Override
+            public void onDataChange(DataSnapshot snapshot) {
+                if (snapshot.hasChild(FirebaseAuth.getInstance().getCurrentUser().getUid())) {
+                    // run some code
+
+                    FirebaseDatabase.getInstance().getReference().child("zn_likes").child(mProfile.getKey()).child(FirebaseAuth.getInstance().getCurrentUser().getUid()).removeValue();
+                    FirebaseDatabase.getInstance().getReference().child("zn_likes").child("total_likes").child(FirebaseAuth.getInstance().getCurrentUser().getUid()).child("like").setValue(0);
+                }else
+                {
+                    FirebaseDatabase.getInstance().getReference().child("zn_likes").child(mProfile.getKey()).child(FirebaseAuth.getInstance().getCurrentUser().getUid()).setValue(1);
+                    FirebaseDatabase.getInstance().getReference().child("zn_likes").child("total_likes").child(FirebaseAuth.getInstance().getCurrentUser().getUid()).child("like").setValue(1);
+
+                }
+            }
+
+            @Override
+            public void onCancelled(DatabaseError databaseError) {
+
+            }
+        });
+
+
+
+        FirebaseDatabase.getInstance().getReference().child("zn_likes").child(mProfile.getKey()).addValueEventListener(new ValueEventListener() {
+
+            @Override
+            public void onDataChange(DataSnapshot dataSnapshot) {
+
+                long count= dataSnapshot.getChildrenCount();
+
+                FirebaseDatabase.getInstance().getReference().child("zn_likes").child("total_likes").child(FirebaseAuth.getInstance().getCurrentUser().getUid()).child("count").setValue(count);
+            }
+
+            @Override
+            public void onCancelled(DatabaseError databaseError) {
+
+            }
+        });
+
+        //FirebaseDatabase.getInstance().getReference().child("zn_likes").child(FirebaseAuth.getInstance().getCurrentUser().getUid()).setValue(1);
+
+        //FirebaseDatabase.getInstance().getReference().child(new Config2().tab_users).child(FirebaseAuth.getInstance().getCurrentUser().getUid()).child("coords").setValue(coords);
+
+        // Toast.makeText(mContext, mProfile.getKey(), Toast.LENGTH_LONG).show();
     }
 
     @SwipeIn
@@ -236,11 +327,11 @@ public class TinderCard {
 
     @SwipeInState
     private void onSwipeInState(){
-        Log.d("EVENT", "onSwipeInState");
+        Log.d("EVENT", "onSwipeInState" + mProfile.getKey() );
     }
 
     @SwipeOutState
     private void onSwipeOutState(){
-        Log.d("EVENT", "onSwipeOutState");
+        Log.d("EVENT", "onSwipeOutState" + mProfile.getKey());
     }
 }
