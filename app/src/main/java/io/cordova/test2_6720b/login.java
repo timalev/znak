@@ -154,10 +154,10 @@ public class login extends AppCompatActivity implements GoogleApiClient.Connecti
                     String ts2 = tsLong2.toString();
 
 
-                  FirebaseDatabase.getInstance().getReference().child("zn_likes").child("total_likes").child(FirebaseAuth.getInstance().getCurrentUser().getUid()).child("count").setValue(0);
+                 // FirebaseDatabase.getInstance().getReference().child("zn_likes").child("total_likes").child(FirebaseAuth.getInstance().getCurrentUser().getUid()).child("count").setValue(0);
 
 
-                  FirebaseDatabase.getInstance().getReference().child("zn_likes").child("total_likes").child(FirebaseAuth.getInstance().getCurrentUser().getUid()).child("like").setValue(0);
+                 // FirebaseDatabase.getInstance().getReference().child("zn_likes").child("total_likes").child(FirebaseAuth.getInstance().getCurrentUser().getUid()).child("like").setValue(0);
 
 
 

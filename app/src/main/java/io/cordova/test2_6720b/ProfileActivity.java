@@ -925,6 +925,7 @@ public class ProfileActivity extends AppCompatActivity {
         menu.findItem(R.id.friends).setTitle(new Languages().MenuFriends());
         menu.findItem(R.id.logout).setTitle(new Languages().MenuSignout());
         menu.findItem(R.id.messages).setTitle(new Languages().MenuMessages());
+        menu.findItem(R.id.likes).setTitle(new Languages().MenuLikes());
         menu.findItem(R.id.about).setTitle(new Languages().MenuAbout());
 
 
@@ -978,6 +979,16 @@ public class ProfileActivity extends AppCompatActivity {
 
             Intent usersScreen = new Intent(getApplication(), UsersActivity.class);
             startActivity(usersScreen);
+
+
+            //Toast.makeText(this, "Аватарка обновлена", Toast.LENGTH_LONG).show();
+            return true;
+
+
+        case R.id.likes:
+
+            Intent likesScreen = new Intent(getApplication(), ActivityLikes.class);
+            startActivity(likesScreen);
 
 
             //Toast.makeText(this, "Аватарка обновлена", Toast.LENGTH_LONG).show();

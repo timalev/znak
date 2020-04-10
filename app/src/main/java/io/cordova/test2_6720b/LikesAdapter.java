@@ -33,14 +33,14 @@ import java.util.Locale;
 import java.util.TimeZone;
 import java.util.concurrent.ExecutionException;
 
-public class MessesAdapter extends RecyclerView.Adapter< MessesAdapter.ViewHolder> {
+public class LikesAdapter extends RecyclerView.Adapter< LikesAdapter.ViewHolder> {
 
     private ArrayList<String> names;
 
     private ArrayList<HashMap> aryList;
 
 
-    public  MessesAdapter(ArrayList<HashMap> aryList) {
+    public  LikesAdapter(ArrayList<HashMap> aryList) {
         this.aryList = aryList;
     }
 
@@ -99,11 +99,11 @@ public class MessesAdapter extends RecyclerView.Adapter< MessesAdapter.ViewHolde
                                 .with(holder.photo.getContext())
                                 .load(dataSnapshot.child("profile_photo").getValue().toString())
                                 //.diskCacheStrategy(DiskCacheStrategy.ALL)
-                               // .error(R.drawable.noavatar)
+                                // .error(R.drawable.noavatar)
                                 //.centerCrop()
                                 .into(holder.photo);
 
-                       // Log.i("cache_path",getImgCachePath(dataSnapshot.child("profile_photo").getValue().toString(), holder));
+                        // Log.i("cache_path",getImgCachePath(dataSnapshot.child("profile_photo").getValue().toString(), holder));
                     }else
                     {
                         holder.photo.setImageResource(R.drawable.noavatar);
@@ -138,82 +138,6 @@ public class MessesAdapter extends RecyclerView.Adapter< MessesAdapter.ViewHolde
             public void onCancelled(DatabaseError databaseError) {
             }});
 
-// подгрузка аватарок конец
-
-
-
-// подгрузка кол-ва новых сообщений
-
-/*
-        FirebaseDatabase.getInstance().getReference().child(new Config2().tab_messagesStat).addValueEventListener(new ValueEventListener() {
-
-
-            @Override
-            public void onDataChange(DataSnapshot dataSnapshot) {
-
-                for (DataSnapshot child : dataSnapshot.getChildren()) {
-
-
-                    if (child.getKey().equals(FirebaseAuth.getInstance().getCurrentUser().getUid())) {
-                        Log.i("current_pos", String.valueOf(position) + "  / " + String.valueOf(aryList) + " / " + String.valueOf(aryList.size()));
-
-                        try {
-
-
-                            if (child.hasChild(aryList.get(position).get("key").toString())) {
-                                //   Log.i("StatTab10", String.valueOf(child.getKey() + " / " + child.getValue() + " / " + child.child(aryList.get(position).get("key").toString()).getValue()));
-
-                                if (!child.child(aryList.get(position).get("key").toString()).child("mess_count").getValue().toString().equals("0")) {
-
-                                    //    Log.i("StatTab18", aryList.get(position).get("curruser").toString() + "/" + aryList.get(position).get("key").toString());
-                                    holder.name.setText(aryList.get(position).get("name").toString() + " (" + child.child(aryList.get(position).get("key").toString()).child("mess_count").getValue().toString() + ")");
-
-                                    // holder.mess_count.setText(child.child(aryList.get(position).get("key").toString()).child("mess_count").getValue().toString());
-                                }
-                            }
-                        } catch (Exception e) {
-
-                            Log.i("Exception",String.valueOf(e));
-
-                        }
-                    }
-                    }
-                }
-
-
-            @Override
-            public void onCancelled(DatabaseError databaseError) {
-            }});
-*/
-
-
-        //Log.i("StatTab22", this.getClass().getSimpleName());
-
-        //Toast.makeText(this, String.valueOf(test), Toast.LENGTH_LONG).show();
-
-
-        FirebaseDatabase.getInstance().getReference().child(new Config2().tab_messagesStat).child(FirebaseAuth.getInstance().getCurrentUser().getUid()).child(aryList.get(position).get("key").toString()).addValueEventListener(new ValueEventListener() {
-
-
-            @Override
-            public void onDataChange(DataSnapshot dataSnapshot) {
-
-
-                //Log.i("StatTab22", dataSnapshot.getValue() + "/" + aryList.get(position).get("key").toString());
-
-                if (dataSnapshot.hasChild("mess_count") && !dataSnapshot.child("mess_count").getValue().toString().equals("0")) {
-                    holder.mess_count.setText(" (" + dataSnapshot.child("mess_count").getValue().toString()+ ") ");
-                }
-            }
-                @Override
-                public void onCancelled(DatabaseError databaseError) {
-                }});
-
-
-                    // подгрузка кол-ва новых сообщений конец
-
-
-        //Log.i("StatTab18", aryList.get(position).get("key").toString() + "/" + aryList.get(position).get("key").toString());
 
         FirebaseDatabase.getInstance().getReference().child(new Config2().tab_messagesStat).child(aryList.get(position).get("key").toString()).child(FirebaseAuth.getInstance().getCurrentUser().getUid()).addValueEventListener(new ValueEventListener() {
 
@@ -226,7 +150,7 @@ public class MessesAdapter extends RecyclerView.Adapter< MessesAdapter.ViewHolde
 
                 if (dataSnapshot.hasChild("mess_count")) {
 
-               //    holder.mess_count.setText(" (" + dataSnapshot.child("mess_count").getValue().toString()+ ") ");
+                    //    holder.mess_count.setText(" (" + dataSnapshot.child("mess_count").getValue().toString()+ ") ");
 
 
                 }
@@ -235,30 +159,30 @@ public class MessesAdapter extends RecyclerView.Adapter< MessesAdapter.ViewHolde
                 if (dataSnapshot.hasChild("mess_count") && dataSnapshot.hasChild("readed")) {
 
 
-                       // holder.mess_count.setText(child.child(aryList.get(position).get("key").toString()).child("mess_count").getValue().toString());
+                    // holder.mess_count.setText(child.child(aryList.get(position).get("key").toString()).child("mess_count").getValue().toString());
 
 
-                        if (!dataSnapshot.child("readed").getValue().toString().equals("f")) {
-                            if (Integer.valueOf(dataSnapshot.child("mess_count").getValue().toString()) > 0) {
+                    if (!dataSnapshot.child("readed").getValue().toString().equals("f")) {
+                        if (Integer.valueOf(dataSnapshot.child("mess_count").getValue().toString()) > 0) {
 
-                                holder.readed.setImageResource(R.drawable.gal2);
-                                                        //holder.readed.setText("н");
-                            } else {
-                                holder.readed.setImageResource(R.drawable.gal1);
-                                //holder.readed.setText("п");
-                            }
+                            holder.readed.setImageResource(R.drawable.gal2);
+                            //holder.readed.setText("н");
                         } else {
-                            //holder.readed.setText("f");
-
-
-                            holder.readed.setImageResource(R.drawable.gal3);
+                            holder.readed.setImageResource(R.drawable.gal1);
+                            //holder.readed.setText("п");
                         }
+                    } else {
+                        //holder.readed.setText("f");
+
+
+                        holder.readed.setImageResource(R.drawable.gal3);
                     }
+                }
 
 
                 //if (dataSnapshot.hasChild("currtime")) {
-               //     holder.currdate.setText(getDatatime(dataSnapshot.child("currtime").getValue().toString()));
-             //   }
+                //     holder.currdate.setText(getDatatime(dataSnapshot.child("currtime").getValue().toString()));
+                //   }
 
             }
 

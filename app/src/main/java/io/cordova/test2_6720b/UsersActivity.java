@@ -96,6 +96,8 @@ public class UsersActivity extends AppCompatActivity {
         super.onCreate(savedInstanceState);
 
 
+
+
         // БАня
 
         FirebaseDatabase.getInstance().getReference().child(new Config2().tab_banlist).addValueEventListener(new ValueEventListener() {
@@ -138,7 +140,7 @@ public class UsersActivity extends AppCompatActivity {
             public void onDataChange(DataSnapshot snapshot) {
 
 
-                Toast.makeText(mContext, String.valueOf(snapshot.getValue()), Toast.LENGTH_LONG).show();
+                //Toast.makeText(mContext, String.valueOf(snapshot.getValue()), Toast.LENGTH_LONG).show();
 
                 ImageButton qImageView = (ImageButton) findViewById(R.id.acceptBtn);
 
@@ -214,86 +216,12 @@ public class UsersActivity extends AppCompatActivity {
                 .setSwipeDecor(new SwipeDecor()
                         .setPaddingTop(20)
                         .setRelativeScale(0.01f)
-                        .setSwipeInMsgLayoutId(new Languages().SwipeIn())
-                        .setSwipeOutMsgLayoutId(new Languages().SwipeOut()));
+                        .setSwipeInMsgLayoutId(new Languages().SwipeNext())
+                        .setSwipeOutMsgLayoutId(new Languages().SwipeNext()));
 
 
        // final String currlng = getIntent().getExtras().getString("currlng");
        // final String currlat = getIntent().getExtras().getString("currlat");
-
-/* Тестовый запрос */
-
-
-/*
-
-        FirebaseDatabase.getInstance().getReference().child(new Config2().tab_users).orderByChild("last_mess").addListenerForSingleValueEvent(new ValueEventListener() {
-
-            @Override
-            public void onDataChange(DataSnapshot dataSnapshot) {
-
-                for (DataSnapshot child : dataSnapshot.getChildren()) {
-
-                    final String Key = child.getKey();
-
-                    final String CommText = String.valueOf(child.child("name").getValue());
-
-
-                    if (child.hasChild("last_mess")) {
-
-                        final String CurrAct = child.child("last_mess").getValue().toString();
-
-                        Log.d("test_limit: ", Key + ", " + CommText + " : " + getDate(Long.parseLong(CurrAct)));
-
-                    }
-                    else
-                    {
-                        if (child.hasChild("curr_activity")) {
-
-                            String ct;
-
-                            final String CurrAct2 = child.child("curr_activity").getValue().toString();
-
-                            if (isNumeric(CurrAct2)) {
-
-                               // Log.d("test_limit2: ", Key + ", " + CommText + " : " + CurrAct2);
-
-                                ct = CurrAct2;
-
-                            }else
-                            {
-                                ct = "1000000000";
-
-                                //Log.d("test_limit2: ", Key + ", " + CommText + " : " + ts);
-                            }
-
-                            FirebaseDatabase.getInstance().getReference().child(new Config2().tab_users).child(Key).child("last_mess").setValue(ct);
-
-
-
-                            Log.d("test_limit2: ", Key + ", " + CommText + " : " + ct);
-                        }
-
-                    }
-
-                }
-            }
-
-                @Override
-                public void onCancelled(DatabaseError databaseError) {
-                    // Getting Post failed, log a message
-
-                    // ...
-                }
-            });
-
-*/
-
-
-
-
-        /* Тестовый запрос */
-
-
 
 
 
@@ -354,6 +282,9 @@ public class UsersActivity extends AppCompatActivity {
                 HashMap<String, String> M_profile_country = new HashMap<>();
                 HashMap<String, String> M_profile_name = new HashMap<>();
                 HashMap<String, String> M_profile_age = new HashMap<>();
+                HashMap<String, String> M_profile_likes = new HashMap<>();
+                HashMap<String, String> M_device_token = new HashMap<>();
+                HashMap<String, String> M_profile_gender = new HashMap<>();
 
                 for (DataSnapshot child : dataSnapshot.getChildren()) {
 
@@ -375,9 +306,12 @@ public class UsersActivity extends AppCompatActivity {
 
                         if (child.hasChild("coords") && child.hasChild("profile_photo"))
                         {
+                            //loc2.setLatitude(77.00);
+                           // loc2.setLongitude(77.00);
 
-                        loc2.setLatitude(Double.parseDouble(child.child("coords").child("lat").getValue().toString()));
-                        loc2.setLongitude(Double.parseDouble(child.child("coords").child("lng").getValue().toString()));
+
+                            loc2.setLatitude(Double.parseDouble(child.child("coords").child("lat").getValue().toString()));
+                            loc2.setLongitude(Double.parseDouble(child.child("coords").child("lng").getValue().toString()));
 
                         float distance = loc1.distanceTo(loc2) / 1000;
 
@@ -398,6 +332,23 @@ public class UsersActivity extends AppCompatActivity {
 
                             array.add(1);
 
+                            final String device_token;
+
+                                if (child.hasChild("device_token"))
+                                {
+                                    device_token = child.child("device_token").getValue().toString();
+                                }else {
+                                    device_token = "";
+                                }
+
+                                final String profile_likes;
+
+                                if (child.hasChild("likes"))
+                                {
+                                    profile_likes = child.child("likes").getValue().toString();
+                                }else {
+                                    profile_likes = "0";
+                                }
 
                             final String profile_name;
 
@@ -461,6 +412,9 @@ public class UsersActivity extends AppCompatActivity {
                                     M_profile_country.put(Key,profile_country);
                                     M_profile_name.put(Key,profile_name);
                                     M_profile_age.put(Key,profile_age);
+                                    M_profile_likes.put(Key,profile_likes);
+                                    M_device_token.put(Key,device_token);
+                                    M_profile_gender.put(Key,profile_gender);
 
 
                                     catNames.add (Key);
@@ -500,6 +454,7 @@ public class UsersActivity extends AppCompatActivity {
 
                 for (String object: catNames) {
 
+
                     i = catNames.indexOf(object) + 1;
 
                     if (i==catNames.size()) i = 0;
@@ -508,7 +463,7 @@ public class UsersActivity extends AppCompatActivity {
                         next_object = catNames.get(i);
 
 
-                     Log.i("my_arr2: ", String.valueOf(object) + " / " + catNames.indexOf(object) + "/" + i + " / " + next_object);
+                     Log.i("my_arr2: ", String.valueOf(object) + " / " + catNames.indexOf(object) + "/" + i + " / " + next_object + " / " + catNames.get(0));
 
                     if (FirebaseAuth.getInstance().getCurrentUser().getUid().equals("1qMMra5pItbJOtbIKcyQPHCaS7Q2")){
 
@@ -518,7 +473,9 @@ public class UsersActivity extends AppCompatActivity {
                         a_age = M_profile_age.get(object);
                     }
 
-                    Profile3 profile3 = new Profile3(M_profile_name.get(object), M_profile_photo.get(object), a_age, M_profile_country.get(object), object,next_object);
+                    String first_object = catNames.get(0);
+
+                    Profile3 profile3 = new Profile3(M_profile_name.get(object), M_profile_photo.get(object), a_age, M_profile_country.get(object), M_profile_likes.get(object), M_device_token.get(object), M_profile_gender.get(object), object,next_object,first_object);
                     mSwipeView.addView(new TinderCard(mContext, profile3, mSwipeView));
 
 
@@ -533,6 +490,9 @@ public class UsersActivity extends AppCompatActivity {
 
                 if (array.size()==0)
                 {
+                    LinearLayout control_b = findViewById(R.id.bottom_control);
+                    control_b.setVisibility(View.GONE);
+
                     TextView textView = (TextView)findViewById(R.id.nousers);
                     textView.setText(new Languages().NoUsers());
                     textView.setVisibility(View.VISIBLE);
@@ -575,9 +535,14 @@ public class UsersActivity extends AppCompatActivity {
             Log.i("profile:",String.valueOf(profile.getAge()));
         }
 */
+
+        //Log.d("swipe_info:",String.valueOf(mSwipeView.getAllResolvers()));
+
         findViewById(R.id.rejectBtn).setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
+
+
 
 
                 mSwipeView.doSwipe(false);
@@ -718,7 +683,7 @@ public class UsersActivity extends AppCompatActivity {
 
 
            getMenuInflater().inflate(R.menu.menu_users2, menu);
-
+        menu.findItem(R.id.friends).setTitle(new Languages().MenuFriends());
         menu.findItem(R.id.index).setTitle(new Languages().MenuIndex());
         menu.findItem(R.id.messages).setTitle(new Languages().MenuMessages());
         menu.findItem(R.id.likes).setTitle(new Languages().MenuLikes());
@@ -741,6 +706,15 @@ public class UsersActivity extends AppCompatActivity {
             finish();
 
             return (true);
+
+        case R.id.friends:
+
+            Intent usersScreen = new Intent(getApplication(), UsersActivity.class);
+            startActivity(usersScreen);
+
+
+            //Toast.makeText(this, "Аватарка обновлена", Toast.LENGTH_LONG).show();
+            return true;
 
 
         case R.id.messages:

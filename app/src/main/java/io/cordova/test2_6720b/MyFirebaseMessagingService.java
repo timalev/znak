@@ -53,8 +53,21 @@ public class MyFirebaseMessagingService extends FirebaseMessagingService {
     @Override
     public void onMessageReceived(RemoteMessage message) {
 
+        final String notif_mess;
+        String s;
 
         String data = message.getData().get("extram");
+
+        if (message.getData().containsKey("extram3"))
+        {
+            notif_mess = new Languages().NewLike();
+            s = "like";
+        }else
+        {
+            notif_mess = new Languages().NewMessage();
+            s = "mess";
+        }
+
 
         /*
         Intent nextScreen = new Intent(getApplication(), VideoActivityMess.class);
@@ -67,7 +80,7 @@ public class MyFirebaseMessagingService extends FirebaseMessagingService {
         if (!FirebaseAuth.getInstance().getCurrentUser().getUid().equals(message.getData().get("extram"))) {
 
 
-            sendMyNotification(message.getNotification().getBody(), message.getData().get("extram"), message.getData().get("extram2"));
+            sendMyNotification(s, message.getNotification().getBody(), message.getData().get("extram"), message.getData().get("extram2"));
 
             Log.i("messbody:", data);
 
@@ -75,7 +88,7 @@ public class MyFirebaseMessagingService extends FirebaseMessagingService {
             handler.post(new Runnable() {
                 public void run() {
 
-                    Toast.makeText(getApplicationContext(), new Languages().NewMessage(), Toast.LENGTH_SHORT).show();
+                    Toast.makeText(getApplicationContext(), notif_mess, Toast.LENGTH_SHORT).show();
 
                     //Context contex = context;
 
@@ -87,7 +100,7 @@ public class MyFirebaseMessagingService extends FirebaseMessagingService {
         }
     }
 
-    private void sendMyNotification(String message, String extram, String extram2) {
+    private void sendMyNotification(String s, String message, String extram, String extram2) {
 
         //On click of notification it redirect to this Activity
 
@@ -101,14 +114,29 @@ public class MyFirebaseMessagingService extends FirebaseMessagingService {
 
 
         Uri soundUri= RingtoneManager.getDefaultUri(RingtoneManager.TYPE_NOTIFICATION);
-        NotificationCompat.Builder notificationBuilder = new NotificationCompat.Builder(this)
-                .setSmallIcon(R.mipmap.ic_launcher)
-                .setContentTitle(extram2)
-                .setContentText(message)
-                .setAutoCancel(true)
-                .setSmallIcon(R.drawable.mess)
-                .setSound(soundUri)
-                .setContentIntent(pendingIntent);
+        NotificationCompat.Builder notificationBuilder;
+
+        if (s.equals("like")) {
+
+            notificationBuilder = new NotificationCompat.Builder(this)
+                    .setSmallIcon(R.mipmap.ic_launcher)
+                    .setContentTitle(extram2)
+                    .setContentText(message)
+                    .setAutoCancel(true)
+                    .setSmallIcon(R.drawable.n_heart)
+                    .setSound(soundUri)
+                    .setContentIntent(pendingIntent);
+        }else
+        {
+            notificationBuilder = new NotificationCompat.Builder(this)
+                    .setSmallIcon(R.mipmap.ic_launcher)
+                    .setContentTitle(extram2)
+                    .setContentText(message)
+                    .setAutoCancel(true)
+                    .setSmallIcon(R.drawable.mess)
+                    .setSound(soundUri)
+                    .setContentIntent(pendingIntent);
+        }
 
         NotificationManager notificationManager =
                 (NotificationManager) getSystemService(Context.NOTIFICATION_SERVICE);

@@ -195,7 +195,7 @@ public class VideoActivityAllMess extends AppCompatActivity {
                         mylist.add(map);
 
 
-                        // Log.d("COUNT4: ",String.valueOf(map) + "/"  + "/" +name);
+                         Log.d("COUNT4: ",Key  + "/" +name);
 
 
                     }
@@ -401,6 +401,7 @@ public class VideoActivityAllMess extends AppCompatActivity {
             getMenuInflater().inflate(R.menu.menu_allmess, menu);
 
         menu.findItem(R.id.index).setTitle(new Languages().MenuIndex());
+        menu.findItem(R.id.likes).setTitle(new Languages().MenuLikes());
         menu.findItem(R.id.friends).setTitle(new Languages().MenuFriends());
         menu.findItem(R.id.about).setTitle(new Languages().MenuAbout());
 
@@ -424,6 +425,14 @@ public class VideoActivityAllMess extends AppCompatActivity {
             Intent usersScreen = new Intent(getApplication(), UsersActivity.class);
             startActivity(usersScreen);
 
+
+            //Toast.makeText(this, "Аватарка обновлена", Toast.LENGTH_LONG).show();
+            return true;
+
+        case R.id.likes:
+
+            Intent likesScreen = new Intent(getApplication(), ActivityLikes.class);
+            startActivity(likesScreen);
 
             //Toast.makeText(this, "Аватарка обновлена", Toast.LENGTH_LONG).show();
             return true;

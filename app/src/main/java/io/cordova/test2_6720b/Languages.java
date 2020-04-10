@@ -517,6 +517,17 @@ public class Languages {
 
         return hashMap.get(lang);
     }
+    public String NewLike()
+    {
+        hashMap.put("ru","Вас лайкнули!");
+        hashMap.put("en","Like you!");
+        hashMap.put("de","Like you!");
+        hashMap.put("zh","Like you");
+        hashMap.put("es","Like you");
+        hashMap.put("ar","Like you");
+
+        return hashMap.get(lang);
+    }
 
     public String NoUsers()
     {
@@ -551,6 +562,19 @@ public class Languages {
         hashMap2.put("zh",R.drawable.forward_zh);
         hashMap2.put("es",R.drawable.forward_es);
         hashMap2.put("ar",R.drawable.forward_ar);
+
+        return hashMap2.get(lang);
+    }
+
+    public Integer SwipeNext()
+    {
+        hashMap2.put("ru",R.layout.tinder_swipe_next_msg_view_ru);
+        hashMap2.put("en",R.layout.tinder_swipe_in_msg_view_en);
+        hashMap2.put("de",R.layout.tinder_swipe_in_msg_view_de);
+        hashMap2.put("zh",R.layout.tinder_swipe_in_msg_view_zh);
+        hashMap2.put("es",R.layout.tinder_swipe_in_msg_view_es);
+        hashMap2.put("fr",R.layout.tinder_swipe_in_msg_view_fr);
+        hashMap2.put("ar",R.layout.tinder_swipe_in_msg_view_ar);
 
         return hashMap2.get(lang);
     }

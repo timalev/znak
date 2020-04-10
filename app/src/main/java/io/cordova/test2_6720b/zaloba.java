@@ -28,14 +28,7 @@ public class zaloba extends AppCompatActivity {
 
         Button button = (Button) findViewById(R.id.button1);
 
-
-
-
-
-
-
         if (getIntent().getExtras().containsKey("extram")) {
-
 
             button.setOnClickListener(new View.OnClickListener() {
                 @Override

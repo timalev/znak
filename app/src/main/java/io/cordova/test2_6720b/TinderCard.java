@@ -36,7 +36,19 @@ import com.mindorks.placeholderview.annotations.swipe.SwipeInState;
 import com.mindorks.placeholderview.annotations.swipe.SwipeOut;
 import com.mindorks.placeholderview.annotations.swipe.SwipeOutState;
 
+import org.json.JSONObject;
+
+import java.io.BufferedWriter;
+import java.io.DataOutputStream;
 import java.io.File;
+import java.io.IOException;
+import java.io.OutputStreamWriter;
+import java.net.HttpURLConnection;
+import java.net.MalformedURLException;
+import java.net.ProtocolException;
+import java.net.URL;
+import java.nio.charset.StandardCharsets;
+import java.util.ArrayList;
 
 import javax.sql.DataSource;
 
@@ -51,6 +63,9 @@ public class TinderCard {
 
     @View(R.id.profileImageView)
     private ImageView profileImageView;
+
+    @View(R.id.lukosov)
+    private TextView lukosov;
 
     @View(R.id.nameAgeTxt)
     private TextView nameAgeTxt;
@@ -90,21 +105,19 @@ public class TinderCard {
 
        // Toast.makeText(mContext, String.valueOf(mProfile.getKey2()), Toast.LENGTH_LONG).show();
 
-        FirebaseDatabase.getInstance().getReference().child("zn_likes").child(mProfile.getKey2()).addListenerForSingleValueEvent(new ValueEventListener() {
+
+        FirebaseDatabase.getInstance().getReference().child("zn_likes").child(mProfile.getKey()).addValueEventListener(new ValueEventListener() {
 
             @Override
             public void onDataChange(DataSnapshot dataSnapshot) {
 
-                if (dataSnapshot.hasChild(FirebaseAuth.getInstance().getCurrentUser().getUid())) {
-                    FirebaseDatabase.getInstance().getReference().child("zn_likes").child("total_likes").child(FirebaseAuth.getInstance().getCurrentUser().getUid()).child("like").setValue(1);
-                }
-                else {
-                    FirebaseDatabase.getInstance().getReference().child("zn_likes").child("total_likes").child(FirebaseAuth.getInstance().getCurrentUser().getUid()).child("like").setValue(0);
-                }
-
                 long count= dataSnapshot.getChildrenCount();
 
+                lukosov.setText(String.valueOf(count));
+
                 FirebaseDatabase.getInstance().getReference().child("zn_likes").child("total_likes").child(FirebaseAuth.getInstance().getCurrentUser().getUid()).child("count").setValue(count);
+
+                FirebaseDatabase.getInstance().getReference().child(new Config2().tab_users).child(mProfile.getKey()).child("likes").setValue(count);
             }
 
             @Override
@@ -115,14 +128,42 @@ public class TinderCard {
 
 
 
+/*
+        if (mProfile.getKey().equals(mProfile.getKey3())) {
+
+
+            FirebaseDatabase.getInstance().getReference().child("zn_likes").child(mProfile.getKey()).addListenerForSingleValueEvent(new ValueEventListener() {
+
+                @Override
+                public void onDataChange(DataSnapshot dataSnapshot) {
+
+                    if (dataSnapshot.hasChild(FirebaseAuth.getInstance().getCurrentUser().getUid())) {
+                        FirebaseDatabase.getInstance().getReference().child("zn_likes").child("total_likes").child(FirebaseAuth.getInstance().getCurrentUser().getUid()).child("like").setValue(1);
+                    } else {
+                        FirebaseDatabase.getInstance().getReference().child("zn_likes").child("total_likes").child(FirebaseAuth.getInstance().getCurrentUser().getUid()).child("like").setValue(0);
+                    }
+
+                    long count = dataSnapshot.getChildrenCount();
+
+                    FirebaseDatabase.getInstance().getReference().child("zn_likes").child("total_likes").child(FirebaseAuth.getInstance().getCurrentUser().getUid()).child("count").setValue(count);
+                }
+
+                @Override
+                public void onCancelled(DatabaseError databaseError) {
+
+                }
+            });
+
+        }
+*/
         String str = mProfile.getImageUrl();
-
-
-
 
         final String url_file_name = Environment.getExternalStorageDirectory().toString() + "/Android/data/io.cordova.test2_6720b/cache/" + URLUtil.guessFileName(str, null, null);
 
         final File file = new File(url_file_name);
+
+
+
 
         if(file.exists())
         {
@@ -203,38 +244,12 @@ public class TinderCard {
                     }).execute();
 
         }
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-/*
-        Glide
-                .with(mContext)
-                .load(mProfile.getImageUrl())
-                .diskCacheStrategy(DiskCacheStrategy.ALL)
-                .error(R.drawable.noavatar)
-                .into(profileImageView);
-
-
-                */
+        //Toast.makeText(mContext, "HUY V GOVNE2 (" + mProfile.getKey() + "  |  " + mProfile.getKey3()+")", Toast.LENGTH_LONG).show();
+//Log.d("sho za huy",mProfile.getKey());
 
         nameAgeTxt.setText(mProfile.getName() + ", " + mProfile.getAge());
         locationNameTxt.setText(mProfile.getCountry());
+        lukosov.setText(mProfile.getLikes());
     }
 
     @SwipeOut
@@ -255,20 +270,43 @@ public class TinderCard {
     private void onClick()
     {
 
-        //Toast.makeText(mContext, mProfile.getKey(), Toast.LENGTH_LONG).show();
+     //   Toast.makeText(mContext, String.valueOf(mProfile.getKey2() + " / " + FirebaseAuth.getInstance().getCurrentUser().getUid()), Toast.LENGTH_LONG).show();
 
-        FirebaseDatabase.getInstance().getReference().child("zn_likes").child(mProfile.getKey()).addListenerForSingleValueEvent(new ValueEventListener() {
+        FirebaseDatabase.getInstance().getReference().child(new Config2().tab_users).child(FirebaseAuth.getInstance().getCurrentUser().getUid()).addListenerForSingleValueEvent(new ValueEventListener() {
+            @Override
+            public void onDataChange(final DataSnapshot snapshot2) {
+
+                final String s_gender;
+
+                if (snapshot2.child("profile_gender").getValue().equals("m"))
+                {
+                    s_gender = "поставил";
+                }else
+                {
+                    s_gender = "поставила";
+                }
+
+               // Toast.makeText(mContext, String.valueOf(snapshot2.child("profile_gender").getValue() + " / " + snapshot2.child("profile_name").getValue()), Toast.LENGTH_LONG).show();
+
+
+
+                FirebaseDatabase.getInstance().getReference().child("zn_likes").child(mProfile.getKey()).addListenerForSingleValueEvent(new ValueEventListener() {
             @Override
             public void onDataChange(DataSnapshot snapshot) {
                 if (snapshot.hasChild(FirebaseAuth.getInstance().getCurrentUser().getUid())) {
                     // run some code
 
                     FirebaseDatabase.getInstance().getReference().child("zn_likes").child(mProfile.getKey()).child(FirebaseAuth.getInstance().getCurrentUser().getUid()).removeValue();
-                    FirebaseDatabase.getInstance().getReference().child("zn_likes").child("total_likes").child(FirebaseAuth.getInstance().getCurrentUser().getUid()).child("like").setValue(0);
+
+                    sendlike("param1="+ snapshot2.child("profile_name").getValue() + "&param2=0&param3=" + mProfile.getDevice_token() + "&param4=" + s_gender + "&param5=" + FirebaseAuth.getInstance().getCurrentUser().getUid());
+                    
+                    //FirebaseDatabase.getInstance().getReference().child("zn_likes").child("total_likes").child(FirebaseAuth.getInstance().getCurrentUser().getUid()).child("like").setValue(0);
                 }else
                 {
                     FirebaseDatabase.getInstance().getReference().child("zn_likes").child(mProfile.getKey()).child(FirebaseAuth.getInstance().getCurrentUser().getUid()).setValue(1);
-                    FirebaseDatabase.getInstance().getReference().child("zn_likes").child("total_likes").child(FirebaseAuth.getInstance().getCurrentUser().getUid()).child("like").setValue(1);
+                    //FirebaseDatabase.getInstance().getReference().child("zn_likes").child("total_likes").child(FirebaseAuth.getInstance().getCurrentUser().getUid()).child("like").setValue(1);
+
+                    sendlike("param1="+ snapshot2.child("profile_name").getValue() + "&param2=1&param3=" + mProfile.getDevice_token() + "&param4=" + s_gender + "&param5=" + FirebaseAuth.getInstance().getCurrentUser().getUid());
 
                 }
             }
@@ -278,7 +316,13 @@ public class TinderCard {
 
             }
         });
+            }
 
+            @Override
+            public void onCancelled(DatabaseError databaseError2) {
+
+            }
+        });
 
 
         FirebaseDatabase.getInstance().getReference().child("zn_likes").child(mProfile.getKey()).addValueEventListener(new ValueEventListener() {
@@ -288,7 +332,11 @@ public class TinderCard {
 
                 long count= dataSnapshot.getChildrenCount();
 
+                lukosov.setText(String.valueOf(count));
+
                 FirebaseDatabase.getInstance().getReference().child("zn_likes").child("total_likes").child(FirebaseAuth.getInstance().getCurrentUser().getUid()).child("count").setValue(count);
+
+                FirebaseDatabase.getInstance().getReference().child(new Config2().tab_users).child(mProfile.getKey()).child("likes").setValue(count);
             }
 
             @Override
@@ -307,7 +355,12 @@ public class TinderCard {
     @SwipeIn
     private void onSwipeIn(){
 
+        mSwipeView.doSwipe(false);
 
+        //FirebaseDatabase.getInstance().getReference().child("zn_feeling").child(FirebaseAuth.getInstance().getCurrentUser().getUid()).child(mProfile.getKey()).setValue(1);
+
+
+/*
         Intent nextScreen = new Intent(mContext, VideoActivityMess.class);
 
         nextScreen.putExtra("curruser", mProfile.getKey());
@@ -320,7 +373,7 @@ public class TinderCard {
         //finish();
 
         Log.d("EVENT", "onSwipedIn" + mProfile.getKey());
-
+*/
 
 
     }
@@ -334,4 +387,53 @@ public class TinderCard {
     private void onSwipeOutState(){
         Log.d("EVENT", "onSwipeOutState" + mProfile.getKey());
     }
+
+    public void sendlike(final String params) {
+
+        //Toast.makeText(getApplication(), extra + "/" + extra2, Toast.LENGTH_SHORT).show();
+
+        Thread thread2 = new Thread(new Runnable() {
+            @Override
+            public void run() {
+                try {
+
+                    String urlParameters  = params;
+
+                    //String urlParameters  = "param1=a&param2=b&param3=c";
+
+                    byte[] postData       = urlParameters.getBytes( StandardCharsets.UTF_8 );
+                    int    postDataLength = postData.length;
+                    String request        = "https://rieltorov.net/sendlikes.php";
+                    //String request = "https://allwebtech.ru/sendlikes.php";
+
+                    URL    url            = new URL( request );
+
+                    HttpURLConnection conn= (HttpURLConnection) url.openConnection();
+                    conn.setDoOutput( true );
+                    conn.setInstanceFollowRedirects( false );
+                    conn.setRequestMethod( "POST" );
+                    conn.setRequestProperty( "Content-Type", "application/x-www-form-urlencoded");
+                    conn.setRequestProperty( "charset", "utf-8");
+                    conn.setRequestProperty( "Content-Length", Integer.toString( postDataLength ));
+                    conn.setUseCaches( false );
+                    try( DataOutputStream wr = new DataOutputStream( conn.getOutputStream())) {
+                        wr.write( postData );
+                    }
+
+                    Log.i("STATUS88", String.valueOf(conn.getResponseCode()));
+                    Log.i("MSG88" ,String.valueOf(conn.getResponseMessage()));
+
+
+                    conn.disconnect();
+
+                } catch (Exception e) {
+                    e.printStackTrace();
+                }
+            }
+        });
+
+        thread2.start();
+    }
+
+
 }

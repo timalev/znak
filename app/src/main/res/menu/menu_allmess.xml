@@ -30,6 +30,12 @@
         tools:ignore="MenuTitle" />
 
     <item
+        android:id="@+id/likes"
+        android:orderInCategory="300"
+        app:showAsAction="never"
+        tools:ignore="MenuTitle" />
+
+    <item
         android:id="@+id/about"
         android:orderInCategory="400"
         app:showAsAction="never"

@@ -1,0 +1,29 @@
+<menu xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    xmlns:tools="http://schemas.android.com/tools" tools:context=".ActivityLikes">
+
+
+    <item
+        android:id="@+id/index"
+        android:orderInCategory="100"
+        app:showAsAction="never"
+        tools:ignore="MenuTitle" />
+
+    <item
+        android:id="@+id/friends"
+        android:orderInCategory="200"
+        app:showAsAction="never"
+        tools:ignore="MenuTitle" />
+
+    <item
+        android:id="@+id/messages"
+        android:orderInCategory="300"
+        app:showAsAction="never"
+        tools:ignore="MenuTitle" />
+
+    <item
+        android:id="@+id/about"
+        android:orderInCategory="400"
+        app:showAsAction="never"
+        tools:ignore="MenuTitle" />
+</menu>
