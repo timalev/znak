@@ -24,16 +24,25 @@
     android:layout_marginTop="?android:attr/actionBarSize"
     >
     <FrameLayout
+        android:id="@+id/p_block"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:background="#000000">
 
+        <ProgressBar
+            android:id="@+id/progressBar2"
+            android:layout_width="match_parent"
+            android:layout_height="match_parent"
+            android:scaleType="fitXY"
+            android:visibility="visible" />
+
         <ImageView
             android:id="@+id/img"
-            android:layout_width="600dp"
-            android:layout_height="260dp"
+            android:layout_width="match_parent"
+            android:layout_height="match_parent"
             android:scaleType="fitXY"
-            android:alpha="0.8" />
+            android:alpha="0.7"
+             />
 
         <android.support.v7.widget.Toolbar
             xmlns:android="http://schemas.android.com/apk/res/android"
@@ -60,13 +69,36 @@
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
                 android:id="@+id/chgpho"
-                android:text="Фото2"
+                android:text="Фото"
                 android:textSize="14dp"
                 android:layout_gravity="right"
                 android:layout_marginRight="20dp"
                 android:onClick="onClick"
                 android:clickable="true"
                 android:textColor="#fff"/>
+
+            <ImageView
+                android:id="@+id/r_left"
+                android:layout_width="50px"
+                android:layout_height="37px"
+                android:background="@drawable/r_left"
+                android:layout_gravity="left"
+                android:layout_marginRight="20dp"
+                android:onClick="onClick"
+                android:clickable="true"
+                />
+
+            <ImageView
+                android:id="@+id/r_right"
+                android:layout_width="50px"
+                android:layout_height="37px"
+                android:background="@drawable/r_right"
+                android:layout_gravity="left"
+                android:layout_marginRight="20dp"
+                android:onClick="onClick"
+                android:clickable="true"
+                />
+
         </android.support.v7.widget.Toolbar>
         <LinearLayout
             android:layout_width="match_parent"
@@ -224,7 +256,7 @@
     <ImageButton
 
         android:layout_width="match_parent"
-        android:layout_height="match_parent"
+        android:layout_height="70dp"
         android:id="@+id/imageButton"
         android:onClick="onClick"
         android:clickable="true"

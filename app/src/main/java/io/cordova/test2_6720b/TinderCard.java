@@ -3,6 +3,7 @@ package io.cordova.test2_6720b;
 import android.content.Context;
 import android.content.Intent;
 import android.content.pm.PackageManager;
+import android.graphics.Point;
 import android.graphics.drawable.Drawable;
 import android.location.LocationManager;
 import android.os.Environment;
@@ -10,6 +11,7 @@ import android.support.annotation.Nullable;
 import android.support.v4.app.ActivityCompat;
 import android.util.Log;
 import android.webkit.URLUtil;
+import android.widget.FrameLayout;
 import android.widget.ImageView;
 import android.widget.ProgressBar;
 import android.widget.TextView;
@@ -25,6 +27,7 @@ import com.google.firebase.database.DataSnapshot;
 import com.google.firebase.database.DatabaseError;
 import com.google.firebase.database.FirebaseDatabase;
 import com.google.firebase.database.ValueEventListener;
+import com.mindorks.placeholderview.SwipeDirection;
 import com.mindorks.placeholderview.SwipePlaceHolderView;
 import com.mindorks.placeholderview.annotations.Click;
 import com.mindorks.placeholderview.annotations.Layout;
@@ -32,9 +35,14 @@ import com.mindorks.placeholderview.annotations.Resolve;
 import com.mindorks.placeholderview.annotations.View;
 import com.mindorks.placeholderview.annotations.swipe.SwipeCancelState;
 import com.mindorks.placeholderview.annotations.swipe.SwipeIn;
-import com.mindorks.placeholderview.annotations.swipe.SwipeInState;
+import com.mindorks.placeholderview.annotations.swipe.SwipeInDirectional;
 import com.mindorks.placeholderview.annotations.swipe.SwipeOut;
-import com.mindorks.placeholderview.annotations.swipe.SwipeOutState;
+import com.mindorks.placeholderview.annotations.swipe.SwipeOutDirectional;
+import com.mindorks.placeholderview.annotations.swipe.SwipeTouch;
+import com.mindorks.placeholderview.annotations.swipe.SwipeView;
+import com.mindorks.placeholderview.annotations.swipe.SwipingDirection;
+
+//import jp.wasabeef.glide.transformations.RoundedCornersTransformation;
 
 import org.json.JSONObject;
 
@@ -56,31 +64,46 @@ import javax.sql.DataSource;
 public class TinderCard {
 
     @View(R.id.progressBar)
-    private ProgressBar pb;
+    ProgressBar pb;
 
     @View(R.id.nopho)
-    private ImageView nophoto;
+    ImageView nophoto;
+
+    @View(R.id.s_like)
+    ImageView s_like;
+
+
+    @View(R.id.towrite)
+    TextView towrite;
 
     @View(R.id.profileImageView)
-    private ImageView profileImageView;
+    ImageView profileImageView;
 
     @View(R.id.lukosov)
-    private TextView lukosov;
+    TextView lukosov;
 
     @View(R.id.nameAgeTxt)
-    private TextView nameAgeTxt;
+    TextView nameAgeTxt;
+
 
     @View(R.id.locationNameTxt)
-    private TextView locationNameTxt;
+    TextView locationNameTxt;
 
     private Profile3 mProfile;
     private Context mContext;
-    private SwipePlaceHolderView mSwipeView;
+    private Point mCardViewHolderSize;
+    private Callback mCallback;
+    //SwipePlaceHolderView mSwipeView;
+
+    @SwipeView
+    android.view.View mSwipeView;
 
     public TinderCard(Context context, Profile3 profile, SwipePlaceHolderView swipeView) {
         mContext = context;
         mProfile = profile;
-        mSwipeView = swipeView;
+
+
+        //  mSwipeView = swipeView;
 
     }
 
@@ -98,7 +121,7 @@ public class TinderCard {
     }
 
     @Resolve
-    private void onResolved(){
+    public void onResolved(){
         //Glide.with(mContext).load(mProfile.getImageUrl()).into(profileImageView);
         //https://pbs.twimg.com/profile_images/572905100960485376/GK09QnNG.jpeg
 
@@ -127,43 +150,11 @@ public class TinderCard {
         });
 
 
-
-/*
-        if (mProfile.getKey().equals(mProfile.getKey3())) {
-
-
-            FirebaseDatabase.getInstance().getReference().child("zn_likes").child(mProfile.getKey()).addListenerForSingleValueEvent(new ValueEventListener() {
-
-                @Override
-                public void onDataChange(DataSnapshot dataSnapshot) {
-
-                    if (dataSnapshot.hasChild(FirebaseAuth.getInstance().getCurrentUser().getUid())) {
-                        FirebaseDatabase.getInstance().getReference().child("zn_likes").child("total_likes").child(FirebaseAuth.getInstance().getCurrentUser().getUid()).child("like").setValue(1);
-                    } else {
-                        FirebaseDatabase.getInstance().getReference().child("zn_likes").child("total_likes").child(FirebaseAuth.getInstance().getCurrentUser().getUid()).child("like").setValue(0);
-                    }
-
-                    long count = dataSnapshot.getChildrenCount();
-
-                    FirebaseDatabase.getInstance().getReference().child("zn_likes").child("total_likes").child(FirebaseAuth.getInstance().getCurrentUser().getUid()).child("count").setValue(count);
-                }
-
-                @Override
-                public void onCancelled(DatabaseError databaseError) {
-
-                }
-            });
-
-        }
-*/
         String str = mProfile.getImageUrl();
 
         final String url_file_name = Environment.getExternalStorageDirectory().toString() + "/Android/data/io.cordova.test2_6720b/cache/" + URLUtil.guessFileName(str, null, null);
 
         final File file = new File(url_file_name);
-
-
-
 
         if(file.exists())
         {
@@ -252,6 +243,60 @@ public class TinderCard {
         lukosov.setText(mProfile.getLikes());
     }
 
+    @SwipeOutDirectional
+    public void onSwipeOutDirectional(SwipeDirection direction) {
+
+        Log.d("DEBUG", "SwipeOutDirectional " + direction.name());
+        if (direction.getDirection() == SwipeDirection.TOP.getDirection()) {
+            mCallback.onSwipeUp();
+        }
+    }
+
+    @SwipeCancelState
+    public void onSwipeCancelState() {
+
+        Log.d("DEBUG", "onSwipeCancelState");
+        mSwipeView.setAlpha(1);
+    }
+
+    @SwipeInDirectional
+    public void onSwipeInDirectional(SwipeDirection direction) {
+
+        Toast.makeText(mContext, mProfile.getKey2() + " /22 " + mProfile.getKey3(), Toast.LENGTH_SHORT).show();
+    }
+
+    @SwipingDirection
+    public void onSwipingDirection(SwipeDirection direction) {
+
+        Log.d("DEBUG", "SwipingDirection " + direction.name());
+    }
+
+    @SwipeTouch
+    public void onSwipeTouch(float xStart, float yStart, float xCurrent, float yCurrent) {
+
+        float cardHolderDiagonalLength =
+                (float) Math.sqrt(Math.pow(mCardViewHolderSize.x, 2) + (Math.pow(mCardViewHolderSize.y, 2)));
+        float distance = (float) Math.sqrt(Math.pow(xCurrent - xStart, 2) + (Math.pow(yCurrent - yStart, 2)));
+
+        float alpha = 1 - distance / cardHolderDiagonalLength;
+
+        Log.d("DEBUG", "onSwipeTouch "
+                + " xStart : " + xStart
+                + " yStart : " + yStart
+                + " xCurrent : " + xCurrent
+                + " yCurrent : " + yCurrent
+                + " distance : " + distance
+                + " TotalLength : " + cardHolderDiagonalLength
+                + " alpha : " + alpha
+        );
+
+        ((FrameLayout)mSwipeView).setAlpha(alpha);
+    }
+
+    interface Callback {
+        void onSwipeUp();
+    }
+/*
     @SwipeOut
     private void onSwipedOut(){
 
@@ -260,17 +305,19 @@ public class TinderCard {
     }
 
 
-
     @SwipeCancelState
     private void onSwipeCancelState(){
         Log.d("EVENT", "onSwipeCancelState");
     }
-
-    @Click(R.id.profileImageView)
-    private void onClick()
+*/
+    @Click(R.id.s_like)
+    public void onLike()
     {
+        //if (mProfile.)
+        // mSwipeView.isShown()
 
-     //   Toast.makeText(mContext, String.valueOf(mProfile.getKey2() + " / " + FirebaseAuth.getInstance().getCurrentUser().getUid()), Toast.LENGTH_LONG).show();
+       // Toast.makeText(mContext, String.valueOf(mSwipeView.isShown()), Toast.LENGTH_LONG).show();
+
 
         FirebaseDatabase.getInstance().getReference().child(new Config2().tab_users).child(FirebaseAuth.getInstance().getCurrentUser().getUid()).addListenerForSingleValueEvent(new ValueEventListener() {
             @Override
@@ -286,36 +333,48 @@ public class TinderCard {
                     s_gender = "поставила";
                 }
 
-               // Toast.makeText(mContext, String.valueOf(snapshot2.child("profile_gender").getValue() + " / " + snapshot2.child("profile_name").getValue()), Toast.LENGTH_LONG).show();
+                // Toast.makeText(mContext, String.valueOf(snapshot2.child("profile_gender").getValue() + " / " + snapshot2.child("profile_name").getValue()), Toast.LENGTH_LONG).show();
 
 
 
                 FirebaseDatabase.getInstance().getReference().child("zn_likes").child(mProfile.getKey()).addListenerForSingleValueEvent(new ValueEventListener() {
-            @Override
-            public void onDataChange(DataSnapshot snapshot) {
-                if (snapshot.hasChild(FirebaseAuth.getInstance().getCurrentUser().getUid())) {
-                    // run some code
+                    @Override
+                    public void onDataChange(DataSnapshot snapshot) {
+                        if (snapshot.hasChild(FirebaseAuth.getInstance().getCurrentUser().getUid())) {
+                            // run some code
 
-                    FirebaseDatabase.getInstance().getReference().child("zn_likes").child(mProfile.getKey()).child(FirebaseAuth.getInstance().getCurrentUser().getUid()).removeValue();
+                            FirebaseDatabase.getInstance().getReference().child("zn_likes").child(mProfile.getKey()).child(FirebaseAuth.getInstance().getCurrentUser().getUid()).removeValue();
 
-                    sendlike("param1="+ snapshot2.child("profile_name").getValue() + "&param2=0&param3=" + mProfile.getDevice_token() + "&param4=" + s_gender + "&param5=" + FirebaseAuth.getInstance().getCurrentUser().getUid());
-                    
-                    //FirebaseDatabase.getInstance().getReference().child("zn_likes").child("total_likes").child(FirebaseAuth.getInstance().getCurrentUser().getUid()).child("like").setValue(0);
-                }else
-                {
-                    FirebaseDatabase.getInstance().getReference().child("zn_likes").child(mProfile.getKey()).child(FirebaseAuth.getInstance().getCurrentUser().getUid()).setValue(1);
-                    //FirebaseDatabase.getInstance().getReference().child("zn_likes").child("total_likes").child(FirebaseAuth.getInstance().getCurrentUser().getUid()).child("like").setValue(1);
+                            sendlike("param1="+ snapshot2.child("profile_name").getValue() + "&param2=0&param3=" + mProfile.getDevice_token() + "&param4=" + s_gender + "&param5=" + FirebaseAuth.getInstance().getCurrentUser().getUid());
 
-                    sendlike("param1="+ snapshot2.child("profile_name").getValue() + "&param2=1&param3=" + mProfile.getDevice_token() + "&param4=" + s_gender + "&param5=" + FirebaseAuth.getInstance().getCurrentUser().getUid());
+                            //FirebaseDatabase.getInstance().getReference().child("zn_likes").child("total_likes").child(FirebaseAuth.getInstance().getCurrentUser().getUid()).child("like").setValue(0);
+                        }else
+                        {
+                            FirebaseDatabase.getInstance().getReference().child(new Config2().tab_users).child(FirebaseAuth.getInstance().getCurrentUser().getUid()).addListenerForSingleValueEvent(new ValueEventListener() {
 
-                }
-            }
+                                @Override
+                                public void onDataChange(DataSnapshot snapshot3) {
+                                    if (snapshot3.hasChild("profile_name")) {
 
-            @Override
-            public void onCancelled(DatabaseError databaseError) {
+                                        FirebaseDatabase.getInstance().getReference().child("zn_likes").child(mProfile.getKey()).child(FirebaseAuth.getInstance().getCurrentUser().getUid()).setValue(snapshot3.child("profile_name").getValue());
+                                    }
+                                }
 
-            }
-        });
+                                @Override
+                                public void onCancelled(DatabaseError databaseError3)
+                                {
+                                }
+                            });
+
+                            sendlike("param1="+ snapshot2.child("profile_name").getValue() + "&param2=1&param3=" + mProfile.getDevice_token() + "&param4=" + s_gender + "&param5=" + FirebaseAuth.getInstance().getCurrentUser().getUid());
+                        }
+                    }
+
+                    @Override
+                    public void onCancelled(DatabaseError databaseError) {
+
+                    }
+                });
             }
 
             @Override
@@ -345,22 +404,13 @@ public class TinderCard {
             }
         });
 
-        //FirebaseDatabase.getInstance().getReference().child("zn_likes").child(FirebaseAuth.getInstance().getCurrentUser().getUid()).setValue(1);
 
-        //FirebaseDatabase.getInstance().getReference().child(new Config2().tab_users).child(FirebaseAuth.getInstance().getCurrentUser().getUid()).child("coords").setValue(coords);
 
-        // Toast.makeText(mContext, mProfile.getKey(), Toast.LENGTH_LONG).show();
     }
 
-    @SwipeIn
-    private void onSwipeIn(){
+    @Click(R.id.towrite)
+    public void toWrite(){
 
-        mSwipeView.doSwipe(false);
-
-        //FirebaseDatabase.getInstance().getReference().child("zn_feeling").child(FirebaseAuth.getInstance().getCurrentUser().getUid()).child(mProfile.getKey()).setValue(1);
-
-
-/*
         Intent nextScreen = new Intent(mContext, VideoActivityMess.class);
 
         nextScreen.putExtra("curruser", mProfile.getKey());
@@ -369,13 +419,39 @@ public class TinderCard {
         nextScreen.setFlags(Intent.FLAG_ACTIVITY_NEW_TASK);
 
         mContext.startActivity(nextScreen);
+    }
 
-        //finish();
+    @SwipeOut
+    public  void SwipeOut()
+    {
+       // Toast.makeText(mContext, mProfile.getKey2() + " / " + mProfile.getKey3(), Toast.LENGTH_SHORT).show();
 
-        Log.d("EVENT", "onSwipedIn" + mProfile.getKey());
-*/
+        if (mProfile.getKey3() == mProfile.getKey2()) {
+
+            Toast.makeText(mContext, new Languages().NoMoreUsers(), Toast.LENGTH_SHORT).show();
+           //mSwipeView.
+        }
+    }
+
+        @SwipeIn
+    public void onSwipeIn() {
+
+           // mSwipeView.do
+
+          //  Toast.makeText(mContext, mProfile.getKey2() + " / " + mProfile.getKey3(), Toast.LENGTH_SHORT).show();
+            if (mProfile.getKey3() == mProfile.getKey2()) {
+
+                Toast.makeText(mContext, new Languages().NoMoreUsers(), Toast.LENGTH_SHORT).show();
+
+                //mSwipeView.removeAllViews();
+                //  mSwipeView.addView(this);
+
+                // mSwipeView.doSwipe(true);
+            }
+        }
 
 
+/*
     }
 
     @SwipeInState
@@ -387,7 +463,7 @@ public class TinderCard {
     private void onSwipeOutState(){
         Log.d("EVENT", "onSwipeOutState" + mProfile.getKey());
     }
-
+*/
     public void sendlike(final String params) {
 
         //Toast.makeText(getApplication(), extra + "/" + extra2, Toast.LENGTH_SHORT).show();

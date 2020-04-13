@@ -521,10 +521,10 @@ public class Languages {
     {
         hashMap.put("ru","Вас лайкнули!");
         hashMap.put("en","Like you!");
-        hashMap.put("de","Like you!");
-        hashMap.put("zh","Like you");
-        hashMap.put("es","Like you");
-        hashMap.put("ar","Like you");
+        hashMap.put("de","Wie du!!");
+        hashMap.put("zh","像你一樣！");
+        hashMap.put("es","Como tu");
+        hashMap.put("ar","مثلك!");
 
         return hashMap.get(lang);
     }
@@ -537,6 +537,19 @@ public class Languages {
         hashMap.put("zh","没有人在附近，再试一次..");
         hashMap.put("es","Mientras que nadie está cerca de ti, prueba en otro momento..");
         hashMap.put("ar","نما لا يوجد أحد في دائرة نصف قطرها ، حاول مرة أخرى.");
+
+
+        return hashMap.get(lang);
+    }
+
+    public String NoMoreUsers()
+    {
+        hashMap.put("ru","Больше анкет нет.");
+        hashMap.put("en","No more profiles");
+        hashMap.put("de","Keine Profile mehr");
+        hashMap.put("zh","沒有更多個人資料");
+        hashMap.put("es","No mas perfiles");
+        hashMap.put("ar","لا مزيد من الملفات الشخصية");
 
 
         return hashMap.get(lang);

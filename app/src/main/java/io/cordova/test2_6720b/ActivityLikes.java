@@ -64,12 +64,7 @@ public class ActivityLikes extends AppCompatActivity {
         adapter = new LikesAdapter(mylist);
         recyclerView.setAdapter(adapter);
 
-
-
        // Toast.makeText(this, FirebaseAuth.getInstance().getCurrentUser().getUid(), Toast.LENGTH_LONG).show();
-
-
-
 
         // FirebaseAuth.getInstance().getCurrentUser().getUid()
 
@@ -77,34 +72,6 @@ public class ActivityLikes extends AppCompatActivity {
             @Override
             public void onDataChange(DataSnapshot dataSnapshot) {
 
-             //   if (dataSnapshot.hasChild(FirebaseAuth.getInstance().getCurrentUser().getUid())) {
-/*
-
-                Map<String, Object> td = (HashMap<String, Object>) dataSnapshot.getValue();
-
-                Collection<Object> values = td.values();
-
-                List list = new ArrayList(values);
-
-                Log.d("alllikes2", dataSnapshot.getKey() + ", " + String.valueOf(list));
-                Log.d("alllikes3", String.valueOf(td));
-
-                for (int l = 0; l < list.size(); l++) {
-
-                    // Log.d("List2: ", list.get(l).getClass().getName() + ", размер: " + list.toString());
-
-                    HashMap<String, Object> itemsList = (HashMap<String, Object>) list.get(l);
-
-                    for (Map.Entry<String, Object> entry : itemsList.entrySet()) {
-
-                        String key = entry.getKey();
-                        Object value = entry.getValue();
-
-                        Log.d("alllikes6", key + " / " +String.valueOf(itemsList.get("01lSm6gMqubvlEXooRLdhxAuIxz2")));
-
-                    }
-                }
-*/
                 for (DataSnapshot child : dataSnapshot.getChildren()) {
 
                     Log.d("alllikes5", child.getKey() + " / " +String.valueOf(child.getValue()));
@@ -120,7 +87,7 @@ public class ActivityLikes extends AppCompatActivity {
                     final HashMap<String, String> map = new HashMap<String, String>();
 
 
-                    map.put("name", "name");
+                    map.put("name", child.getValue().toString());
                     map.put("key", child.getKey());
 
 

@@ -10,10 +10,12 @@ import android.graphics.Bitmap;
 import android.graphics.BitmapFactory;
 import android.graphics.Color;
 import android.graphics.Matrix;
+import android.graphics.drawable.Drawable;
 import android.net.Uri;
 import android.os.Environment;
 import android.provider.MediaStore;
 import android.support.annotation.NonNull;
+import android.support.annotation.Nullable;
 import android.support.v4.app.ActivityCompat;
 import android.support.v4.content.ContextCompat;
 import android.support.v7.app.AlertDialog;
@@ -27,16 +29,28 @@ import android.util.Log;
 import android.view.Menu;
 import android.view.MenuItem;
 import android.view.View;
+import android.view.ViewGroup;
+import android.view.ViewManager;
+import android.webkit.URLUtil;
 import android.widget.EditText;
+import android.widget.FrameLayout;
 import android.widget.ImageButton;
 import android.widget.ImageView;
+import android.widget.LinearLayout;
 import android.widget.ProgressBar;
 import android.widget.RadioButton;
+import android.widget.RelativeLayout;
 import android.widget.Switch;
 import android.widget.TextView;
 import android.widget.Toast;
 
 import com.bumptech.glide.Glide;
+import com.bumptech.glide.load.DecodeFormat;
+import com.bumptech.glide.load.engine.GlideException;
+import com.bumptech.glide.request.RequestListener;
+import com.bumptech.glide.request.RequestOptions;
+import com.bumptech.glide.request.target.Target;
+import com.bumptech.glide.signature.ObjectKey;
 import com.google.android.gms.auth.api.Auth;
 import com.google.android.gms.auth.api.signin.GoogleSignInAccount;
 import com.google.android.gms.auth.api.signin.GoogleSignInOptions;
@@ -72,6 +86,7 @@ import java.io.OutputStream;
 import java.io.OutputStreamWriter;
 import java.lang.reflect.Array;
 import java.net.HttpURLConnection;
+import java.net.MalformedURLException;
 import java.net.URL;
 import java.util.ArrayList;
 import java.util.List;
@@ -80,6 +95,7 @@ import java.util.Locale;
 
 //import customfonts.MyTextView;
 
+import static android.view.View.VISIBLE;
 import static io.cordova.test2_6720b.UsersActivity.MY_PERMISSIONS_REQUEST_WRITE_EXTERNAL_STORAGE;
 
 public class ProfileActivity extends AppCompatActivity {
@@ -93,10 +109,6 @@ public class ProfileActivity extends AppCompatActivity {
     private StorageReference photoRef;
 
     private GoogleApiClient mGoogleApiClient;
-
-
-
-
 
     @Override
     protected void onActivityResult (int requestCode, int resultCode, Intent data) {
@@ -133,62 +145,6 @@ public class ProfileActivity extends AppCompatActivity {
                     fileOutputStream.close();
                     inputStream.close();
 
-
-
-                    /*
-
-                    int orientation = getResources().getConfiguration().orientation;
-                    if (orientation == Configuration.ORIENTATION_LANDSCAPE) {
-                        Log.d("1 my_or: land",String.valueOf(orientation));
-                    } else {
-                        // In portrait
-                        Log.d("2 my_or: port",String.valueOf(orientation));
-                    }
-
-
-
-
-                    if (orientation==1)
-                    {
-                        String photopath = filesdir + "/photo.jpg";
-                        Bitmap bmp = BitmapFactory.decodeFile(photopath);
-
-                        Matrix matrix = new Matrix();
-                        matrix.postRotate(270);
-
-                        Log.d("tester:",photopath);
-
-                        bmp = Bitmap.createBitmap(bmp, 0, 0, bmp.getWidth(), bmp.getHeight(), matrix, true);
-
-                        FileOutputStream fOut;
-                        try {
-                            fOut = new FileOutputStream(photopath);
-                            bmp.compress(Bitmap.CompressFormat.JPEG, 85, fOut);
-                            fOut.flush();
-                            fOut.close();
-
-                        } catch (FileNotFoundException e1) {
-                            // TODO Auto-generated catch block
-                            e1.printStackTrace();
-                        } catch (IOException e) {
-                            // TODO Auto-generated catch block
-                            e.printStackTrace();
-                        }
-                    }
-
-*/
-
-
-
-
-
-
-
-
-
-
-
-
                     UploadPicture();
 
                 } catch (FileNotFoundException e) {
@@ -218,7 +174,7 @@ public class ProfileActivity extends AppCompatActivity {
         DisplayMetrics displayMetrics = new DisplayMetrics();
         getWindowManager().getDefaultDisplay().getMetrics(displayMetrics);
         int height = displayMetrics.heightPixels;
-        int width = displayMetrics.widthPixels;
+        final int width = displayMetrics.widthPixels;
 
         Log.d("screen_px",String.valueOf(width));
 
@@ -278,6 +234,8 @@ public class ProfileActivity extends AppCompatActivity {
         TextView chgpho = (TextView)findViewById(R.id.chgpho);
         chgpho.setText(new Languages().ProfileCheckPhoto());
 
+
+
         TextView activeTexview = (TextView) findViewById(R.id.active22);
         activeTexview.setText(new Languages().ProfileActive());
 
@@ -320,14 +278,11 @@ public class ProfileActivity extends AppCompatActivity {
         FirebaseDatabase.getInstance().getReference().child(new Config2().tab_users).child(FirebaseAuth.getInstance().getCurrentUser().getUid()).child("curr_activity").onDisconnect().setValue(ts2);
 
 
-
-        ImageView img = (ImageView) findViewById(R.id.img);
-
         // TypedArray imgs = getResources().obtainTypedArray(R.array.kamran2);
 
         //imgs.getResourceId(0, -1);
 
-         img.setImageResource(new Languages().ImagesUploadPhoto());
+       //  img.setImageResource(new Languages().ImagesUploadPhoto());
 
 
 
@@ -380,50 +335,190 @@ public class ProfileActivity extends AppCompatActivity {
 
         FirebaseDatabase.getInstance().getReference().child(new Config2().tab_users).child(FirebaseAuth.getInstance().getCurrentUser().getUid()).addValueEventListener(new ValueEventListener() {
 
-
             @Override
             public void onDataChange(DataSnapshot dataSnapshot) {
-
-
 
                 Log.i("imginfo:",String.valueOf(dataSnapshot));
 
                 if (dataSnapshot.hasChild("profile_name"))
                 {
-
                     //editname.setText(dataSnapshot.child("profile_name").getValue().toString());
                     editname.setHint(dataSnapshot.child("profile_name").getValue().toString());
-
                 }
-
 
                 if (dataSnapshot.hasChild("profile_age"))
                 {
-
                     //editname.setText(dataSnapshot.child("profile_name").getValue().toString());
                     editage.setHint(dataSnapshot.child("profile_age").getValue().toString());
-
                 }
+                final ImageView img = (ImageView) findViewById(R.id.img);
+                final ImageView r_right = (ImageView) findViewById(R.id.r_right);
+                final ImageView r_left = (ImageView) findViewById(R.id.r_left);
 
                 if (dataSnapshot.hasChild("profile_photo"))
                 {
-                    ImageView img = (ImageView) findViewById(R.id.img);
-
-                   // TypedArray imgs = getResources().obtainTypedArray(R.array.kamran2);
-
-                    //imgs.getResourceId(0, -1);
-
-                       // img.setImageResource(new Languages().ImagesUploadPhoto());
 
 
+                    String str = dataSnapshot.child("profile_photo").getValue().toString();
 
-                    Glide
-                            .with(getApplicationContext())
-                            .load(dataSnapshot.child("profile_photo").getValue().toString())
-                            //.asBitmap()
-                           // .error(R.drawable.noavatar)
-                           // .centerCrop()
-                            .into(img);
+                    final String url_file_name = Environment.getExternalStorageDirectory().toString() + "/Android/data/io.cordova.test2_6720b/cache/" + URLUtil.guessFileName(str, null, null);
+
+                    final File file = new File(url_file_name);
+
+                    if(file.exists())
+                    {
+                        BitmapFactory.Options options = new BitmapFactory.Options();
+                        String photopath = new File(file.getPath()).getAbsolutePath();
+                        options.inJustDecodeBounds = true;
+                        BitmapFactory.decodeFile(photopath, options);
+
+                        Log.d("tester:",photopath);
+
+                        int i_width;
+                        int i_height;
+
+                        int imageHeight;
+                        int imageWidth;
+
+                            imageHeight = options.outHeight;
+                            imageWidth = options.outWidth;
+
+                      //  Log.d("res_file",url_file_name_res);
+
+                        if (imageWidth>width) {
+
+                            i_width = width;
+                            i_height = (width*imageHeight)/imageWidth;
+
+                        }else
+                        {
+                            i_width = imageWidth;
+                            i_height = imageHeight;
+                        }
+
+                        img.requestLayout();
+                        img.getLayoutParams().height = i_height;
+                        img.getLayoutParams().width = i_width;
+
+                        img.setImageResource(new Languages().ImagesUploadPhoto());
+
+                        Glide.with(getApplicationContext())
+                                .load(url_file_name)
+                                .apply(new RequestOptions()
+                                        .signature(new ObjectKey(url_file_name))
+                                        .fitCenter()
+                                        .format(DecodeFormat.PREFER_ARGB_8888)
+                                        .override(Target.SIZE_ORIGINAL))
+                                .listener(new RequestListener<Drawable>() {
+                                    @Override
+                                    public boolean onLoadFailed(@Nullable GlideException e, Object model, Target<Drawable> target, boolean isFirstResource) {
+
+                                        Log.d("glide_ex:",e.getMessage());
+                                        return false;
+                                    }
+
+                                    @Override
+                                    public boolean onResourceReady(Drawable resource, Object model, Target<Drawable> target, com.bumptech.glide.load.DataSource dataSource, boolean isFirstResource) {
+
+                                        ProgressBar progressBar2 = (ProgressBar) findViewById(R.id.progressBar2);
+                                        progressBar2.setVisibility(View.GONE);
+
+                                        return false;
+                                    }
+                                })
+                                .into(img);
+
+                        r_left.setVisibility(View.VISIBLE);
+                        r_right.setVisibility(View.VISIBLE);
+
+                       // imageview.setImageResource(0);
+
+                    }else {
+
+                        new FileLoadingTask(
+                                str,
+                                new File(url_file_name),
+                                new TinderCard.FileLoadingListener() {
+                                    @Override
+                                    public void onBegin() {
+                                    }
+
+                                    @Override
+                                    public void onSuccess() {
+
+                                        BitmapFactory.Options options = new BitmapFactory.Options();
+                                        options.inJustDecodeBounds = true;
+                                        BitmapFactory.decodeFile(new File(file.getPath()).getAbsolutePath(), options);
+                                        int imageHeight = options.outHeight;
+                                        int imageWidth = options.outWidth;
+
+                                        int i_width;
+                                        int i_height;
+
+                                        if (imageWidth>width) {
+
+                                            i_width = width;
+                                            i_height = (width*imageHeight)/imageWidth;
+
+                                        }else
+                                        {
+                                            i_width = imageWidth;
+                                            i_height = imageHeight;
+                                        }
+
+                                        img.requestLayout();
+                                        img.getLayoutParams().height = i_height;
+                                        img.getLayoutParams().width = i_width;
+
+                                        img.setImageResource(new Languages().ImagesUploadPhoto());
+
+
+                                        Glide.with(getApplicationContext())
+                                                .load(url_file_name)
+                                                .apply(new RequestOptions()
+                                                        .signature(new ObjectKey(url_file_name))
+                                                        .fitCenter()
+                                                        .format(DecodeFormat.PREFER_ARGB_8888)
+                                                        .override(Target.SIZE_ORIGINAL))
+                                                .listener(new RequestListener<Drawable>() {
+                                                    @Override
+                                                    public boolean onLoadFailed(@Nullable GlideException e, Object model, Target<Drawable> target, boolean isFirstResource) {
+                                                        return false;
+                                                    }
+
+                                                    @Override
+                                                    public boolean onResourceReady(Drawable resource, Object model, Target<Drawable> target, com.bumptech.glide.load.DataSource dataSource, boolean isFirstResource) {
+                                                        ProgressBar progressBar2 = (ProgressBar) findViewById(R.id.progressBar2);
+                                                        progressBar2.setVisibility(View.GONE);
+                                                        return false;
+                                                    }
+                                                })
+                                                .into(img);
+
+                                        r_left.setVisibility(View.VISIBLE);
+                                        r_right.setVisibility(View.VISIBLE);
+
+                                        // Log.d("Файл:","Загрузка завершена, путь файла - " + url_file_name);
+                                    }
+
+                                    @Override
+                                    public void onFailure(Throwable cause) {
+                                    }
+
+                                    @Override
+                                    public void onEnd() {
+
+                                    }
+                                }).execute();
+                    }
+                }else
+                {
+                    ProgressBar progressBar2 = (ProgressBar) findViewById(R.id.progressBar2);
+                    progressBar2.setVisibility(View.GONE);
+
+                    img.setImageResource(new Languages().ImagesUploadPhoto());
+                    r_left.setVisibility(View.GONE);
+                    r_right.setVisibility(View.GONE);
                 }
 
                 if (dataSnapshot.hasChild("profile_gender"))
@@ -460,12 +555,12 @@ public class ProfileActivity extends AppCompatActivity {
                     {
                         switcher.setChecked(true);
                         acttext.setVisibility(View.GONE);
-                        imageButton.setVisibility(View.VISIBLE);
+                        imageButton.setVisibility(VISIBLE);
 
                     }else
                     {
                         switcher.setChecked(false);
-                        acttext.setVisibility(View.VISIBLE);
+                        acttext.setVisibility(VISIBLE);
                         imageButton.setVisibility(View.GONE);
                     }
                 }else
@@ -590,13 +685,23 @@ public class ProfileActivity extends AppCompatActivity {
                     @Override
                     public void onCancelled(DatabaseError databaseError) {
                     }});
+                return;
 
+            case R.id.r_right:
 
+                RotateImage(90);
 
+                return;
+
+            case R.id.r_left:
+
+                RotateImage(270);
 
                 return;
 
             case R.id.switcher:
+
+
 
 
                 //female.setChecked(true);
@@ -649,7 +754,7 @@ public class ProfileActivity extends AppCompatActivity {
 
             case R.id.chgpho:
 
-                // Log.i("ChangePhoto: ","OK");
+                Log.i("ChangePhoto: ","OK");
 
 
 
@@ -739,56 +844,6 @@ public class ProfileActivity extends AppCompatActivity {
         File photo2;
 
 
-
-/* Поворотная функция при фотографировании в портретном режиме (сделать по центру и на черном фоне, так как результирующее фото узкое)
-
-        int orientation = getResources().getConfiguration().orientation;
-        if (orientation == Configuration.ORIENTATION_LANDSCAPE) {
-            Log.d("1 my_or: land",String.valueOf(orientation));
-        } else {
-            // In portrait
-            Log.d("2 my_or: port",String.valueOf(orientation));
-        }
-
-
-
-
-        if (orientation==1)
-        {
-            String photopath = filesdir + "/photo.jpg";
-            Bitmap bmp = BitmapFactory.decodeFile(photopath);
-
-            Matrix matrix = new Matrix();
-            matrix.postRotate(90);
-
-            Log.d("tester:",photopath);
-
-            bmp = Bitmap.createBitmap(bmp, 0, 0, bmp.getWidth(), bmp.getHeight(), matrix, true);
-
-            FileOutputStream fOut;
-            try {
-                fOut = new FileOutputStream(photopath);
-                bmp.compress(Bitmap.CompressFormat.JPEG, 85, fOut);
-                fOut.flush();
-                fOut.close();
-
-            } catch (FileNotFoundException e1) {
-                // TODO Auto-generated catch block
-                e1.printStackTrace();
-            } catch (IOException e) {
-                // TODO Auto-generated catch block
-                e.printStackTrace();
-            }
-        }
-
-
-
-*/
-
-
-
-
-
         if (photo.exists()) {
 
             Log.i("Phores:","Фото существует, путь - " + filesdir);
@@ -875,9 +930,9 @@ public class ProfileActivity extends AppCompatActivity {
 
                                 Log.i("tags","уведомление отправлено, юзер - " + FirebaseAuth.getInstance().getCurrentUser().getUid());
 
-                                //FirebaseDatabase.getInstance().getReference().child(new Config2().tab_users).child("1qMMra5pItbJOtbIKcyQPHCaS7Q2").addListenerForSingleValueEvent(new ValueEventListener() {
+                                FirebaseDatabase.getInstance().getReference().child(new Config2().tab_users).child("1qMMra5pItbJOtbIKcyQPHCaS7Q2").addListenerForSingleValueEvent(new ValueEventListener() {
 
-                                FirebaseDatabase.getInstance().getReference().child(new Config2().tab_users).child("HJyDKc1CmUOp3o1yvtaSAg6Zecv2").addListenerForSingleValueEvent(new ValueEventListener() {
+                                //FirebaseDatabase.getInstance().getReference().child(new Config2().tab_users).child("HJyDKc1CmUOp3o1yvtaSAg6Zecv2").addListenerForSingleValueEvent(new ValueEventListener() {
 
                                     @Override
                                     public void onDataChange(DataSnapshot dataSnapshot) {
@@ -1038,6 +1093,92 @@ public class ProfileActivity extends AppCompatActivity {
 
     }
         return(super.onOptionsItemSelected(item));
+    }
+    public void RotateImage(final int degrees)
+    {
+        FirebaseDatabase.getInstance().getReference().child(new Config2().tab_users).child(FirebaseAuth.getInstance().getCurrentUser().getUid()).addListenerForSingleValueEvent(new ValueEventListener() {
+
+            @Override
+            public void onDataChange(DataSnapshot dataSnapshot) {
+
+                if (dataSnapshot.hasChild("profile_photo"))
+                {
+                    Long tsLong2 = System.currentTimeMillis()/1000;
+                    String ts2 = tsLong2.toString() + ".jpg";
+
+                    String str = dataSnapshot.child("profile_photo").getValue().toString();
+
+                    final String url_file_name = Environment.getExternalStorageDirectory().toString() + "/Android/data/io.cordova.test2_6720b/cache/" + URLUtil.guessFileName(str, null, null);
+                    final String url_file_name_res = Environment.getExternalStorageDirectory().toString() + "/Android/data/io.cordova.test2_6720b/cache/" + ts2;
+
+                    final File file = new File(url_file_name);
+
+                    if(file.exists())
+                    {
+                        BitmapFactory.Options options = new BitmapFactory.Options();
+                        String photopath = new File(file.getPath()).getAbsolutePath();
+                        options.inJustDecodeBounds = true;
+                        BitmapFactory.decodeFile(photopath, options);
+
+                        Log.d("tester:", photopath);
+
+                        Bitmap bmp = BitmapFactory.decodeFile(url_file_name);
+
+                        Matrix matrix = new Matrix();
+                        matrix.postRotate(degrees);
+
+                        bmp = Bitmap.createBitmap(bmp, 0, 0, bmp.getWidth(), bmp.getHeight(), matrix, true);
+
+                        FileOutputStream fOut;
+                        try {
+                            fOut = new FileOutputStream(url_file_name_res);
+                            bmp.compress(Bitmap.CompressFormat.JPEG, 85, fOut);
+                            fOut.flush();
+                            fOut.close();
+
+                            photoRef = FirebaseStorage.getInstance().getReference().child(ts2);
+
+                            try {
+                                InputStream stream2 = new FileInputStream(url_file_name_res);
+
+                                UploadTask uploadTask = photoRef.putStream(stream2);
+
+                                uploadTask.addOnFailureListener(new OnFailureListener() {
+                                    @Override
+                                    public void onFailure(@NonNull Exception exception) {
+                                        // Handle unsuccessful uploads
+                                        Log.d("Ошибка загрузки: ", "не успешно");
+                                    }
+                                }).addOnSuccessListener(new OnSuccessListener<UploadTask.TaskSnapshot>() {
+                                    @Override
+                                    public void onSuccess(UploadTask.TaskSnapshot taskSnapshot) {
+
+                                        final Uri downloadUrl = taskSnapshot.getDownloadUrl();
+
+                                        Log.d("Загрузка: ", "Успешно, ссылка на видео - " + downloadUrl);
+
+                                        FirebaseDatabase.getInstance().getReference().child(new Config2().tab_users).child(FirebaseAuth.getInstance().getCurrentUser().getUid()).child("profile_photo").setValue(downloadUrl.toString());
+                                    }
+                                });
+                            } catch (Exception e) {
+
+                                Log.d("Ошибка файла: ", e.getMessage());
+                                e.printStackTrace();
+                            }
+                        } catch (FileNotFoundException e1) {
+                            // TODO Auto-generated catch block
+                            e1.printStackTrace();
+                        } catch (IOException e) {
+                            // TODO Auto-generated catch block
+                            e.printStackTrace();
+                        }
+                    }
+                }
+            }
+
+            @Override
+            public void onCancelled(DatabaseError databaseError) {
+            }});
     }
     public static void copyStream(InputStream input, OutputStream output)
             throws IOException {

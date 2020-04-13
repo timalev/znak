@@ -68,6 +68,8 @@ import java.util.Map;
 
 import com.mindorks.placeholderview.SwipeDecor;
 import com.mindorks.placeholderview.SwipePlaceHolderView;
+import com.mindorks.placeholderview.SwipeViewBinder;
+import com.mindorks.placeholderview.listeners.ItemRemovedListener;
 
 
 public class UsersActivity extends AppCompatActivity {
@@ -85,6 +87,8 @@ public class UsersActivity extends AppCompatActivity {
 
     private String curruser;
     private String currname;
+
+    private boolean isToUndo = false;
 
 
 
@@ -132,63 +136,10 @@ public class UsersActivity extends AppCompatActivity {
         String ts2 = tsLong2.toString();
         FirebaseDatabase.getInstance().getReference().child(new Config2().tab_users).child(FirebaseAuth.getInstance().getCurrentUser().getUid()).child("curr_activity").onDisconnect().setValue(ts2);
 
-
         setContentView(R.layout.activity_main);
-
-        FirebaseDatabase.getInstance().getReference().child("zn_likes").child("total_likes").child(FirebaseAuth.getInstance().getCurrentUser().getUid()).child("like").addValueEventListener(new ValueEventListener() {
-            @Override
-            public void onDataChange(DataSnapshot snapshot) {
-
-
-                //Toast.makeText(mContext, String.valueOf(snapshot.getValue()), Toast.LENGTH_LONG).show();
-
-                ImageButton qImageView = (ImageButton) findViewById(R.id.acceptBtn);
-
-                if (String.valueOf(snapshot.getValue()).equals("0")) {
-
-                    // Toast.makeText(mContext, mProfile.getKey(), Toast.LENGTH_LONG).show();
-
-                    qImageView.setBackgroundResource(R.drawable.ic_heart);
-                }else {
-                    qImageView.setBackgroundResource(R.drawable.ic_heart2);
-                }
-            }
-            @Override
-            public void onCancelled(DatabaseError databaseError) {
-
-            }
-        });
-
-/*
-
-        if(ans ==0 || ans == 5){
-            //   qSV.setImageResource(0);
-            qImageView.setImageResource(R.drawable.thumbs_up);
-        }
-        else
-            qImageView.setImageResource(R.drawable.thumbs_down);
-
-*/
-        FirebaseDatabase.getInstance().getReference().child("zn_likes").child("total_likes").child(FirebaseAuth.getInstance().getCurrentUser().getUid()).child("count").addValueEventListener(new ValueEventListener() {
-
-            @Override
-            public void onDataChange(DataSnapshot dataSnapshot) {
-
-                final TextView helloTextView = (TextView) findViewById(R.id.textView1);
-                helloTextView.setText(dataSnapshot.getValue().toString());
-
-            }
-
-            @Override
-            public void onCancelled(DatabaseError databaseError) {
-
-            }
-        });
 
         Toolbar toolbar = (Toolbar) findViewById(R.id.toolbar2);
         setSupportActionBar(toolbar);
-
-        final ProgressBar progressbar = (ProgressBar)findViewById(R.id.progressBar);
 
         final LinearLayout pg_layout = (LinearLayout) findViewById(R.id.pg_layout);
 
@@ -213,6 +164,7 @@ public class UsersActivity extends AppCompatActivity {
 
         mSwipeView.getBuilder()
                 .setDisplayViewCount(3)
+                .setIsUndoEnabled(true)
                 .setSwipeDecor(new SwipeDecor()
                         .setPaddingTop(20)
                         .setRelativeScale(0.01f)
@@ -450,17 +402,15 @@ public class UsersActivity extends AppCompatActivity {
                 String a_age;
 
                 Integer i;
-                String next_object;
+                int next_object;
 
                 for (String object: catNames) {
 
 
                     i = catNames.indexOf(object) + 1;
 
-                    if (i==catNames.size()) i = 0;
 
-
-                        next_object = catNames.get(i);
+                        next_object = catNames.size();
 
 
                      Log.i("my_arr2: ", String.valueOf(object) + " / " + catNames.indexOf(object) + "/" + i + " / " + next_object + " / " + catNames.get(0));
@@ -473,7 +423,7 @@ public class UsersActivity extends AppCompatActivity {
                         a_age = M_profile_age.get(object);
                     }
 
-                    String first_object = catNames.get(0);
+                    int first_object = i;
 
                     Profile3 profile3 = new Profile3(M_profile_name.get(object), M_profile_photo.get(object), a_age, M_profile_country.get(object), M_profile_likes.get(object), M_device_token.get(object), M_profile_gender.get(object), object,next_object,first_object);
                     mSwipeView.addView(new TinderCard(mContext, profile3, mSwipeView));
@@ -521,139 +471,62 @@ public class UsersActivity extends AppCompatActivity {
             @Override
             public void onCancelled(DatabaseError databaseError) {
                 // Getting Post failed, log a message
-
                 // ...
             }
         });
-
-
-
-/*
-        for(Profile profile : Utils.loadProfiles(this.getApplicationContext())){
-            mSwipeView.addView(new TinderCard(mContext, profile, mSwipeView));
-
-            Log.i("profile:",String.valueOf(profile.getAge()));
-        }
-*/
-
-        //Log.d("swipe_info:",String.valueOf(mSwipeView.getAllResolvers()));
 
         findViewById(R.id.rejectBtn).setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
 
-
-
-
                 mSwipeView.doSwipe(false);
+
+               // Toast.makeText(getApplicationContext(), String.valueOf("PIDR"), Toast.LENGTH_LONG).show();
+             //   mSwipeView.onResetView(SwipeViewBinder.class);
+
+                //mSwipeView.undoLastSwipe();
             }
         });
+        mSwipeView.addItemRemoveListener(new ItemRemovedListener() {
+            @Override
+            public void onItemRemoved(int count) {
+                if (isToUndo) {
+                    isToUndo = false;
+                    mSwipeView.undoLastSwipe();
+                }
+            }
+        });
+        findViewById(R.id.writeBtn).setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
 
+                View toWrite = findViewById(R.id.towrite);
+                if (toWrite!=null) {
+                    toWrite.performClick();
+                }
+            }
+        });
         findViewById(R.id.acceptBtn).setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
                 //mSwipeView.doSwipe(true);
 
+              // Toast.makeText(mContext, String.valueOf(mSwipeView.isClickable()), Toast.LENGTH_SHORT).show();
 
-                View myView = findViewById(R.id.profileImageView);
+            //   mSwipeView.addView();
 
-                myView.performClick();
+                View myView = findViewById(R.id.s_like);
 
-                //mSwipeView.doSwipe(true);
-
-
-
-                //FirebaseDatabase.getInstance().getReference().child("zn_likes").child(FirebaseAuth.getInstance().getCurrentUser().getUid()).child("coords").setValue(coords);
-
+                if (myView!=null)
+                {
+                    myView.performClick();
+                }
             }
         });
-
-
 
         //Log.i("curr_act:",this.getClass().getSimpleName());
 
 
-/*
-
-        setContentView(R.layout.activity_users);
-        Toolbar toolbar = (Toolbar) findViewById(R.id.toolbar2);
-        setSupportActionBar(toolbar);
-
-        recyclerView = (RecyclerView) findViewById(R.id.users_list);
-
-        recyclerView.setHasFixedSize(true);
-
-        LinearLayoutManager lim = new LinearLayoutManager(this);
-        lim.setOrientation(LinearLayoutManager.VERTICAL);
-
-        recyclerView.setLayoutManager(lim);
-
-
-
-
-        adapter = new UsersAdapter(mylist);
-        recyclerView.setAdapter(adapter);
-
-
-        updateList();
-
-        recyclerView.addOnItemTouchListener(
-                new RecyclerItemClickListener(this, recyclerView ,new RecyclerItemClickListener.OnItemClickListener() {
-                    @Override public void onItemClick(View view, int position) {
-
-// если test = 0, то значит массив выбран поумолчани и к нему лепим переход на страницу юзера, если test = 1, значит лепим переход + добавление в подписчики
-
-                        //Toast.makeText(getApplication(), "ПЕРЕХОД И ДОБАВЛЕНИЕ ПОДПИСЧИКА: позиция -" + position + ", ключ -" + mylist3.get(position).get("key").toString(), Toast.LENGTH_LONG).show();
-
-                        if (test==1) {  // добавляем в подписчики (историю) если находимся в режиме фильтра, в другом случае просто переходим на страницк подписчика (друга)
-
-                            FirebaseDatabase.getInstance().getReference().child(new Config2().tab_users).child(mylist3.get(position).get("key").toString()).child("subscribers").child(FirebaseAuth.getInstance().getCurrentUser().getUid()).setValue(1);
-
-                            Intent nextScreen = new Intent(getApplication(), VideoActivity.class);
-
-                            nextScreen.putExtra("curruser", mylist3.get(position).get("key").toString());
-                            nextScreen.putExtra("currname", mylist3.get(position).get("name").toString());
-
-                            startActivity(nextScreen);
-
-                            finish();
-                        }
-                        if (test==0) {  // добавляем в подписчики (историю) если находимся в режиме фильтра, в другом случае просто переходим на страницк подписчика (друга)
-
-                            Intent nextScreen = new Intent(getApplication(), VideoActivity.class);
-
-                            nextScreen.putExtra("curruser", mylist.get(position).get("key").toString());
-                            nextScreen.putExtra("currname", mylist.get(position).get("name").toString());
-
-                            startActivity(nextScreen);
-
-                            finish();
-                        }
-
-                        //Toast.makeText(getApplication(), String.valueOf(mylist3), Toast.LENGTH_LONG).show();
-
-                    }
-
-
-                    @Override public void onLongItemClick(View view, int position) {
-
-                        // если test = 0, то при долгом нажатии удаляем
-
-                        if (test==0) {
-
-                            //Toast.makeText(getApplication(), "УДАЛЕНИЕ ПОДПИСЧИКА: позиция -" + position + ", ключ -" + mylist.get(position).get("key").toString(), Toast.LENGTH_LONG).show();
-
-                            FirebaseDatabase.getInstance().getReference().child(new Config2().tab_users).child(mylist.get(position).get("key").toString()).child("subscribers").child(FirebaseAuth.getInstance().getCurrentUser().getUid()).setValue(0);
-                            mylist.remove(position);
-                            adapter.notifyItemRemoved(position);
-
-                        }
-                    }
-
-                })
-        );
-
-*/
         File externalAppDir = new File(Environment.getExternalStorageDirectory() + "/Android/data/" + getPackageName());
         if (!externalAppDir.exists()) {
 
@@ -676,11 +549,9 @@ public class UsersActivity extends AppCompatActivity {
 
     }
 
-
     @Override
     public boolean onCreateOptionsMenu(final Menu menu) {
         // Inflate the menu; this adds items to the action bar if it is present.
-
 
            getMenuInflater().inflate(R.menu.menu_users2, menu);
         menu.findItem(R.id.friends).setTitle(new Languages().MenuFriends());
@@ -706,6 +577,10 @@ public class UsersActivity extends AppCompatActivity {
             finish();
 
             return (true);
+
+        case R.id.whatshot:
+            Intent usersScreen2 = new Intent(getApplication(), UsersActivity.class);
+            startActivity(usersScreen2);
 
         case R.id.friends:
 

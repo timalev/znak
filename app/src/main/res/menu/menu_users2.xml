@@ -12,11 +12,11 @@
     <item
         android:id="@+id/place" android:icon="@android:drawable/ic_menu_myplaces" app:showAsAction="always" android:title="myplace">
     </item>
-
-    <item
-        android:id="@+id/mail" android:icon="@android:drawable/ic_dialog_email" app:showAsAction="always" android:title="email">
-    </item>
 -->
+    <item
+        android:id="@+id/whatshot" android:icon="@drawable/whatshot2" app:showAsAction="always" android:title="whatshot">
+    </item>
+
     <item
         android:id="@+id/friends"
         android:orderInCategory="50"

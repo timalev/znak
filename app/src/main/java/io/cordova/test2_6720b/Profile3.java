@@ -11,14 +11,14 @@ public class Profile3 {
     private String device_token;
     private String profile_gender;
     private String key;
-    private String key2;
-    private String key3;
+    private int key2;
+    private int key3;
 
 
     public Profile3() {
     }
 
-    public Profile3(String profile_name, String profile_photo, String profile_age, String profile_country, String profile_likes, String device_token, String profile_gender, String key, String key2, String key3) {
+    public Profile3(String profile_name, String profile_photo, String profile_age, String profile_country, String profile_likes, String device_token, String profile_gender, String key, int key2, int key3) {
 
         this.profile_name = profile_name;
         this.profile_likes = profile_likes;
@@ -60,11 +60,11 @@ public class Profile3 {
         return key;
     }
 
-    public String getKey2() {
+    public int getKey2() {
         return key2;
     }
 
-    public String getKey3() {
+    public int getKey3() {
         return key3;
     }
 
