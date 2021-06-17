@@ -93,8 +93,6 @@ public class VideoActivityAllMess extends AppCompatActivity {
             setTitle(new Languages().TitleMymessages());
 
 
-
-
         toolbar.setTitleTextColor(Color.WHITE);
 
 
@@ -121,84 +119,25 @@ public class VideoActivityAllMess extends AppCompatActivity {
 
                 if (!String.valueOf(dataSnapshot.getValue()).equals("null")) {
 
-                    Map<String, Object> td = (HashMap<String, Object>) dataSnapshot.getValue();
-
-                    Collection<Object> values = td.values();
-
-
-                    //Log.d("Collection2: ", values.getClass().getName());
-
-                    List list = new ArrayList(values);
-
-                    Map<String, String> hashMap2 = new HashMap<String, String>();
-
-                    for (int l = 0; l < list.size(); l++) {
-
-                        // Log.d("List2: ", list.get(l).getClass().getName() + ", размер: " + list.toString());
-
-                        HashMap<String, Object> itemsList = (HashMap<String, Object>) list.get(l);
-
-                        for (Map.Entry<String, Object> entry : itemsList.entrySet()) {
-                            String key = entry.getKey();
-                            Object value = entry.getValue();
-                            // do stuff
-
-                            HashMap<String, String> itemsList2 = (HashMap<String, String>) value;
-
-
-                            if (!itemsList2.get("user").equals(mAuth.getCurrentUser().getUid())) {
-
-                                String olduser;
-
-                                if (itemsList2.get("profile_name")==null)
-                                {
-                                    olduser = "n/a";
-                                }else
-                                {
-                                    olduser = itemsList2.get("profile_name");
-                                }
-
-                                hashMap2.put(itemsList2.get("user"), olduser);
-
-                            } else // если сам юзер, то ставим тому кому писал, данные которого также пишутся в таблицу при составлении письма
-                            {
-                                hashMap2.put(itemsList2.get("page_for_comment"), itemsList2.get("currname"));
-                            }
-
-                            //Log.d("COUNT6: ",String.valueOf(itemsList2.get("user")) + "/" + itemsList2.get("avatar"));
-
-
-                            // }
-                        }
-                        //   int count = Collections.frequency(new ArrayList<String>(hashMap.values()), user_var);
-
-                        //Log.d("test_var2: ", user_var + " - юзеры," + name_var + " (" + count + ")");
-
-                    }
-
                     for (DataSnapshot child : dataSnapshot.getChildren()) {
-
-                        // Map<String, Object> map = (Map<String, Object>) child.getValue();
 
                         final String Key = child.getKey();
 
-                        final String name = hashMap2.get(Key);
+                        //Log.d("Snap38: ", String.valueOf(Key));
 
+                        String name = dataSnapshot.child(child.getKey()).child("name").getValue().toString();
 
                         final HashMap<String, String> map = new HashMap<String, String>();
-
 
                         map.put("name", name);
                         map.put("key", Key);
 
-
                         mylist.add(map);
 
-
-                         Log.d("COUNT4: ",Key  + "/" +name);
-
+                        // Log.d("COUNT4: ",Key  + "/" +name);
 
                     }
+                    Collections.reverse(mylist);
                     adapter.notifyDataSetChanged();
 
 
@@ -229,7 +168,7 @@ public class VideoActivityAllMess extends AppCompatActivity {
         };
         // Toast.makeText(this, mAuth.getCurrentUser().getUid(), Toast.LENGTH_SHORT).show();
 
-        FirebaseDatabase.getInstance().getReference().child(new Config2().tab_messagesPrivate).child(mAuth.getCurrentUser().getUid()).addListenerForSingleValueEvent(GetAllMessagesListener);
+        FirebaseDatabase.getInstance().getReference().child(new Config2().tab_messagesPrivate).child(mAuth.getCurrentUser().getUid()).orderByChild("lmess").addListenerForSingleValueEvent(GetAllMessagesListener);
         //  FirebaseDatabase.getInstance().getReference().child("users6").orderByChild("subscribers/" + FirebaseAuth.getInstance().getCurrentUser().getUid()).equalTo(1).addListenerForSingleValueEvent(GetAllMessagesListener);
 
 

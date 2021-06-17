@@ -75,49 +75,13 @@ public class login extends AppCompatActivity implements GoogleApiClient.Connecti
     private FirebaseAuth.AuthStateListener mAuthListener;
 
 
-
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
 
-
-
-
         ActivityCompat.requestPermissions(this,
                 new String[]{Manifest.permission.WRITE_EXTERNAL_STORAGE},
                 MY_PERMISSIONS_REQUEST_WRITE_EXTERNAL_STORAGE);
-
-        /*
-        if (ContextCompat.checkSelfPermission(this,
-                android.Manifest.permission.WRITE_EXTERNAL_STORAGE)
-                != PackageManager.PERMISSION_GRANTED) {
-
-            // Should we show an explanation?
-            if (ActivityCompat.shouldShowRequestPermissionRationale(this,
-                    android.Manifest.permission.WRITE_EXTERNAL_STORAGE)) {
-
-                // Show an expanation to the user *asynchronously* -- don't block
-                // this thread waiting for the user's response! After the user
-                // sees the explanation, try again to request the permission.
-
-            } else {
-
-                // No explanation needed, we can request the permission.
-
-                ActivityCompat.requestPermissions(this,
-                        new String[]{Manifest.permission.WRITE_EXTERNAL_STORAGE},
-                        MY_PERMISSIONS_REQUEST_WRITE_EXTERNAL_STORAGE);
-
-                // MY_PERMISSIONS_REQUEST_WRITE_EXTERNAL_STORAGE is an
-                // app-defined int constant. The callback method gets the
-                // result of the request.
-            }
-
-        }
- */
-
-
-
 
 
         if (Build.VERSION.SDK_INT >= 24) {
@@ -128,7 +92,6 @@ public class login extends AppCompatActivity implements GoogleApiClient.Connecti
                 e.printStackTrace();
             }
         }
-
 
         //Toast.makeText(this, "OK", Toast.LENGTH_SHORT).show();
 
@@ -153,43 +116,20 @@ public class login extends AppCompatActivity implements GoogleApiClient.Connecti
                     Long tsLong2 = System.currentTimeMillis() / 1000;
                     String ts2 = tsLong2.toString();
 
-
-                 // FirebaseDatabase.getInstance().getReference().child("zn_likes").child("total_likes").child(FirebaseAuth.getInstance().getCurrentUser().getUid()).child("count").setValue(0);
-
-
-                 // FirebaseDatabase.getInstance().getReference().child("zn_likes").child("total_likes").child(FirebaseAuth.getInstance().getCurrentUser().getUid()).child("like").setValue(0);
-
-
-
-
-
-
                     FirebaseDatabase.getInstance().getReference().child(new Config2().tab_users).child(FirebaseAuth.getInstance().getCurrentUser().getUid()).child("name").setValue(displayName);
                     FirebaseDatabase.getInstance().getReference().child(new Config2().tab_users).child(FirebaseAuth.getInstance().getCurrentUser().getUid()).child("avatar").setValue(PhotoUrl);
                     FirebaseDatabase.getInstance().getReference().child(new Config2().tab_users).child(FirebaseAuth.getInstance().getCurrentUser().getUid()).child("last_mess").setValue(ts2);
 
-
                     final String device_token = FirebaseInstanceId.getInstance().getToken();
-
 
                     FirebaseDatabase.getInstance().getReference().child(new Config2().tab_users).child(FirebaseAuth.getInstance().getCurrentUser().getUid()).child("device_token").setValue(device_token);
                     FirebaseDatabase.getInstance().getReference().child(new Config2().tab_users).child(FirebaseAuth.getInstance().getCurrentUser().getUid()).child("status").setValue("offline");
                     FirebaseDatabase.getInstance().getReference().child(new Config2().tab_users).child(FirebaseAuth.getInstance().getCurrentUser().getUid()).child("curr_activity").setValue(this.getClass().getSimpleName());
                     FirebaseDatabase.getInstance().getReference().child(new Config2().tab_users).child(FirebaseAuth.getInstance().getCurrentUser().getUid()).child("subscribers").child(FirebaseAuth.getInstance().getCurrentUser().getUid()).setValue(1);
 
-
-
-
-                    // Intent Profile = new Intent(getApplication(), ProfileActivity.class);
-
-                    //startActivity(Profile);
-
-
                     if (device_token!=null) {
 
-
                         FirebaseDatabase.getInstance().getReference().child(new Config2().tab_banlist).addListenerForSingleValueEvent(new ValueEventListener() {
-
 
                             @Override
                             public void onDataChange(DataSnapshot dataSnapshot) {
@@ -197,7 +137,6 @@ public class login extends AppCompatActivity implements GoogleApiClient.Connecti
                                 if (dataSnapshot.hasChild(FirebaseAuth.getInstance().getCurrentUser().getUid())) {
 
                                     if (dataSnapshot.child(FirebaseAuth.getInstance().getCurrentUser().getUid()).getValue().toString().equals("0")) {
-
 
                                         //Log.i("tags:", "не забанен");
 
@@ -225,19 +164,11 @@ public class login extends AppCompatActivity implements GoogleApiClient.Connecti
                         });
                     }
 
-
-
-                    //sendPost();
-
-
-
-
-
-
-                    //Toast.makeText(getApplication(), "Юзер авторизован", Toast.LENGTH_SHORT).show();
                 }
             }
         };
+
+        mAuth.addAuthStateListener(mAuthListener);
 
         GoogleSignInOptions gso = new GoogleSignInOptions.Builder(GoogleSignInOptions.DEFAULT_SIGN_IN)
                 .requestIdToken(getString(R.string.default_web_client_id))
@@ -249,10 +180,6 @@ public class login extends AppCompatActivity implements GoogleApiClient.Connecti
                 .addApi(LocationServices.API)
                 .addApi(Auth.GOOGLE_SIGN_IN_API, gso)
                 .build();
-
-
-        //Toast.makeText(this, "OK", Toast.LENGTH_SHORT).show();
-
 
         SignInButton signInButton = (SignInButton) findViewById(R.id.sign_in_button);
         signInButton.setSize(SignInButton.SIZE_STANDARD);
@@ -274,7 +201,7 @@ public class login extends AppCompatActivity implements GoogleApiClient.Connecti
                 break;
         }
     }
-
+/*
     @Override
     protected void onStart() {
         super.onStart();
@@ -286,7 +213,7 @@ public class login extends AppCompatActivity implements GoogleApiClient.Connecti
 
 
     }
-
+*/
     @Override
     public void onRequestPermissionsResult(int requestCode,
                                            String permissions[], int[] grantResults) {
@@ -337,19 +264,14 @@ public class login extends AppCompatActivity implements GoogleApiClient.Connecti
 
         ProgressBar progressBar = (ProgressBar)findViewById(R.id.progressBar);
 
-
         progressBar.setVisibility(ProgressBar.VISIBLE);
 
         SignInButton signInButton = (SignInButton) findViewById(R.id.sign_in_button);
 
         signInButton.setVisibility(SignInButton.GONE);
 
-
-
         Intent signInIntent = Auth.GoogleSignInApi.getSignInIntent(mGoogleApiClient);
         startActivityForResult(signInIntent, RC_SIGN_IN);
-
-
     }
 
     @Override
@@ -363,8 +285,6 @@ public class login extends AppCompatActivity implements GoogleApiClient.Connecti
             GoogleSignInResult result = Auth.GoogleSignInApi.getSignInResultFromIntent(data);
             handleSignInResult(result);
         }
-
-
     }
 
     private void handleSignInResult(GoogleSignInResult result) {
@@ -374,14 +294,15 @@ public class login extends AppCompatActivity implements GoogleApiClient.Connecti
             // Signed in successfully, show authenticated UI.
             GoogleSignInAccount acct = result.getSignInAccount();
 
-            //Toast.makeText(this, acct.getPhotoUrl().toString(), Toast.LENGTH_SHORT).show();
+            Log.d("Result2: ", "ok");
 
             GoogleSignInAccount account = result.getSignInAccount();
             firebaseAuthWithGoogle(account);
 
             //updateUI(true);
         } else {
-            Log.d("Result2: ", "auth faild");
+            Log.d("Result2: ", "auth faild " + result.getStatus());
+             Toast.makeText(this, "Error: " +result.getStatus(), Toast.LENGTH_SHORT).show();
         }
     }
 
@@ -417,23 +338,19 @@ public class login extends AppCompatActivity implements GoogleApiClient.Connecti
                             Log.d("auth:", "signInWithCredential:success");
                             FirebaseUser user = mAuth.getCurrentUser();
 
+                            mAuth.addAuthStateListener(mAuthListener);
+
                         } else {
                             // If sign in fails, display a message to the user.
                             Log.d("err: ", "signInWithCredential:failure", task.getException());
-
-
                         }
 
-                        // ...
                     }
                 });
     }
 
 
     public void sendPost() {
-
-
-
 
 
         //Toast.makeText(getApplication(), extra + "/" + extra2, Toast.LENGTH_SHORT).show();
@@ -647,33 +564,12 @@ public class login extends AppCompatActivity implements GoogleApiClient.Connecti
                                                                         startActivity(Profile);
                                                                     }
 
-
-
                                                                 }
                                                             }
 
                                                             @Override
                                                             public void onCancelled(DatabaseError databaseError) {
                                                             }});
-
-
-
-
-
-                                                            /*
-
-                                                            Intent usersScreen = new Intent(getApplication(), UsersActivity.class);
-
-
-                                                            //usersScreen.putExtra("currlng", currlng);
-                                                            //usersScreen.putExtra("currlat", currlat);
-
-                                                            startActivity(usersScreen);
-*/
-                                                        //finish();
-
-
-
 
                                                     }
                                                 })
@@ -691,14 +587,10 @@ public class login extends AppCompatActivity implements GoogleApiClient.Connecti
                                     }
 
 
-
                                     //http://api.ipstack.com/134.201.250.155?access_key=6d1514e36dc8fe2ee14a27e8044c71db
 
 
-
-
                                     //  }
-
 
 
 
@@ -715,16 +607,9 @@ public class login extends AppCompatActivity implements GoogleApiClient.Connecti
                         thread2.start();
 
 
-
                         //http://api.ipstack.com/134.201.250.155?access_key=6d1514e36dc8fe2ee14a27e8044c71db
 
-
-
-
                     }
-
-
-
 
                     conn.disconnect();
 

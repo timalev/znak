@@ -1116,7 +1116,7 @@ if (dataSnapshot.getValue()!=null) {
 
         // Подгружаем все оообщения юзеров
 
-        scoresRef.child(curruser).child(mAuth.getCurrentUser().getUid()).addListenerForSingleValueEvent(GetAllMessagesListener);
+        scoresRef.child(curruser).child(mAuth.getCurrentUser().getUid()).child("messages").addListenerForSingleValueEvent(GetAllMessagesListener);
 
         final ArrayList<String> data = new ArrayList<String>();
 
@@ -1138,7 +1138,7 @@ if (dataSnapshot.getValue()!=null) {
         });
 
 
-        scoresRef.child(curruser).child(mAuth.getCurrentUser().getUid()).limitToLast(1).addChildEventListener(new ChildEventListener() {
+        scoresRef.child(curruser).child(mAuth.getCurrentUser().getUid()).child("messages").limitToLast(1).addChildEventListener(new ChildEventListener() {
             // Retrieve new posts as they are added to the database
             @Override
             public void onChildAdded(final DataSnapshot snapshot, String previousChildKey) {
@@ -1304,7 +1304,7 @@ final String mText = message.getText().toString();
                     final Messpriv messPriv = new Messpriv(mText,curruser,currname,mAuth.getCurrentUser().getUid(),mUser,mAuth.getCurrentUser().getPhotoUrl().toString(),"n","n","txt",dataSnapshotusers.child("profile_name").getValue().toString(),ts);
 
 
-                            scoresRef.child(mAuth.getCurrentUser().getUid()).child(curruser).orderByKey().limitToLast(1).addListenerForSingleValueEvent(new ValueEventListener() {
+                            scoresRef.child(mAuth.getCurrentUser().getUid()).child(curruser).child("messages").orderByKey().limitToLast(1).addListenerForSingleValueEvent(new ValueEventListener() {
                         @Override
                         public void onDataChange(DataSnapshot dataSnapshot) {
 
@@ -1321,12 +1321,18 @@ final String mText = message.getText().toString();
 
                                     Log.i("глюк3",String.valueOf(child_name));
 
-                                    scoresRef.child(curruser).child(mAuth.getCurrentUser().getUid()).child(child_name.toString()).setValue(messPriv);
-                                    scoresRef.child(mAuth.getCurrentUser().getUid()).child(curruser).child(child_name.toString()).setValue(messPriv)
+                                    scoresRef.child(curruser).child(mAuth.getCurrentUser().getUid()).child("messages").child(child_name.toString()).setValue(messPriv);
+                                    scoresRef.child(mAuth.getCurrentUser().getUid()).child(curruser).child("messages").child(child_name.toString()).setValue(messPriv)
 
                                             .addOnSuccessListener(new OnSuccessListener<Void>() {
                                                 @Override
                                                 public void onSuccess(Void aVoid) {
+
+                                                    scoresRef.child(curruser).child(mAuth.getCurrentUser().getUid()).child("lmess").setValue(ts);
+                                                    scoresRef.child(mAuth.getCurrentUser().getUid()).child(curruser).child("lmess").setValue(ts);
+
+                                                    scoresRef.child(curruser).child(mAuth.getCurrentUser().getUid()).child("name").setValue(mUser);
+                                                    scoresRef.child(mAuth.getCurrentUser().getUid()).child(curruser).child("name").setValue(currname);
 
                                                     // После того как вставили данные ищем подписчиков данной страницы (curruser) и найденным подписчикам рассылаем сообщения о новом сообении
 
@@ -1381,12 +1387,18 @@ final String mText = message.getText().toString();
                                 }
                             }else
                             {
-                                scoresRef.child(curruser).child(mAuth.getCurrentUser().getUid()).child("1542770088").setValue(messPriv);
-                                scoresRef.child(mAuth.getCurrentUser().getUid()).child(curruser).child("1542770088").setValue(messPriv)
+                                scoresRef.child(curruser).child(mAuth.getCurrentUser().getUid()).child("messages").child("1542770088").setValue(messPriv);
+                                scoresRef.child(mAuth.getCurrentUser().getUid()).child(curruser).child("messages").child("1542770088").setValue(messPriv)
 
                                         .addOnSuccessListener(new OnSuccessListener<Void>() {
                                     @Override
                                     public void onSuccess(Void aVoid) {
+
+                                        scoresRef.child(curruser).child(mAuth.getCurrentUser().getUid()).child("lmess").setValue(ts);
+                                        scoresRef.child(mAuth.getCurrentUser().getUid()).child(curruser).child("lmess").setValue(ts);
+
+                                        scoresRef.child(curruser).child(mAuth.getCurrentUser().getUid()).child("name").setValue(mUser);
+                                        scoresRef.child(mAuth.getCurrentUser().getUid()).child(curruser).child("name").setValue(currname);
 
                                         // После того как вставили данные ищем подписчиков данной страницы (curruser) и найденным подписчикам рассылаем сообщения о новом сообении
 

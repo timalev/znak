@@ -417,7 +417,9 @@ public class UsersActivity extends AppCompatActivity {
 
                     if (FirebaseAuth.getInstance().getCurrentUser().getUid().equals("1qMMra5pItbJOtbIKcyQPHCaS7Q2")){
 
-                        a_age =  M_profile_age.get(object) + " " + object;
+                        a_age =  M_profile_age.get(object) ;
+
+                      //  a_age =  M_profile_age.get(object) + " " + object;
                     }else
                     {
                         a_age = M_profile_age.get(object);
