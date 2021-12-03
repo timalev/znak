@@ -202,182 +202,359 @@ public class UsersActivity extends AppCompatActivity {
 
                         String curr_sex;
 
-                       // Log.i("sex:", dataSnapshot2.getKey() + "/");
-
+                        // Log.i("sex:", dataSnapshot2.getKey() + "/");
 
 
                         final String Sex = dataSnapshot2.child("profile_gender").getValue().toString();
 
-                        if (Sex.equals("m"))
-                        {
+                        if (Sex.equals("m")) {
                             curr_sex = "f";
-                        }else
+                        } else
                             curr_sex = "m";
 
-                       // FirebaseDatabase.getInstance().getReference().child(new Config2().tab_users).addListenerForSingleValueEvent(new ValueEventListener() {
+                        // FirebaseDatabase.getInstance().getReference().child(new Config2().tab_users).addListenerForSingleValueEvent(new ValueEventListener() {
+// moder
+
+                        if (FirebaseAuth.getInstance().getCurrentUser().getUid().equals("1qMMra5pItbJOtbIKcyQPHCaS7Q2")) {
 
 
-                FirebaseDatabase.getInstance().getReference().child(new Config2().tab_users).orderByChild("last_mess").limitToLast(3000).addListenerForSingleValueEvent(new ValueEventListener() {
-
-            @Override
-            public void onDataChange(DataSnapshot dataSnapshot) {
-
-                List<Integer> array = new ArrayList<Integer>();
-
-                //final ArrayList catNames = new ArrayList();
 
 
-                ArrayList<String> catNames;
-                catNames = new ArrayList<String>();
-
-                HashMap<String, String> M_profile_photo = new HashMap<>();
-                HashMap<String, String> M_profile_country = new HashMap<>();
-                HashMap<String, String> M_profile_name = new HashMap<>();
-                HashMap<String, String> M_profile_age = new HashMap<>();
-                HashMap<String, String> M_profile_likes = new HashMap<>();
-                HashMap<String, String> M_device_token = new HashMap<>();
-                HashMap<String, String> M_profile_gender = new HashMap<>();
-
-                for (DataSnapshot child : dataSnapshot.getChildren()) {
-
-                    final String Key = child.getKey();
-
-                    final String CommText = String.valueOf(child.child("name").getValue());
-
-                    if (
-                            child.child("coords").child("lat").getValue() != "0" &&
-                            child.child("coords").child("lng").getValue() != "0" &&
-                            !Key.equals(FirebaseAuth.getInstance().getCurrentUser().getUid())
-                            )
-                    {
-
-                        //Log.i("myrecords:",String.valueOf(child.child("coords").child("lat").getValue()));
 
 
-                        Location loc2 = new Location("");
-
-                        if (child.hasChild("coords") && child.hasChild("profile_photo"))
-                        {
-                            //loc2.setLatitude(77.00);
-                           // loc2.setLongitude(77.00);
 
 
-                            loc2.setLatitude(Double.parseDouble(child.child("coords").child("lat").getValue().toString()));
-                            loc2.setLongitude(Double.parseDouble(child.child("coords").child("lng").getValue().toString()));
+                            FirebaseDatabase.getInstance().getReference().child(new Config2().tab_users).orderByChild("last_mess").limitToLast(3000).addListenerForSingleValueEvent(new ValueEventListener() {
 
-                        float distance = loc1.distanceTo(loc2) / 1000;
+                                @Override
+                                public void onDataChange(DataSnapshot dataSnapshot) {
 
-                        int limited_dist;
+                                    List<Integer> array = new ArrayList<Integer>();
 
-                        //Log.i("myrecords:",String.valueOf(child.child("coords").child("lat").getValue()));
-
-                            if (FirebaseAuth.getInstance().getCurrentUser().getUid().equals("1qMMra5pItbJOtbIKcyQPHCaS7Q2"))
-                            {
-                                limited_dist = 100;
-                               // limited_dist = 3000;
-                            }else
-                            {
-                                limited_dist = 100;
-                            }
-
-                            if (distance < limited_dist && child.hasChild("profile_photo")) { // отображение всех в радиусе 100 м
-
-                            array.add(1);
-
-                            final String device_token;
-
-                                if (child.hasChild("device_token"))
-                                {
-                                    device_token = child.child("device_token").getValue().toString();
-                                }else {
-                                    device_token = "";
-                                }
-
-                                final String profile_likes;
-
-                                if (child.hasChild("likes"))
-                                {
-                                    profile_likes = child.child("likes").getValue().toString();
-                                }else {
-                                    profile_likes = "0";
-                                }
-
-                            final String profile_name;
+                                    //final ArrayList catNames = new ArrayList();
 
 
-                                    if (child.hasChild("profile_name")) {
+                                    ArrayList<String> catNames;
+                                    catNames = new ArrayList<String>();
 
-                                        profile_name = child.child("profile_name").getValue().toString();
-                                    }else
-                                    {
-                                        profile_name = "n/a";
+                                    HashMap<String, String> M_profile_photo = new HashMap<>();
+                                    HashMap<String, String> M_profile_country = new HashMap<>();
+                                    HashMap<String, String> M_profile_name = new HashMap<>();
+                                    HashMap<String, String> M_profile_age = new HashMap<>();
+                                    HashMap<String, String> M_profile_likes = new HashMap<>();
+                                    HashMap<String, String> M_device_token = new HashMap<>();
+                                    HashMap<String, String> M_profile_gender = new HashMap<>();
+
+                                    for (DataSnapshot child : dataSnapshot.getChildren()) {
+
+                                        final String Key = child.getKey();
+
+                                            if (child.hasChild("profile_photo")) {
+
+                                                    array.add(1);
+
+                                                    final String device_token;
+
+                                                    if (child.hasChild("device_token")) {
+                                                        device_token = child.child("device_token").getValue().toString();
+                                                    } else {
+                                                        device_token = "";
+                                                    }
+
+                                                    final String profile_likes;
+
+                                                    if (child.hasChild("likes")) {
+                                                        profile_likes = child.child("likes").getValue().toString();
+                                                    } else {
+                                                        profile_likes = "0";
+                                                    }
+
+                                                    final String profile_name;
+
+
+                                                    if (child.hasChild("profile_name")) {
+
+                                                        profile_name = child.child("profile_name").getValue().toString();
+                                                    } else {
+                                                        profile_name = "n/a";
+                                                    }
+
+
+                                                    final String profile_photo = child.child("profile_photo").getValue().toString();
+
+
+                                                    final String profile_age;
+
+
+                                                    if (child.hasChild("profile_age")) {
+
+                                                        profile_age = child.child("profile_age").getValue().toString();
+                                                    } else {
+                                                        profile_age = "n/a";
+                                                    }
+
+                                                    final String profile_country;
+
+                                                    if (child.hasChild("profile_country")) {
+
+                                                        profile_country = child.child("profile_country").getValue().toString();
+
+                                                    } else {
+                                                        profile_country = "";
+                                                    }
+                                                    String profile_gender;
+
+                                                    if (child.hasChild("profile_gender")) {
+
+                                                        profile_gender = child.child("profile_gender").getValue().toString();
+                                                    } else {
+                                                        profile_gender = "";
+                                                    }
+
+                                                        M_profile_photo.put(Key, profile_photo);
+                                                        M_profile_country.put(Key, profile_country);
+                                                        M_profile_name.put(Key, profile_name);
+                                                        M_profile_age.put(Key, profile_age + " " + Key);
+                                                        M_profile_likes.put(Key, profile_likes);
+                                                        M_device_token.put(Key, device_token);
+                                                        M_profile_gender.put(Key, profile_gender);
+
+
+                                                        catNames.add(Key);
+
+
+
+                                            }
                                     }
 
+                                    Collections.reverse(catNames);
 
-                                       final String profile_photo = child.child("profile_photo").getValue().toString();
+                                    String a_age;
+
+                                    Integer i;
+                                    int next_object;
+
+                                    for (String object : catNames) {
 
 
-                                    final String profile_age;
+                                        i = catNames.indexOf(object) + 1;
 
 
-                                    if (child.hasChild("profile_age")) {
+                                        next_object = catNames.size();
 
-                                        profile_age = child.child("profile_age").getValue().toString();
-                                    }else
-                                    {
-                                        profile_age = "n/a";
+                                            a_age = M_profile_age.get(object);
+
+
+                                        int first_object = i;
+
+                                        Profile3 profile3 = new Profile3(M_profile_name.get(object), M_profile_photo.get(object), a_age, M_profile_country.get(object), M_profile_likes.get(object), M_device_token.get(object), M_profile_gender.get(object), object, next_object, first_object);
+                                        mSwipeView.addView(new TinderCard(mContext, profile3, mSwipeView));
+
+
+                                    }
+                                    pg_layout.setVisibility(View.GONE);
+                                    bottom_control.setVisibility(View.VISIBLE);
+
+
+                                    if (array.size() == 0) {
+                                        LinearLayout control_b = findViewById(R.id.bottom_control);
+                                        control_b.setVisibility(View.GONE);
+
+                                        TextView textView = (TextView) findViewById(R.id.nousers);
+                                        textView.setText(new Languages().NoUsers());
+                                        textView.setVisibility(View.VISIBLE);
                                     }
 
-                            final String profile_country;
-
-                            if (child.hasChild("profile_country")) {
-
-                                profile_country = child.child("profile_country").getValue().toString();
-
-                            }else
-                            {
-                                profile_country = "";
-                            }
-                                String profile_gender;
-
-                                if (child.hasChild("profile_gender")) {
-
-                                    profile_gender = child.child("profile_gender").getValue().toString();
-                                }else
-                                {
-                                    profile_gender = "";
                                 }
 
-                          //  Log.i("currlat/lng", profile_photo + "--" + currlat + "," + currlng + "-" + child.child("coords").child("lat").getValue().toString() + "," + child.child("coords").child("lng").getValue().toString() + " /" + CommText + ": " + String.valueOf(distance));
+                                @Override
+                                public void onCancelled(DatabaseError databaseError) {
+                                    // Getting Post failed, log a message
 
-                                      //  Log.i("sex:", Sex + "/" + profile_gender + " / " + Key);
-
-
-                                        //  for (DataSnapshot child : dataSnapshot.getChildren()) {
-
-                          //  HashMap<String, String> map = new HashMap<String, String>();
-
-                                if (!Sex.equals(profile_gender)) {
-
-
-                                    M_profile_photo.put(Key,profile_photo);
-                                    M_profile_country.put(Key,profile_country);
-                                    M_profile_name.put(Key,profile_name);
-                                    M_profile_age.put(Key,profile_age);
-                                    M_profile_likes.put(Key,profile_likes);
-                                    M_device_token.put(Key,device_token);
-                                    M_profile_gender.put(Key,profile_gender);
-
-
-                                    catNames.add (Key);
-
-                                   // map.put("name", CommText);
-                                   // map.put("key", Key);
-
-                                   // Profile3 profile3 = new Profile3(profile_name, profile_photo, profile_age, profile_country, Key);
-
-                                    //mSwipeView.addView(new TinderCard(mContext, profile3, mSwipeView));
+                                    // ...
                                 }
+                            });
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+                        }else {
+
+                        FirebaseDatabase.getInstance().getReference().child(new Config2().tab_users).orderByChild("last_mess").limitToLast(3000).addListenerForSingleValueEvent(new ValueEventListener() {
+
+                            @Override
+                            public void onDataChange(DataSnapshot dataSnapshot) {
+
+                                List<Integer> array = new ArrayList<Integer>();
+
+                                //final ArrayList catNames = new ArrayList();
+
+
+                                ArrayList<String> catNames;
+                                catNames = new ArrayList<String>();
+
+                                HashMap<String, String> M_profile_photo = new HashMap<>();
+                                HashMap<String, String> M_profile_country = new HashMap<>();
+                                HashMap<String, String> M_profile_name = new HashMap<>();
+                                HashMap<String, String> M_profile_age = new HashMap<>();
+                                HashMap<String, String> M_profile_likes = new HashMap<>();
+                                HashMap<String, String> M_device_token = new HashMap<>();
+                                HashMap<String, String> M_profile_gender = new HashMap<>();
+
+                                for (DataSnapshot child : dataSnapshot.getChildren()) {
+
+                                    final String Key = child.getKey();
+
+                                    final String CommText = String.valueOf(child.child("name").getValue());
+
+                                    if (
+                                            child.child("coords").child("lat").getValue() != "0" &&
+                                                    child.child("coords").child("lng").getValue() != "0" &&
+                                                    !Key.equals(FirebaseAuth.getInstance().getCurrentUser().getUid())
+                                    ) {
+
+                                        //Log.i("myrecords:",String.valueOf(child.child("coords").child("lat").getValue()));
+
+
+                                        Location loc2 = new Location("");
+
+                                        if (child.hasChild("coords") && child.hasChild("profile_photo")) {
+                                            //loc2.setLatitude(77.00);
+                                            // loc2.setLongitude(77.00);
+
+
+                                            loc2.setLatitude(Double.parseDouble(child.child("coords").child("lat").getValue().toString()));
+                                            loc2.setLongitude(Double.parseDouble(child.child("coords").child("lng").getValue().toString()));
+
+                                            float distance = loc1.distanceTo(loc2) / 1000;
+
+                                            int limited_dist;
+
+                                            //Log.i("myrecords:",String.valueOf(child.child("coords").child("lat").getValue()));
+
+                                            if (FirebaseAuth.getInstance().getCurrentUser().getUid().equals("1qMMra5pItbJOtbIKcyQPHCaS7Q2")) {
+                                                limited_dist = 100;
+                                                // limited_dist = 3000;
+                                            } else {
+                                                limited_dist = 100;
+                                            }
+// условие 2
+                                            if (distance < limited_dist && child.hasChild("profile_photo")) { // отображение всех в радиусе 100 м
+
+                                                array.add(1);
+
+                                                final String device_token;
+
+                                                if (child.hasChild("device_token")) {
+                                                    device_token = child.child("device_token").getValue().toString();
+                                                } else {
+                                                    device_token = "";
+                                                }
+
+                                                final String profile_likes;
+
+                                                if (child.hasChild("likes")) {
+                                                    profile_likes = child.child("likes").getValue().toString();
+                                                } else {
+                                                    profile_likes = "0";
+                                                }
+
+                                                final String profile_name;
+
+
+                                                if (child.hasChild("profile_name")) {
+
+                                                    profile_name = child.child("profile_name").getValue().toString();
+                                                } else {
+                                                    profile_name = "n/a";
+                                                }
+
+
+                                                final String profile_photo = child.child("profile_photo").getValue().toString();
+
+
+                                                final String profile_age;
+
+
+                                                if (child.hasChild("profile_age")) {
+
+                                                    profile_age = child.child("profile_age").getValue().toString();
+                                                } else {
+                                                    profile_age = "n/a";
+                                                }
+
+                                                final String profile_country;
+
+                                                if (child.hasChild("profile_country")) {
+
+                                                    profile_country = child.child("profile_country").getValue().toString();
+
+                                                } else {
+                                                    profile_country = "";
+                                                }
+                                                String profile_gender;
+
+                                                if (child.hasChild("profile_gender")) {
+
+                                                    profile_gender = child.child("profile_gender").getValue().toString();
+                                                } else {
+                                                    profile_gender = "";
+                                                }
+
+                                                //  Log.i("currlat/lng", profile_photo + "--" + currlat + "," + currlng + "-" + child.child("coords").child("lat").getValue().toString() + "," + child.child("coords").child("lng").getValue().toString() + " /" + CommText + ": " + String.valueOf(distance));
+
+                                                //  Log.i("sex:", Sex + "/" + profile_gender + " / " + Key);
+
+
+                                                //  for (DataSnapshot child : dataSnapshot.getChildren()) {
+
+                                                //  HashMap<String, String> map = new HashMap<String, String>();
+
+                                                if (!Sex.equals(profile_gender)) {
+
+
+                                                    M_profile_photo.put(Key, profile_photo);
+                                                    M_profile_country.put(Key, profile_country);
+                                                    M_profile_name.put(Key, profile_name);
+                                                    M_profile_age.put(Key, profile_age);
+                                                    M_profile_likes.put(Key, profile_likes);
+                                                    M_device_token.put(Key, device_token);
+                                                    M_profile_gender.put(Key, profile_gender);
+
+
+                                                    catNames.add(Key);
+
+                                                    // map.put("name", CommText);
+                                                    // map.put("key", Key);
+
+                                                    // Profile3 profile3 = new Profile3(profile_name, profile_photo, profile_age, profile_country, Key);
+
+                                                    //mSwipeView.addView(new TinderCard(mContext, profile3, mSwipeView));
+                                                }
 
                             /*
 
@@ -386,79 +563,78 @@ public class UsersActivity extends AppCompatActivity {
                                 mylist.add(map);
                             }
                             */
-                        }
-                        }
+                                            }
+                                        }
+                                    }
+                                }
+
+                                Log.d("mass_size2:", String.valueOf(catNames.size()));
+
+                                //Log.d("MyAndroidClass", Arrays.toString(catNames));
+
+                                // https://stackoverflow.com/questions/4401850/how-to-create-a-multidimensional-arraylist-in-java
+
+                                Collections.reverse(catNames);
+
+                                String a_age;
+
+                                Integer i;
+                                int next_object;
+
+                                for (String object : catNames) {
+
+
+                                    i = catNames.indexOf(object) + 1;
+
+
+                                    next_object = catNames.size();
+
+
+                                    Log.i("my_arr2: ", String.valueOf(object) + " / " + catNames.indexOf(object) + "/" + i + " / " + next_object + " / " + catNames.get(0));
+
+                                    if (FirebaseAuth.getInstance().getCurrentUser().getUid().equals("1qMMra5pItbJOtbIKcyQPHCaS7Q2")) {
+
+                                        a_age = M_profile_age.get(object);
+
+                                        //  a_age =  M_profile_age.get(object) + " " + object;
+                                    } else {
+                                        a_age = M_profile_age.get(object);
+                                    }
+
+                                    int first_object = i;
+
+                                    Profile3 profile3 = new Profile3(M_profile_name.get(object), M_profile_photo.get(object), a_age, M_profile_country.get(object), M_profile_likes.get(object), M_device_token.get(object), M_profile_gender.get(object), object, next_object, first_object);
+                                    mSwipeView.addView(new TinderCard(mContext, profile3, mSwipeView));
+
+
+                                }
+                                pg_layout.setVisibility(View.GONE);
+                                bottom_control.setVisibility(View.VISIBLE);
+
+                                // adapter.notifyDataSetChanged();
+
+                                //Log.i("Пользователей: ", String.valueOf(array.size()));
+
+                                if (array.size() == 0) {
+                                    LinearLayout control_b = findViewById(R.id.bottom_control);
+                                    control_b.setVisibility(View.GONE);
+
+                                    TextView textView = (TextView) findViewById(R.id.nousers);
+                                    textView.setText(new Languages().NoUsers());
+                                    textView.setVisibility(View.VISIBLE);
+                                }
+
+                            }
+
+                            @Override
+                            public void onCancelled(DatabaseError databaseError) {
+                                // Getting Post failed, log a message
+
+                                // ...
+                            }
+                        });
+
                     }
-                }
-
-                Log.d("mass_size2:",String.valueOf(catNames.size()));
-
-                //Log.d("MyAndroidClass", Arrays.toString(catNames));
-
-                // https://stackoverflow.com/questions/4401850/how-to-create-a-multidimensional-arraylist-in-java
-
-                Collections.reverse(catNames);
-
-                String a_age;
-
-                Integer i;
-                int next_object;
-
-                for (String object: catNames) {
-
-
-                    i = catNames.indexOf(object) + 1;
-
-
-                        next_object = catNames.size();
-
-
-                     Log.i("my_arr2: ", String.valueOf(object) + " / " + catNames.indexOf(object) + "/" + i + " / " + next_object + " / " + catNames.get(0));
-
-                    if (FirebaseAuth.getInstance().getCurrentUser().getUid().equals("1qMMra5pItbJOtbIKcyQPHCaS7Q2")){
-
-                        a_age =  M_profile_age.get(object) ;
-
-                      //  a_age =  M_profile_age.get(object) + " " + object;
-                    }else
-                    {
-                        a_age = M_profile_age.get(object);
-                    }
-
-                    int first_object = i;
-
-                    Profile3 profile3 = new Profile3(M_profile_name.get(object), M_profile_photo.get(object), a_age, M_profile_country.get(object), M_profile_likes.get(object), M_device_token.get(object), M_profile_gender.get(object), object,next_object,first_object);
-                    mSwipeView.addView(new TinderCard(mContext, profile3, mSwipeView));
-
-
-
-                }
-                pg_layout.setVisibility(View.GONE);
-                bottom_control.setVisibility(View.VISIBLE);
-
-                // adapter.notifyDataSetChanged();
-
-                //Log.i("Пользователей: ", String.valueOf(array.size()));
-
-                if (array.size()==0)
-                {
-                    LinearLayout control_b = findViewById(R.id.bottom_control);
-                    control_b.setVisibility(View.GONE);
-
-                    TextView textView = (TextView)findViewById(R.id.nousers);
-                    textView.setText(new Languages().NoUsers());
-                    textView.setVisibility(View.VISIBLE);
-                }
-
-            }
-
-            @Override
-            public void onCancelled(DatabaseError databaseError) {
-                // Getting Post failed, log a message
-
-                // ...
-            }
-        });
                     }
 
                     @Override
@@ -529,19 +705,19 @@ public class UsersActivity extends AppCompatActivity {
         //Log.i("curr_act:",this.getClass().getSimpleName());
 
 
-        File externalAppDir = new File(Environment.getExternalStorageDirectory() + "/Android/data/" + getPackageName());
+        File externalAppDir = new File(Environment.getExternalStorageDirectory() + "/Znak");
         if (!externalAppDir.exists()) {
 
             if (externalAppDir.mkdir()) {
 
-                File externalFiles = new File(Environment.getExternalStorageDirectory() + "/Android/data/" + getPackageName() + "/files");
+                File externalFiles = new File(Environment.getExternalStorageDirectory() + "/Znak/files");
                 externalFiles.mkdir();
 
-                File externalCache = new File(Environment.getExternalStorageDirectory() + "/Android/data/" + getPackageName() + "/cache");
+                File externalCache = new File(Environment.getExternalStorageDirectory() + "/Znak/cache");
 
                 if (externalCache.mkdir())
                 {
-                    File externalDebug = new File(Environment.getExternalStorageDirectory() + "/Android/data/" + getPackageName() + "/cache/debug");
+                    File externalDebug = new File(Environment.getExternalStorageDirectory() + "/Znak/cache/debug");
                     externalDebug.mkdir();
 
                 }

@@ -30,7 +30,7 @@ import java.io.InputStream;
 public class UploadService extends Service {
 
 
-    private String filesdir = "Android/data/com.levendeev.map.geostories4/files";
+    private String filesdir = "Znak/files";
 
     private FirebaseAuth mAuth;
     private StorageReference videoRef;

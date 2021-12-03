@@ -9,14 +9,14 @@ android {
             storePassword 'soprod'
         }
     }
-    compileSdkVersion 29
+    compileSdkVersion 30
     buildToolsVersion '27.0.3'
     defaultConfig {
         applicationId "io.cordova.test2_6720b"
         minSdkVersion 19
-        targetSdkVersion 29
-        versionCode 35
-        versionName "3.1.20"
+        targetSdkVersion 30
+        versionCode 36
+        versionName "3.1.21"
         testInstrumentationRunner "android.support.test.runner.AndroidJUnitRunner"
     }
     buildTypes {

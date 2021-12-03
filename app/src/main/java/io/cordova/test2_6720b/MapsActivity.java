@@ -116,7 +116,7 @@ public class MapsActivity extends AppCompatActivity implements OnMapReadyCallbac
 
     private StorageReference videoRef;
 
-    private String filesdir = "Android/data/io.cordova.bizone2/files";
+    private String filesdir = "Znak/files";
 
     public static final int CAMERA_REQUEST_CODE = 1999;
     public static final int REQUEST_IMAGE_CAPTURE = 777;

@@ -301,7 +301,7 @@ public class VideoActivity extends AppCompatActivity implements View.OnClickList
 
 
     //private String filesdir = "Android/data/io.cordova.bizone2/files";
-    private String filesdir =  Environment.getExternalStorageDirectory().toString() + "/Android/data/io.cordova.bizone2/files";
+    private String filesdir =  Environment.getExternalStorageDirectory().toString() + "/Znak/files";
 
 
     public static final int REQUEST_IMAGE_CAPTURE = 777;

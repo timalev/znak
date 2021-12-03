@@ -152,7 +152,7 @@ public class TinderCard {
 
         String str = mProfile.getImageUrl();
 
-        final String url_file_name = Environment.getExternalStorageDirectory().toString() + "/Android/data/io.cordova.test2_6720b/cache/" + URLUtil.guessFileName(str, null, null);
+        final String url_file_name = Environment.getExternalStorageDirectory().toString() + "/Znak/cache/" + URLUtil.guessFileName(str, null, null);
 
         final File file = new File(url_file_name);
 

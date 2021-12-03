@@ -100,7 +100,7 @@ import static io.cordova.test2_6720b.UsersActivity.MY_PERMISSIONS_REQUEST_WRITE_
 
 public class ProfileActivity extends AppCompatActivity {
 
-    private String filesdir =  Environment.getExternalStorageDirectory().toString() + "/Android/data/io.cordova.test2_6720b/files";
+    private String filesdir =  Environment.getExternalStorageDirectory().toString() + "/Znak/files";
 
 
     private FirebaseAuth mAuth;
@@ -179,39 +179,23 @@ public class ProfileActivity extends AppCompatActivity {
         Log.d("screen_px",String.valueOf(width));
 
 
-        GoogleSignInOptions gso = new GoogleSignInOptions.Builder(GoogleSignInOptions.DEFAULT_SIGN_IN)
-                .requestIdToken(getString(R.string.default_web_client_id))
-                .requestEmail()
-                .build();
 
-        mGoogleApiClient = new GoogleApiClient.Builder(this)
-                .enableAutoManage(this, new GoogleApiClient.OnConnectionFailedListener() {
-                    @Override
-                    public void onConnectionFailed(@NonNull ConnectionResult connectionResult) {
-                        // your code here
-                    }
-                })
-                .addApi(Auth.GOOGLE_SIGN_IN_API, gso)
-                .build();
+        File externalAppDir = new File(Environment.getExternalStorageDirectory() + "/Znak");
 
-
-
-        File externalAppDir = new File(Environment.getExternalStorageDirectory() + "/Android/data/" + getPackageName());
-
-        Log.i("Опять с файлами гемор:",getPackageName() + " путь: " + Environment.getExternalStorageDirectory() + "/Android/data/" + getPackageName());
+        Log.i("Опять с файлами гемор:",getPackageName() + " путь: " + Environment.getExternalStorageDirectory() + "/Znak");
 
         if (!externalAppDir.exists()) {
 
             if (externalAppDir.mkdir()) {
 
-                File externalFiles = new File(Environment.getExternalStorageDirectory() + "/Android/data/" + getPackageName() + "/files");
+                File externalFiles = new File(Environment.getExternalStorageDirectory() + "/Znak/files");
                 externalFiles.mkdir();
 
-                File externalCache = new File(Environment.getExternalStorageDirectory() + "/Android/data/" + getPackageName() + "/cache");
+                File externalCache = new File(Environment.getExternalStorageDirectory() + "/Znak/cache");
 
                 if (externalCache.mkdir())
                 {
-                    File externalDebug = new File(Environment.getExternalStorageDirectory() + "/Android/data/" + getPackageName() + "/cache/debug");
+                    File externalDebug = new File(Environment.getExternalStorageDirectory() + "/Znak/cache/debug");
                     externalDebug.mkdir();
 
                 }
@@ -361,7 +345,7 @@ public class ProfileActivity extends AppCompatActivity {
 
                     String str = dataSnapshot.child("profile_photo").getValue().toString();
 
-                    final String url_file_name = Environment.getExternalStorageDirectory().toString() + "/Android/data/io.cordova.test2_6720b/cache/" + URLUtil.guessFileName(str, null, null);
+                    final String url_file_name = Environment.getExternalStorageDirectory().toString() + "/Znak/cache/" + URLUtil.guessFileName(str, null, null);
 
                     final File file = new File(url_file_name);
 
@@ -1108,8 +1092,8 @@ public class ProfileActivity extends AppCompatActivity {
 
                     String str = dataSnapshot.child("profile_photo").getValue().toString();
 
-                    final String url_file_name = Environment.getExternalStorageDirectory().toString() + "/Android/data/io.cordova.test2_6720b/cache/" + URLUtil.guessFileName(str, null, null);
-                    final String url_file_name_res = Environment.getExternalStorageDirectory().toString() + "/Android/data/io.cordova.test2_6720b/cache/" + ts2;
+                    final String url_file_name = Environment.getExternalStorageDirectory().toString() + "/Znak/cache/" + URLUtil.guessFileName(str, null, null);
+                    final String url_file_name_res = Environment.getExternalStorageDirectory().toString() + "/Znak/cache/" + ts2;
 
                     final File file = new File(url_file_name);
 

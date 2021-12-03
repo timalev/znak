@@ -24,7 +24,7 @@ import java.io.InputStream;
 
 public class UploadScreenActivity extends AppCompatActivity {
 
-    private String filesdir = "Android/data/com.levendeev.map.geostories4/files";
+    private String filesdir = "Znak/files";
     private FirebaseAuth mAuth;
     private StorageReference videoRef;
     private DatabaseReference mPostReference;

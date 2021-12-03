@@ -296,7 +296,7 @@ public class VideoActivityMess extends AppCompatActivity implements View.OnClick
 
 
     //private String filesdir = "Android/data/io.cordova.bizone2/files";
-    private String filesdir =  Environment.getExternalStorageDirectory().toString() + "/Android/data/io.cordova.test2_6720b/files";
+    private String filesdir =  Environment.getExternalStorageDirectory().toString() + "/Znak/files";
 
 
 

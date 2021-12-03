@@ -18,7 +18,7 @@ import java.io.IOException;
 public class PhotoActivity extends AppCompatActivity implements View.OnClickListener {
 
     public static final int REQUEST_IMAGE_CAPTURE = 777;
-    private String filesdir = "Android/data/com.levendeev.map.geostories4/files";
+    private String filesdir = "Znak/files";
 
 
     @Override
