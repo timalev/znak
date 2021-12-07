@@ -5,7 +5,6 @@ import android.app.Activity;
 import android.app.ActivityManager;
 import android.content.BroadcastReceiver;
 import android.content.Context;
-import android.content.ContextWrapper;
 import android.content.DialogInterface;
 import android.content.Intent;
 import android.content.IntentFilter;
@@ -15,7 +14,6 @@ import android.graphics.Bitmap;
 import android.graphics.BitmapFactory;
 import android.graphics.Color;
 import android.graphics.Point;
-import android.graphics.PorterDuff;
 import android.graphics.drawable.Drawable;
 import android.location.Location;
 import android.location.LocationManager;
@@ -24,43 +22,35 @@ import android.net.Uri;
 import android.os.Build;
 import android.os.Bundle;
 import android.os.Environment;
-import android.os.StrictMode;
 import android.preference.PreferenceManager;
 import android.provider.MediaStore;
 import android.provider.Settings;
-import android.support.annotation.NonNull;
-import android.support.v4.content.FileProvider;
-import android.support.v7.app.AlertDialog;
-import android.support.v7.app.AppCompatActivity;
-import android.support.v7.widget.LinearLayoutManager;
-import android.support.v7.widget.RecyclerView;
-import android.support.v7.widget.Toolbar;
+import androidx.annotation.NonNull;
+import androidx.core.content.FileProvider;
+import androidx.appcompat.app.AlertDialog;
+import androidx.appcompat.app.AppCompatActivity;
+import androidx.recyclerview.widget.LinearLayoutManager;
+import androidx.recyclerview.widget.RecyclerView;
+import androidx.appcompat.widget.Toolbar;
 import android.text.TextUtils;
 import android.util.DisplayMetrics;
 import android.util.Log;
 import android.view.Display;
 import android.view.Menu;
 import android.view.MenuItem;
-import android.view.MotionEvent;
 import android.view.View;
 import android.view.inputmethod.InputMethodManager;
 import android.widget.Button;
 import android.widget.EditText;
-import android.widget.ImageButton;
 import android.widget.ImageView;
 import android.widget.LinearLayout;
-import android.widget.MediaController;
 import android.widget.ProgressBar;
-import android.widget.ScrollView;
 import android.widget.TextView;
 import android.widget.Toast;
 import android.widget.VideoView;
 
 import com.bumptech.glide.Glide;
-import com.bumptech.glide.load.engine.DiskCacheStrategy;
 //import com.bumptech.glide.load.resource.drawable.GlideDrawable;
-import com.bumptech.glide.request.RequestListener;
-import com.bumptech.glide.request.target.Target;
 import com.google.android.gms.tasks.OnFailureListener;
 import com.google.android.gms.tasks.OnSuccessListener;
 import com.google.firebase.auth.FirebaseAuth;
@@ -83,18 +73,12 @@ import java.io.FileOutputStream;
 import java.io.IOException;
 import java.io.InputStream;
 import java.io.OutputStreamWriter;
-import java.lang.reflect.Method;
 import java.net.HttpURLConnection;
 import java.net.URL;
-import java.text.SimpleDateFormat;
 import java.util.ArrayList;
 import java.util.Calendar;
 import java.util.Date;
 import java.util.List;
-import java.util.Locale;
-import java.util.TimeZone;
-
-import static android.os.Environment.getExternalStoragePublicDirectory;
 
 public class VideoActivityMess extends AppCompatActivity implements View.OnClickListener {
 
@@ -261,7 +245,7 @@ public class VideoActivityMess extends AppCompatActivity implements View.OnClick
         final MenuItem sendprofile = menu.findItem(R.id.sendprofile);
 
 
-              if (FirebaseAuth.getInstance().getCurrentUser().getUid().equals("1qMMra5pItbJOtbIKcyQPHCaS7Q2"))
+              if (FirebaseAuth.getInstance().getCurrentUser().getUid().equals("XIsxaLxoRmhJHtMYhFJQ2HBeGYD2"))
 
        // if (FirebaseAuth.getInstance().getCurrentUser().getUid().equals("HJyDKc1CmUOp3o1yvtaSAg6Zecv2"))
                 {
@@ -930,7 +914,7 @@ if (dataSnapshot.getValue()!=null) {
                             dataSnapshot.child("profile_gender").getValue().equals("f") ||
                            // dataSnapshot.getKey().equals("HJyDKc1CmUOp3o1yvtaSAg6Zecv2")
 
-                                    dataSnapshot.getKey().equals("1qMMra5pItbJOtbIKcyQPHCaS7Q2")
+                                    dataSnapshot.getKey().equals("XIsxaLxoRmhJHtMYhFJQ2HBeGYD2")
 
 
                     )
@@ -1590,7 +1574,10 @@ final String mText = message.getText().toString();
                     @Override
                     public void onSuccess(UploadTask.TaskSnapshot taskSnapshot) {
 
-                        final Uri downloadUrl = taskSnapshot.getDownloadUrl();
+                        photoRef.getDownloadUrl().addOnSuccessListener(new OnSuccessListener<Uri>() {
+                            @Override
+                            public void onSuccess(Uri uri) {
+                                final Uri downloadUrl = uri;
 
                         Log.d("Загрузка: ", "Успешно, ссылка на видео - " + downloadUrl);
 
@@ -1761,7 +1748,8 @@ final String mText = message.getText().toString();
                             Toast.makeText(getApplication(), new Languages().PhotoAdded(), Toast.LENGTH_LONG).show();
 
                         }
-
+                            }
+                        });
                     }
                 });
 
@@ -2186,7 +2174,10 @@ final String mText = message.getText().toString();
                         @Override
                         public void onSuccess(UploadTask.TaskSnapshot taskSnapshot) {
 
-                            final Uri downloadUrl = taskSnapshot.getDownloadUrl();
+                            photoRef.getDownloadUrl().addOnSuccessListener(new OnSuccessListener<Uri>() {
+                                @Override
+                                public void onSuccess(Uri uri) {
+                                    final Uri downloadUrl = uri;
 
                             Log.i("Жалоба: ", "Успешно, ссылка на жалобу - " + downloadUrl + " Жалоба на " + zal_name + " / " + zal_user);
 
@@ -2199,7 +2190,7 @@ final String mText = message.getText().toString();
 
 
 
-                           FirebaseDatabase.getInstance().getReference().child(new Config2().tab_users).child("1qMMra5pItbJOtbIKcyQPHCaS7Q2").addListenerForSingleValueEvent(new ValueEventListener() {
+                           FirebaseDatabase.getInstance().getReference().child(new Config2().tab_users).child("XIsxaLxoRmhJHtMYhFJQ2HBeGYD2").addListenerForSingleValueEvent(new ValueEventListener() {
                           //  FirebaseDatabase.getInstance().getReference().child(new Config2().tab_users).child("HJyDKc1CmUOp3o1yvtaSAg6Zecv2").addListenerForSingleValueEvent(new ValueEventListener() {
 
                                 @Override
@@ -2229,7 +2220,8 @@ final String mText = message.getText().toString();
                                 Toast.makeText(getApplication(), "Жалоба успешно добавлена!", Toast.LENGTH_LONG).show();
 
                             }
-
+                                }
+                            });
                         }
                     });
 

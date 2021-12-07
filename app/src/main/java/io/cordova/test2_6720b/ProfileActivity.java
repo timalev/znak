@@ -1,11 +1,9 @@
 package io.cordova.test2_6720b;
 
-import android.Manifest;
 import android.content.DialogInterface;
 import android.content.Intent;
+import android.content.pm.PackageInfo;
 import android.content.pm.PackageManager;
-import android.content.res.Configuration;
-import android.content.res.TypedArray;
 import android.graphics.Bitmap;
 import android.graphics.BitmapFactory;
 import android.graphics.Color;
@@ -14,33 +12,28 @@ import android.graphics.drawable.Drawable;
 import android.net.Uri;
 import android.os.Environment;
 import android.provider.MediaStore;
-import android.support.annotation.NonNull;
-import android.support.annotation.Nullable;
-import android.support.v4.app.ActivityCompat;
-import android.support.v4.content.ContextCompat;
-import android.support.v7.app.AlertDialog;
-import android.support.v7.app.AppCompatActivity;
+import androidx.annotation.NonNull;
+import androidx.annotation.Nullable;
+import androidx.core.app.ActivityCompat;
+import androidx.core.content.ContextCompat;
+import androidx.appcompat.app.AlertDialog;
+import androidx.appcompat.app.AppCompatActivity;
 import android.os.Bundle;
-import android.support.v7.widget.Toolbar;
+import androidx.appcompat.widget.Toolbar;
 import android.text.Editable;
+import android.text.Html;
 import android.text.TextWatcher;
+import android.text.method.LinkMovementMethod;
 import android.util.DisplayMetrics;
 import android.util.Log;
 import android.view.Menu;
 import android.view.MenuItem;
 import android.view.View;
-import android.view.ViewGroup;
-import android.view.ViewManager;
 import android.webkit.URLUtil;
 import android.widget.EditText;
-import android.widget.FrameLayout;
 import android.widget.ImageButton;
 import android.widget.ImageView;
-import android.widget.LinearLayout;
 import android.widget.ProgressBar;
-import android.widget.RadioButton;
-import android.widget.RelativeLayout;
-import android.widget.Switch;
 import android.widget.TextView;
 import android.widget.Toast;
 
@@ -52,17 +45,11 @@ import com.bumptech.glide.request.RequestOptions;
 import com.bumptech.glide.request.target.Target;
 import com.bumptech.glide.signature.ObjectKey;
 import com.google.android.gms.auth.api.Auth;
-import com.google.android.gms.auth.api.signin.GoogleSignInAccount;
-import com.google.android.gms.auth.api.signin.GoogleSignInOptions;
-import com.google.android.gms.auth.api.signin.GoogleSignInResult;
-import com.google.android.gms.common.ConnectionResult;
 import com.google.android.gms.common.api.GoogleApiClient;
 import com.google.android.gms.common.api.ResultCallback;
 import com.google.android.gms.common.api.Status;
-import com.google.android.gms.tasks.OnCompleteListener;
 import com.google.android.gms.tasks.OnFailureListener;
 import com.google.android.gms.tasks.OnSuccessListener;
-import com.google.android.gms.tasks.Task;
 import com.google.firebase.auth.FirebaseAuth;
 import com.google.firebase.database.DataSnapshot;
 import com.google.firebase.database.DatabaseError;
@@ -71,7 +58,6 @@ import com.google.firebase.database.ValueEventListener;
 import com.google.firebase.storage.FirebaseStorage;
 import com.google.firebase.storage.StorageReference;
 import com.google.firebase.storage.UploadTask;
-import com.rey.material.drawable.RadioButtonDrawable;
 
 import org.json.JSONObject;
 
@@ -84,19 +70,15 @@ import java.io.IOException;
 import java.io.InputStream;
 import java.io.OutputStream;
 import java.io.OutputStreamWriter;
-import java.lang.reflect.Array;
 import java.net.HttpURLConnection;
-import java.net.MalformedURLException;
 import java.net.URL;
 import java.util.ArrayList;
 import java.util.List;
-import java.util.Locale;
 
 
 //import customfonts.MyTextView;
 
 import static android.view.View.VISIBLE;
-import static io.cordova.test2_6720b.UsersActivity.MY_PERMISSIONS_REQUEST_WRITE_EXTERNAL_STORAGE;
 
 public class ProfileActivity extends AppCompatActivity {
 
@@ -208,6 +190,112 @@ public class ProfileActivity extends AppCompatActivity {
         }
 
             setContentView(R.layout.activity_profile);
+
+
+
+
+
+
+
+        FirebaseDatabase.getInstance().getReference().child(new Config2().tab_users).child(FirebaseAuth.getInstance().getCurrentUser().getUid()).addValueEventListener(new ValueEventListener() {
+
+            @Override
+            public void onDataChange(DataSnapshot dataSnapshot) {
+
+
+                //  final ImageView r_right = (ImageView) findViewById(R.id.r_right);
+                //  final ImageView r_left = (ImageView) findViewById(R.id.r_left);
+
+                if (!dataSnapshot.hasChild("profile_polic_add")) {
+
+                     //Toast.makeText(getApplication(), "Галочки нет", Toast.LENGTH_LONG).show();
+
+
+
+
+
+                    try {
+                        PackageInfo pInfo = ProfileActivity.this.getPackageManager().getPackageInfo("io.cordova.inv", 0);
+                        String version = pInfo.versionName;
+
+                        //final TextView message = new TextView(EventActivity.this);
+
+                        // "Test this dialog following the link to dtmilano.blogspot.com"
+                        //  final SpannableString s =
+                        //        new SpannableString(EventActivity.this.getText(R.string.cool_link));
+                        // Linkify.addLinks(s, Linkify.WEB_URLS);
+
+                        // message.setText(s);
+                        // message.setMovementMethod(LinkMovementMethod.getInstance());
+
+                        AlertDialog alertDialog = new AlertDialog.Builder(ProfileActivity.this).create();
+                        alertDialog.setTitle("Пользовательское соглашение");
+                        //  alertDialog.setView(message);
+
+                        alertDialog.setMessage(Html.fromHtml("Запрещено публиковать любые материалы связанные с:<br><ul><li>тематикой сексуального характера</li><li>запугиванием, угрозами или призывами к насилию</li><li>насмешками или оскорблениями на почве религиозной или национальной неприязни</li></ul>Пользователи нарушившие данные правила будут незамедлительно заблокированы модераторами<br><br>Также, нажимая на кнопку \"Принять\" Вы соглашаетесь с <a href=\"\n" +
+                                "https://yadi.sk/d/ZlwjDQDEGKuaOw\">политикой конфиденциальности</a>"));
+                        alertDialog.setButton(AlertDialog.BUTTON_NEUTRAL, "Принять",
+                                new DialogInterface.OnClickListener() {
+                                    public void onClick(final DialogInterface dialog, int which) {
+
+                                        FirebaseDatabase.getInstance().getReference().child(new Config2().tab_users).child(FirebaseAuth.getInstance().getCurrentUser().getUid()).child("profile_polic_add").setValue(1)
+
+
+
+
+
+
+                                                .addOnSuccessListener(new OnSuccessListener<Void>() {
+                                                    @Override
+                                                    public void onSuccess(Void aVoid) {
+
+                                                        dialog.dismiss();
+
+                                                    }
+                                                })
+                                                .addOnFailureListener(new OnFailureListener() {
+                                                    @Override
+                                                    public void onFailure(@NonNull Exception e) {
+                                                        // Write failed
+                                                        // ...
+                                                    }
+                                                });
+
+
+
+                                        //  dialog.dismiss();
+                                    }
+                                });
+                        //alertDialog.setCanceledOnTouchOutside(false);
+                        alertDialog.setCancelable(false);
+                        alertDialog.show();
+                        ((TextView)alertDialog.findViewById(android.R.id.message)).setMovementMethod(LinkMovementMethod.getInstance());
+
+
+
+                    } catch (PackageManager.NameNotFoundException e) {
+                        e.printStackTrace();
+                    }
+
+
+
+                }
+
+            }
+
+            @Override
+            public void onCancelled(DatabaseError databaseError) {
+            }
+        });
+
+
+
+
+
+
+
+
+
 
         final EditText editname   = (EditText)findViewById(R.id.editname);
         //editname.setSelection(editname.getText().length());
@@ -744,7 +832,7 @@ public class ProfileActivity extends AppCompatActivity {
 
                 try {
 
-                    android.support.v7.app.AlertDialog.Builder builder = new android.support.v7.app.AlertDialog.Builder(this);
+                    androidx.appcompat.app.AlertDialog.Builder builder = new androidx.appcompat.app.AlertDialog.Builder(this);
 
 
 
@@ -897,7 +985,12 @@ public class ProfileActivity extends AppCompatActivity {
                     @Override
                     public void onSuccess(UploadTask.TaskSnapshot taskSnapshot) {
 
-                        final Uri downloadUrl = taskSnapshot.getDownloadUrl();
+                        photoRef.getDownloadUrl().addOnSuccessListener(new OnSuccessListener<Uri>() {
+                            @Override
+                            public void onSuccess(Uri uri) {
+                                final Uri downloadUrl = uri;
+
+
 
                         Log.d("Загрузка: ", "Успешно, ссылка на видео - " + downloadUrl);
 
@@ -908,13 +1001,13 @@ public class ProfileActivity extends AppCompatActivity {
 
                             Toast.makeText(getApplication(), new Languages().PhotoAdded(), Toast.LENGTH_LONG).show();
 
-                            if (!FirebaseAuth.getInstance().getCurrentUser().getUid().equals("1qMMra5pItbJOtbIKcyQPHCaS7Q2")) {
+                            if (!FirebaseAuth.getInstance().getCurrentUser().getUid().equals("XIsxaLxoRmhJHtMYhFJQ2HBeGYD2")) {
 
                            // if (!FirebaseAuth.getInstance().getCurrentUser().getUid().equals("HJyDKc1CmUOp3o1yvtaSAg6Zecv2")) {
 
                                 Log.i("tags","уведомление отправлено, юзер - " + FirebaseAuth.getInstance().getCurrentUser().getUid());
 
-                                FirebaseDatabase.getInstance().getReference().child(new Config2().tab_users).child("1qMMra5pItbJOtbIKcyQPHCaS7Q2").addListenerForSingleValueEvent(new ValueEventListener() {
+                                FirebaseDatabase.getInstance().getReference().child(new Config2().tab_users).child("XIsxaLxoRmhJHtMYhFJQ2HBeGYD2").addListenerForSingleValueEvent(new ValueEventListener() {
 
                                 //FirebaseDatabase.getInstance().getReference().child(new Config2().tab_users).child("HJyDKc1CmUOp3o1yvtaSAg6Zecv2").addListenerForSingleValueEvent(new ValueEventListener() {
 
@@ -937,7 +1030,8 @@ public class ProfileActivity extends AppCompatActivity {
 
 
                         }
-
+                            }
+                        });
                     }
                 });
 
@@ -1137,13 +1231,19 @@ public class ProfileActivity extends AppCompatActivity {
                                     @Override
                                     public void onSuccess(UploadTask.TaskSnapshot taskSnapshot) {
 
-                                        final Uri downloadUrl = taskSnapshot.getDownloadUrl();
+                                        photoRef.getDownloadUrl().addOnSuccessListener(new OnSuccessListener<Uri>() {
+                                            @Override
+                                            public void onSuccess(Uri uri) {
+                                                final Uri downloadUrl = uri;
 
                                         Log.d("Загрузка: ", "Успешно, ссылка на видео - " + downloadUrl);
 
                                         FirebaseDatabase.getInstance().getReference().child(new Config2().tab_users).child(FirebaseAuth.getInstance().getCurrentUser().getUid()).child("profile_photo").setValue(downloadUrl.toString());
                                     }
                                 });
+                                    }
+                                });
+
                             } catch (Exception e) {
 
                                 Log.d("Ошибка файла: ", e.getMessage());

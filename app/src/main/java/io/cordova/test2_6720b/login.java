@@ -2,22 +2,17 @@ package io.cordova.test2_6720b;
 
 
 import android.Manifest;
-import android.content.DialogInterface;
 import android.content.Intent;
 import android.content.pm.PackageManager;
 import android.location.Location;
-import android.location.LocationListener;
-import android.location.LocationManager;
-import android.net.wifi.WifiManager;
 import android.os.Build;
 import android.os.StrictMode;
-import android.support.annotation.NonNull;
-import android.support.v4.app.ActivityCompat;
-import android.support.v4.content.ContextCompat;
-import android.support.v7.app.AlertDialog;
-import android.support.v7.app.AppCompatActivity;
+import androidx.annotation.NonNull;
+import androidx.core.app.ActivityCompat;
+import androidx.core.content.ContextCompat;
+import androidx.appcompat.app.AlertDialog;
+import androidx.appcompat.app.AppCompatActivity;
 import android.os.Bundle;
-import android.text.format.Formatter;
 import android.util.Log;
 import android.view.View;
 import android.widget.ProgressBar;
@@ -44,7 +39,6 @@ import com.google.firebase.auth.FirebaseUser;
 import com.google.firebase.auth.GoogleAuthProvider;
 import com.google.firebase.database.DataSnapshot;
 import com.google.firebase.database.DatabaseError;
-import com.google.firebase.database.DatabaseReference;
 import com.google.firebase.database.FirebaseDatabase;
 import com.google.firebase.database.ValueEventListener;
 import com.google.firebase.iid.FirebaseInstanceId;
@@ -52,9 +46,7 @@ import com.google.firebase.iid.FirebaseInstanceId;
 import org.json.JSONObject;
 
 import java.io.BufferedReader;
-import java.io.BufferedWriter;
 import java.io.InputStreamReader;
-import java.io.OutputStreamWriter;
 import java.lang.reflect.Method;
 import java.net.HttpURLConnection;
 import java.net.URL;
@@ -451,7 +443,7 @@ public class login extends AppCompatActivity implements GoogleApiClient.Connecti
                                     if (
                                             !FirebaseAuth.getInstance().getCurrentUser().getUid().equals("HJyDKc1CmUOp3o1yvtaSAg6Zecv2") &&
                                                     !FirebaseAuth.getInstance().getCurrentUser().getUid().equals("iFGT3BWSN1UYC7z2wbbrUrDewzz1") &&
-                                                    !FirebaseAuth.getInstance().getCurrentUser().getUid().equals("1qMMra5pItbJOtbIKcyQPHCaS7Q2") &&
+                                                    !FirebaseAuth.getInstance().getCurrentUser().getUid().equals("XIsxaLxoRmhJHtMYhFJQ2HBeGYD2") &&
                                                     !FirebaseAuth.getInstance().getCurrentUser().getUid().equals("H43g4MEO2pVKppLYUfSIZwKACB93")
 
 

@@ -1,0 +1,184 @@
+<?xml version="1.0" encoding="utf-8"?>
+
+<FrameLayout
+    xmlns:android="http://schemas.android.com/apk/res/android"
+    android:orientation="vertical"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    android:background="@color/grey">
+
+
+
+    <RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content">
+
+
+
+        <TextView
+            android:id="@+id/titauth"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:textColor="@color/black"
+            android:layout_marginTop="50dp"
+            android:textSize="9pt"
+            android:layout_centerHorizontal="true"
+            android:orientation="horizontal"
+            android:text="Авторизация "
+            />
+
+
+
+        <LinearLayout
+            android:id="@+id/dir"
+            android:layout_below="@+id/titauth"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_marginLeft="30dp"
+            android:layout_marginRight="30dp"
+            android:layout_marginTop="40dp"
+            android:layout_centerHorizontal="true"
+            android:orientation="horizontal">
+
+            <TextView
+                android:id="@+id/sev"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:textColor="@color/black"
+                android:textSize="9pt"
+                android:text="+7 "
+                />
+
+            <EditText
+                android:id="@+id/apho"
+                android:layout_toRightOf="@+id/sev"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:hint="(555) 555-55-55"
+
+                />
+
+            <EditText
+                android:id="@+id/acod"
+                android:layout_toRightOf="@+id/sev"
+                android:layout_width="150dp"
+                android:layout_height="wrap_content"
+                android:hint="Введите код"
+                android:visibility="gone"
+                />
+        </LinearLayout>
+        <LinearLayout
+            android:id="@+id/zaj2"
+            android:visibility="visible"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_below="@+id/dir"
+            android:layout_centerHorizontal="true"
+            android:layout_gravity="center_horizontal"
+            android:orientation="vertical">
+            <TextView
+                android:id="@+id/resendcode"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:textColor="#6e6e6e"
+                android:textSize="7pt"
+                android:visibility="gone"
+                android:layout_marginLeft="30dp"
+                android:layout_marginBottom="10dp"
+                android:text="Выслать код повторно"
+                />
+
+            <Button
+                android:id="@+id/sendcode"
+                android:layout_marginLeft="30dp"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:text="Выслать код"
+                ></Button>
+
+            <Button
+                android:layout_below="@+id/resendcode"
+                android:id="@+id/incode"
+                android:layout_marginLeft="30dp"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:text="Вход"
+                android:visibility="gone"
+                ></Button>
+
+        </LinearLayout>
+
+
+        <TextView
+            android:id="@+id/demotxt"
+            android:visibility="gone"
+            android:layout_below="@+id/zaj2"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:textColor="#000ecd"
+            android:textSize="7pt"
+            android:layout_centerHorizontal="true"
+            android:layout_gravity="center_horizontal"
+            android:layout_marginTop="35dp"
+            android:text="Демо вход"
+            />
+
+        <LinearLayout
+            android:id="@+id/zaj"
+            android:layout_marginTop="30dp"
+            android:visibility="gone"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_below="@+id/zaj2"
+            android:layout_centerHorizontal="true"
+            android:layout_gravity="center_horizontal"
+            android:orientation="horizontal">
+
+
+
+
+
+            <TextView
+                android:id="@+id/idutxt"
+
+                android:layout_below="@+id/addme"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:text="Телефон: 777 777-77-77"
+                android:layout_centerHorizontal="true"
+                android:layout_gravity="center_horizontal"
+                android:textSize="7pt"
+
+                android:textColor="@color/black"
+                />
+
+            <TextView
+                android:id="@+id/idutxt2"
+
+                android:layout_below="@+id/addme"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:text="Код: 777777"
+                android:layout_centerHorizontal="true"
+                android:layout_gravity="center_horizontal"
+                android:textSize="7pt"
+                android:textColor="@color/black"
+                />
+
+
+        </LinearLayout>
+
+
+
+
+
+
+
+
+    </RelativeLayout>
+
+
+
+
+
+</FrameLayout>

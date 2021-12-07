@@ -2,12 +2,11 @@ package io.cordova.test2_6720b;
 
 import android.content.Intent;
 import android.net.Uri;
-import android.provider.MediaStore;
-import android.support.annotation.NonNull;
-import android.support.v7.app.AppCompatActivity;
+
+import androidx.annotation.NonNull;
+import androidx.appcompat.app.AppCompatActivity;
 import android.os.Bundle;
 import android.util.Log;
-import android.widget.Toast;
 
 import com.google.android.gms.tasks.OnFailureListener;
 import com.google.android.gms.tasks.OnSuccessListener;
@@ -101,7 +100,10 @@ public class UploadScreenActivity extends AppCompatActivity {
                     @Override
                     public void onSuccess(UploadTask.TaskSnapshot taskSnapshot) {
                         // taskSnapshot.getMetadata() contains file metadata such as size, content-type, and download URL.
-                        Uri downloadUrl = taskSnapshot.getDownloadUrl();
+                        videoRef.getDownloadUrl().addOnSuccessListener(new OnSuccessListener<Uri>() {
+                            @Override
+                            public void onSuccess(Uri uri) {
+                                final Uri downloadUrl = uri;
 
                         Log.d("Загрузка: ", "Успешно, ссылка на видео - " + downloadUrl);
 
@@ -117,7 +119,8 @@ public class UploadScreenActivity extends AppCompatActivity {
 
                         startActivity(new Intent(getApplication(), MapsActivity.class));
 
-
+                            }
+                        });
 
                         //Notific notific = new Notific(mAuth.getCurrentUser().getUid(),downloadUrl.toString());
 

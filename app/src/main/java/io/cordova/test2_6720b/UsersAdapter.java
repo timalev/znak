@@ -1,21 +1,15 @@
 package io.cordova.test2_6720b;
 
-import android.content.Context;
-import android.support.v7.view.menu.MenuView;
-import android.support.v7.widget.RecyclerView;
-import android.util.Log;
-import android.view.ContextMenu;
-import android.view.GestureDetector;
+import androidx.appcompat.view.menu.MenuView;
+import androidx.recyclerview.widget.RecyclerView;
+
 import android.view.LayoutInflater;
-import android.view.MotionEvent;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.TextView;
-import android.widget.Toast;
 
 import java.util.ArrayList;
 import java.util.HashMap;
-import java.util.List;
 
 
 public class UsersAdapter extends RecyclerView.Adapter< UsersAdapter.ViewHolder> {

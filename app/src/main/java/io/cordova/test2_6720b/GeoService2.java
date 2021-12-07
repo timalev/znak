@@ -1,6 +1,5 @@
 package io.cordova.test2_6720b;
 
-import android.app.ActivityManager;
 import android.app.Service;
 import android.content.Context;
 import android.content.Intent;
@@ -11,13 +10,9 @@ import android.location.LocationManager;
 import android.os.Bundle;
 import android.os.IBinder;
 import android.os.Handler;
-import android.support.v4.app.ActivityCompat;
-import android.util.Log;
+import androidx.core.app.ActivityCompat;
+
 import android.widget.Toast;
-
-import com.google.firebase.iid.FirebaseInstanceId;
-
-import java.util.List;
 
 public class GeoService2 extends Service {
 

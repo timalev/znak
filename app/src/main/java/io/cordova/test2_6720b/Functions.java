@@ -2,24 +2,13 @@ package io.cordova.test2_6720b;
 
 import android.content.Context;
 import android.content.DialogInterface;
-import android.content.Intent;
 import android.content.pm.PackageInfo;
 import android.content.pm.PackageManager;
 import android.graphics.BitmapFactory;
 import android.net.Uri;
-import android.support.v7.app.AlertDialog;
-import android.util.Log;
-import android.widget.Toast;
-
-import com.google.firebase.auth.FirebaseAuth;
-import com.google.firebase.database.DataSnapshot;
-import com.google.firebase.database.DatabaseError;
-import com.google.firebase.database.FirebaseDatabase;
-import com.google.firebase.database.ValueEventListener;
+import androidx.appcompat.app.AlertDialog;
 
 import java.io.File;
-import java.util.ArrayList;
-import java.util.List;
 
 public class Functions {
 

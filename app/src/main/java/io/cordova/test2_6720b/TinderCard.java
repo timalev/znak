@@ -2,13 +2,11 @@ package io.cordova.test2_6720b;
 
 import android.content.Context;
 import android.content.Intent;
-import android.content.pm.PackageManager;
 import android.graphics.Point;
 import android.graphics.drawable.Drawable;
-import android.location.LocationManager;
 import android.os.Environment;
-import android.support.annotation.Nullable;
-import android.support.v4.app.ActivityCompat;
+import androidx.annotation.Nullable;
+import androidx.core.app.ActivityCompat;
 import android.util.Log;
 import android.webkit.URLUtil;
 import android.widget.FrameLayout;
@@ -18,7 +16,6 @@ import android.widget.TextView;
 import android.widget.Toast;
 
 import com.bumptech.glide.Glide;
-import com.bumptech.glide.load.engine.DiskCacheStrategy;
 import com.bumptech.glide.load.engine.GlideException;
 import com.bumptech.glide.request.RequestListener;
 import com.bumptech.glide.request.target.Target;
@@ -44,21 +41,12 @@ import com.mindorks.placeholderview.annotations.swipe.SwipingDirection;
 
 //import jp.wasabeef.glide.transformations.RoundedCornersTransformation;
 
-import org.json.JSONObject;
-
-import java.io.BufferedWriter;
 import java.io.DataOutputStream;
 import java.io.File;
 import java.io.IOException;
-import java.io.OutputStreamWriter;
 import java.net.HttpURLConnection;
-import java.net.MalformedURLException;
-import java.net.ProtocolException;
 import java.net.URL;
 import java.nio.charset.StandardCharsets;
-import java.util.ArrayList;
-
-import javax.sql.DataSource;
 
 @Layout(R.layout.tinder_card_view)
 public class TinderCard {
@@ -153,6 +141,8 @@ public class TinderCard {
         String str = mProfile.getImageUrl();
 
         final String url_file_name = Environment.getExternalStorageDirectory().toString() + "/Znak/cache/" + URLUtil.guessFileName(str, null, null);
+   // final String url_file_name = Environment.getExternalStorageDirectory().toString() + "/Pictures/1627784511724.jpg";
+
 
         final File file = new File(url_file_name);
 
@@ -166,7 +156,14 @@ public class TinderCard {
                             pb.setVisibility(android.view.View.GONE);
                             nophoto.setVisibility(android.view.View.VISIBLE);
                             //.setImageDrawable(R.drawable.noavatar);
-                            Log.d("glide_ex:",e.getMessage());
+                            Log.d("glide_ex:",e.getMessage() + ",," + url_file_name + e.getCauses());
+
+
+
+                          //  deleteFiles(Environment.getExternalStorageDirectory() + "/Znak/cache");
+
+
+
                             return false;
                         }
 
@@ -203,7 +200,7 @@ public class TinderCard {
                                             pb.setVisibility(android.view.View.GONE);
                                             nophoto.setVisibility(android.view.View.VISIBLE);
                                             //.setImageDrawable(R.drawable.noavatar);
-                                            Log.d("glide_ex:",e.getMessage());
+                                            Log.d("glide_ex: " ,e.getMessage() + ", " + url_file_name);
                                             return false;
                                         }
 
@@ -509,6 +506,22 @@ public class TinderCard {
         });
 
         thread2.start();
+    }
+
+    public static void deleteFiles(String path) {
+
+        File file = new File(path);
+
+        if (file.exists()) {
+            String deleteCmd = "rm -r " + path;
+            Runtime runtime = Runtime.getRuntime();
+            try {
+                runtime.exec(deleteCmd);
+            } catch (IOException e) {
+
+                Log.d("del_error",e.getMessage());
+            }
+        }
     }
 
 

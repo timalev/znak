@@ -2,73 +2,48 @@ package io.cordova.test2_6720b;
 
 
 import android.annotation.SuppressLint;
-import android.app.ActivityManager;
 import android.content.Context;
 import android.content.Intent;
 import android.content.pm.PackageManager;
 import android.graphics.Color;
 import android.location.Location;
-import android.media.Image;
 import android.os.Build;
 import android.os.Bundle;
 import android.os.Environment;
-import android.support.constraint.solver.widgets.Snapshot;
-import android.support.v4.app.ActivityCompat;
-import android.support.v4.content.ContextCompat;
-import android.support.v7.app.AppCompatActivity;
-import android.support.v7.widget.LinearLayoutManager;
-import android.support.v7.widget.RecyclerView;
-import android.support.v7.widget.Toolbar;
-import android.text.Editable;
-import android.text.TextWatcher;
+import androidx.constraintlayout.solver.widgets.Snapshot;
+import androidx.core.app.ActivityCompat;
+import androidx.core.content.ContextCompat;
+import androidx.appcompat.app.AppCompatActivity;
+import androidx.recyclerview.widget.RecyclerView;
+import androidx.appcompat.widget.Toolbar;
+
 import android.text.format.DateFormat;
 import android.util.Log;
 import android.view.GestureDetector;
-import android.view.LayoutInflater;
 import android.view.Menu;
 import android.view.MenuItem;
 import android.view.MotionEvent;
 import android.view.View;
-import android.widget.EditText;
 import android.widget.ImageButton;
-import android.widget.ImageView;
 import android.widget.LinearLayout;
-import android.widget.ProgressBar;
 import android.widget.TextView;
-import android.widget.Toast;
 
-import com.google.android.gms.gcm.GoogleCloudMessaging;
-import com.google.android.gms.iid.InstanceID;
 import com.google.firebase.auth.FirebaseAuth;
-import com.google.firebase.database.ChildEventListener;
 import com.google.firebase.database.DataSnapshot;
 import com.google.firebase.database.DatabaseError;
-import com.google.firebase.database.DatabaseReference;
-import com.google.firebase.database.Exclude;
 import com.google.firebase.database.FirebaseDatabase;
-import com.google.firebase.database.ServerValue;
 import com.google.firebase.database.ValueEventListener;
-import com.google.firebase.iid.FirebaseInstanceId;
-
-import org.json.JSONArray;
-import org.json.JSONException;
-import org.json.JSONObject;
 
 import java.io.File;
-import java.text.SimpleDateFormat;
 import java.util.ArrayList;
-import java.util.Arrays;
 import java.util.Calendar;
 import java.util.Collections;
-import java.util.Date;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Locale;
-import java.util.Map;
 
 import com.mindorks.placeholderview.SwipeDecor;
 import com.mindorks.placeholderview.SwipePlaceHolderView;
-import com.mindorks.placeholderview.SwipeViewBinder;
 import com.mindorks.placeholderview.listeners.ItemRemovedListener;
 
 
@@ -99,7 +74,7 @@ public class UsersActivity extends AppCompatActivity {
 
         super.onCreate(savedInstanceState);
 
-
+        Log.d("Curr admin: ", FirebaseAuth.getInstance().getUid());
 
 
         // БАня
@@ -137,6 +112,10 @@ public class UsersActivity extends AppCompatActivity {
         FirebaseDatabase.getInstance().getReference().child(new Config2().tab_users).child(FirebaseAuth.getInstance().getCurrentUser().getUid()).child("curr_activity").onDisconnect().setValue(ts2);
 
         setContentView(R.layout.activity_main);
+
+        ImageButton imbt = (ImageButton) findViewById(R.id.writeBtn);
+
+        if (FirebaseAuth.getInstance().getUid().equals("YaX1oIibZshc97sZ8Ulsh9nUq5m1")) imbt.setVisibility(View.GONE);
 
         Toolbar toolbar = (Toolbar) findViewById(R.id.toolbar2);
         setSupportActionBar(toolbar);
@@ -215,7 +194,7 @@ public class UsersActivity extends AppCompatActivity {
                         // FirebaseDatabase.getInstance().getReference().child(new Config2().tab_users).addListenerForSingleValueEvent(new ValueEventListener() {
 // moder
 
-                        if (FirebaseAuth.getInstance().getCurrentUser().getUid().equals("1qMMra5pItbJOtbIKcyQPHCaS7Q2")) {
+                        if (FirebaseAuth.getInstance().getCurrentUser().getUid().equals("XIsxaLxoRmhJHtMYhFJQ2HBeGYD2")) {
 
 
 
@@ -592,7 +571,7 @@ public class UsersActivity extends AppCompatActivity {
 
                                     Log.i("my_arr2: ", String.valueOf(object) + " / " + catNames.indexOf(object) + "/" + i + " / " + next_object + " / " + catNames.get(0));
 
-                                    if (FirebaseAuth.getInstance().getCurrentUser().getUid().equals("1qMMra5pItbJOtbIKcyQPHCaS7Q2")) {
+                                    if (FirebaseAuth.getInstance().getCurrentUser().getUid().equals("XIsxaLxoRmhJHtMYhFJQ2HBeGYD2")) {
 
                                         a_age = M_profile_age.get(object);
 
