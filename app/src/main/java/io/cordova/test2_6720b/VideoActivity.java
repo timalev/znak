@@ -1069,7 +1069,7 @@ if (dataSnapshot.getValue()!=null)
                     final String mText = message.getText().toString();
 
 
-                    final Mess mess = new Mess(mText,curruser,mAuth.getCurrentUser().getUid(),mUser,mAuth.getCurrentUser().getPhotoUrl().toString(),"txt",ts);
+                    final Mess mess = new Mess(mText,curruser,mAuth.getCurrentUser().getUid(),mUser,"","txt",ts);
 
                     FirebaseDatabase.getInstance().getReference().child(new Config2().tab_messages).orderByKey().limitToLast(1).addListenerForSingleValueEvent(new ValueEventListener() {
                         @Override
@@ -1322,7 +1322,7 @@ if (dataSnapshot.getValue()!=null)
 
                         final String mUser = mAuth.getCurrentUser().getDisplayName();
 
-                        final Mess mess = new Mess(downloadUrl.toString(),curruser,mAuth.getCurrentUser().getUid(),mUser,mAuth.getCurrentUser().getPhotoUrl().toString(),"pic",ts);
+                        final Mess mess = new Mess(downloadUrl.toString(),curruser,mAuth.getCurrentUser().getUid(),mUser,"","pic",ts);
 
 
 

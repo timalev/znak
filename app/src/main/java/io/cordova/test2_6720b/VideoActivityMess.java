@@ -1285,7 +1285,7 @@ final String mText = message.getText().toString();
 
 
 
-                    final Messpriv messPriv = new Messpriv(mText,curruser,currname,mAuth.getCurrentUser().getUid(),mUser,mAuth.getCurrentUser().getPhotoUrl().toString(),"n","n","txt",dataSnapshotusers.child("profile_name").getValue().toString(),ts);
+                    final Messpriv messPriv = new Messpriv(mText,curruser,currname,mAuth.getCurrentUser().getUid(),mUser,"","n","n","txt",dataSnapshotusers.child("profile_name").getValue().toString(),ts);
 
 
                             scoresRef.child(mAuth.getCurrentUser().getUid()).child(curruser).child("messages").orderByKey().limitToLast(1).addListenerForSingleValueEvent(new ValueEventListener() {
@@ -1595,7 +1595,7 @@ final String mText = message.getText().toString();
 
                                // final String mUser = mAuth.getCurrentUser().getDisplayName();
 
-                        final Messpriv messPriv = new Messpriv(downloadUrl.toString(),curruser,currname,mAuth.getCurrentUser().getUid(),mUser,mAuth.getCurrentUser().getPhotoUrl().toString(),"n","n","pic",mUser,ts);
+                        final Messpriv messPriv = new Messpriv(downloadUrl.toString(),curruser,currname,mAuth.getCurrentUser().getUid(),mUser,"","n","n","pic",mUser,ts);
 
 
 

@@ -17,8 +17,8 @@ android {
         applicationId "io.cordova.test2_6720b"
         minSdkVersion 19
         targetSdkVersion 30
-        versionCode 39
-        versionName "3.2.1"
+        versionCode 40
+        versionName "3.2.2"
         testInstrumentationRunner 'androidx.test.runner.AndroidJUnitRunner'
     }
     buildTypes {
