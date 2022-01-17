@@ -65,7 +65,7 @@ public class getloc extends AppCompatActivity {
 
                     String pos = obj.getJSONObject("response").getJSONObject("GeoObjectCollection").getJSONArray("featureMember").getJSONObject(0).getJSONObject("GeoObject").getJSONObject("Point").getString("pos");
 
-                    Log.d("json_res:",pos + " / " + country + " / " + city);
+                    Log.d("json_res:","lng lat: " + pos + " / " + country + " / " + city);
 
                 } catch (Exception e) {
                     e.printStackTrace();
