@@ -315,6 +315,8 @@ public class ProfileActivity extends AppCompatActivity {
         nameTexview.setText(new Languages().ProfileTextviewName());
 
 
+
+
         editname.setHint(new Languages().ProfileEditName());
 
         TextView ageTexview = (TextView) findViewById(R.id.lage);
@@ -330,6 +332,17 @@ public class ProfileActivity extends AppCompatActivity {
 
         TextView femaleTexview = (TextView) findViewById(R.id.female);
         femaleTexview.setText(new Languages().ProfileTextviewFemale());
+
+        TextView changegeo = (TextView) findViewById(R.id.active32);
+
+        changegeo.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View view) {
+                Intent getloc = new Intent(getApplication(), getloc.class);
+                getloc.putExtra("getloc", "ok");
+                startActivity(getloc);
+            }
+        });
 
 
 
@@ -657,6 +670,9 @@ public class ProfileActivity extends AppCompatActivity {
 
     }
 
+
+
+
     public void onClick(View v) {
 
         com.rey.material.widget.RadioButton male = (com.rey.material.widget.RadioButton) findViewById(R.id.male);
@@ -759,6 +775,8 @@ public class ProfileActivity extends AppCompatActivity {
                     }});
                 return;
 
+
+
             case R.id.r_right:
 
                 RotateImage(90);
@@ -823,6 +841,8 @@ public class ProfileActivity extends AppCompatActivity {
                 Log.i("RadioButt2:", String.valueOf(male.isChecked()));
 
                 return;
+
+
 
             case R.id.chgpho:
 

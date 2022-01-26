@@ -251,6 +251,29 @@
     <View
         android:layout_width="match_parent"
         android:layout_height="0.1dp"
+        android:background="#ACACAC"/>
+    <LinearLayout
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:orientation="horizontal">
+        <TextView
+            android:id="@+id/active32"
+            android:layout_width="0dp"
+            android:layout_height="wrap_content"
+            android:layout_weight="1"
+            android:textSize="14dp"
+            android:text="Изменить локацию"
+            android:textColor="@android:color/holo_blue_dark"
+            android:layout_marginLeft="15dp"
+            android:padding="20dp"/>
+
+
+    </LinearLayout>
+
+
+    <View
+        android:layout_width="match_parent"
+        android:layout_height="0.1dp"
        />
 
     <ImageButton
