@@ -1,7 +1,7 @@
 package io.cordova.test2_6720b;
 
 // XIsxaLxoRmhJHtMYhFJQ2HBeGYD2 - admin (7777777777)
-// 1qMMra5pItbJOtbIKcyQPHCaS7Q2 - old admin
+// YaX1oIibZshc97sZ8Ulsh9nUq5m1 - google play moder (5555555555)
 
 
 import androidx.annotation.NonNull;

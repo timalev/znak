@@ -4,7 +4,9 @@ import androidx.appcompat.app.AppCompatActivity;
 import androidx.appcompat.widget.Toolbar;
 
 import android.content.Intent;
+import android.content.IntentFilter;
 import android.graphics.Color;
+import android.location.LocationManager;
 import android.net.Uri;
 import android.os.Bundle;
 import android.util.Log;
@@ -34,7 +36,10 @@ import java.util.Locale;
 
 public class getloc extends AppCompatActivity {
 
-/*
+    public static final String WHERE_MY_CAT_ACTION = "ru.alexanderklimov.action.CAT";
+    public static final String ALARM_MESSAGE = "Срочно пришлите кота!";
+
+    /*
     @Override
     public boolean onCreateOptionsMenu(final Menu menu) {
         // Inflate the menu; this adds items to the action bar if it is present.
@@ -145,6 +150,8 @@ public class getloc extends AppCompatActivity {
 
         final EditText message = (EditText) findViewById(R.id.eventtext);
 
+
+
 /*
 
         FirebaseDatabase.getInstance().getReference().child(new Config2().tab_users).child(FirebaseAuth.getInstance().getCurrentUser().getUid()).addListenerForSingleValueEvent(new ValueEventListener() {
@@ -170,7 +177,7 @@ public class getloc extends AppCompatActivity {
 
 
 
-        Button gocal = (Button) findViewById(R.id.to_cal);
+        final Button gocal = (Button) findViewById(R.id.to_cal);
         gocal.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
@@ -255,12 +262,26 @@ public class getloc extends AppCompatActivity {
 
                                 if (getIntent().getExtras()!=null && getIntent().getExtras().containsKey("getloc")) {
 
+                                    Log.d("loc_from:","ok");
+/*
+                                    Intent intent = new Intent();
+                                    intent.setAction(WHERE_MY_CAT_ACTION);
+                                    intent.putExtra("ru.alexanderklimov.broadcast.Message", ALARM_MESSAGE);
+                                    sendBroadcast(intent);
+*/
                                     gofromloc = new Intent(getApplication(), ProfileActivity.class);
+                                    gofromloc.putExtra("updloc", "ok");
+
+
+
+
+
+
                                 }else {
                                     gofromloc = new Intent(getApplication(), login2.class);
                                 }
 
-                                startActivity(gofromloc);
+                               startActivity(gofromloc);
 
 
 
@@ -310,9 +331,13 @@ public class getloc extends AppCompatActivity {
 
             }
         });
-
-
-
-
     }
+    public void sendMessage(View view) {
+        Intent intent = new Intent();
+        intent.setAction(WHERE_MY_CAT_ACTION);
+        intent.putExtra("ru.alexanderklimov.broadcast.Message", ALARM_MESSAGE);
+        intent.addFlags(Intent.FLAG_INCLUDE_STOPPED_PACKAGES);
+        sendBroadcast(intent);
+    }
+
 }

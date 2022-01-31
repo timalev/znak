@@ -160,9 +160,14 @@ public class ProfileActivity extends AppCompatActivity {
 
         Log.d("screen_px",String.valueOf(width));
 
+        if (getIntent().getExtras()!=null && getIntent().getExtras().containsKey("updloc")) {
+
+            Toast.makeText(this, "Местоположение изменено", Toast.LENGTH_SHORT).show();
+
+        }
 
 
-        File externalAppDir = new File(Environment.getExternalStorageDirectory() + "/Znak");
+            File externalAppDir = new File(Environment.getExternalStorageDirectory() + "/Znak");
 
         Log.i("Опять с файлами гемор:",getPackageName() + " путь: " + Environment.getExternalStorageDirectory() + "/Znak");
 
@@ -1192,6 +1197,7 @@ public class ProfileActivity extends AppCompatActivity {
     }
         return(super.onOptionsItemSelected(item));
     }
+
     public void RotateImage(final int degrees)
     {
         FirebaseDatabase.getInstance().getReference().child(new Config2().tab_users).child(FirebaseAuth.getInstance().getCurrentUser().getUid()).addListenerForSingleValueEvent(new ValueEventListener() {

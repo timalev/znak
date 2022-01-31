@@ -42,6 +42,15 @@
         android:layout_width="wrap_content"
         android:text="Установить" />
 
+    <Button
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:visibility="gone"
+        android:text="Отправить сообщение"
+        android:layout_below="@+id/to_cal"
+        android:id="@+id/button"
+        android:layout_gravity="center_horizontal"
+        android:onClick="sendMessage" />
 
     <include android:id="@+id/toolbar_loc"
         layout="@layout/toolbar_video_activity" />
