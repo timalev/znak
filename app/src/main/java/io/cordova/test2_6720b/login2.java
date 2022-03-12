@@ -2,6 +2,7 @@ package io.cordova.test2_6720b;
 
 // XIsxaLxoRmhJHtMYhFJQ2HBeGYD2 - admin (9262649844)
 // 1qMMra5pItbJOtbIKcyQPHCaS7Q2 - old admin
+// YaX1oIibZshc97sZ8Ulsh9nUq5m1 - 555 (модер play market)
 
 
 import androidx.annotation.NonNull;
