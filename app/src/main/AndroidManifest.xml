@@ -38,15 +38,21 @@
         android:supportsRtl="true"
         android:theme="@style/AppTheme"
         android:usesCleartextTraffic="true">
+        <activity
+            android:name=".SwitchActivity"
+            android:exported="true">
+            <intent-filter>
+                <action android:name="android.intent.action.MAIN" />
 
+                <category android:name="android.intent.category.LAUNCHER" />
+            </intent-filter>
+        </activity>
 
         <receiver
             android:name=".PrintMessage"
             android:enabled="true"
             android:exported="true"
-            android:permission="android.permission.RECEIVE_BOOT_COMPLETED"
-            >
-
+            android:permission="android.permission.RECEIVE_BOOT_COMPLETED">
             <intent-filter>
                 <action android:name="ru.alexanderklimov.action.CAT" />
             </intent-filter>
@@ -62,25 +68,29 @@
             </intent-filter>
             -->
         </activity>
+
         <activity
             android:name=".login2"
             android:screenOrientation="portrait">
             <intent-filter>
-                <action android:name="android.intent.action.MAIN" />
 
+                <!--
+                <action android:name="android.intent.action.MAIN" />
+-->
                 <category android:name="android.intent.category.LAUNCHER" />
             </intent-filter>
         </activity>
-        <!--
-     <activity android:name=".login"
-         android:screenOrientation="portrait">
-         <intent-filter>
-             <action android:name="android.intent.action.MAIN" />
-<category android:name="android.intent.category.LAUNCHER" />
 
-         </intent-filter>
-     </activity>
-        -->
+        <activity
+            android:name=".login"
+            android:screenOrientation="portrait">
+            <intent-filter>
+              <!--
+                <action android:name="android.intent.action.MAIN" />
+-->
+                <category android:name="android.intent.category.LAUNCHER" />
+            </intent-filter>
+        </activity>
         <activity android:name=".ActivityLikes">
             <intent-filter>
                 <action android:name="MyAction4" />

@@ -67,13 +67,13 @@ public class login extends AppCompatActivity implements GoogleApiClient.Connecti
     private FirebaseAuth.AuthStateListener mAuthListener;
 
 
+
+
+
+
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
-
-        ActivityCompat.requestPermissions(this,
-                new String[]{Manifest.permission.WRITE_EXTERNAL_STORAGE},
-                MY_PERMISSIONS_REQUEST_WRITE_EXTERNAL_STORAGE);
 
 
         if (Build.VERSION.SDK_INT >= 24) {
@@ -85,7 +85,7 @@ public class login extends AppCompatActivity implements GoogleApiClient.Connecti
             }
         }
 
-        //Toast.makeText(this, "OK", Toast.LENGTH_SHORT).show();
+        if (checkPermissions()) {
 
         setContentView(R.layout.activity_login);
 
@@ -98,18 +98,18 @@ public class login extends AppCompatActivity implements GoogleApiClient.Connecti
                 if (firebaseAuth.getCurrentUser() != null) {
                     FirebaseUser user = firebaseAuth.getCurrentUser();
 
-                    Log.d("профиль: ", user.getPhotoUrl().toString());
+//                    Log.d("профиль: ", user.getPhotoUrl().toString());
 
                     // Toast.makeText(getApplication(),  user.getPhotoUrl().toString(), Toast.LENGTH_SHORT).show();
 
                     String displayName = user.getDisplayName();
-                    String PhotoUrl = user.getPhotoUrl().toString();
+//                    String PhotoUrl = user.getPhotoUrl().toString();
 
                     Long tsLong2 = System.currentTimeMillis() / 1000;
                     String ts2 = tsLong2.toString();
 
                     FirebaseDatabase.getInstance().getReference().child(new Config2().tab_users).child(FirebaseAuth.getInstance().getCurrentUser().getUid()).child("name").setValue(displayName);
-                    FirebaseDatabase.getInstance().getReference().child(new Config2().tab_users).child(FirebaseAuth.getInstance().getCurrentUser().getUid()).child("avatar").setValue(PhotoUrl);
+                   // FirebaseDatabase.getInstance().getReference().child(new Config2().tab_users).child(FirebaseAuth.getInstance().getCurrentUser().getUid()).child("avatar").setValue(PhotoUrl);
                     FirebaseDatabase.getInstance().getReference().child(new Config2().tab_users).child(FirebaseAuth.getInstance().getCurrentUser().getUid()).child("last_mess").setValue(ts2);
 
                     final String device_token = FirebaseInstanceId.getInstance().getToken();
@@ -130,7 +130,7 @@ public class login extends AppCompatActivity implements GoogleApiClient.Connecti
 
                                     if (dataSnapshot.child(FirebaseAuth.getInstance().getCurrentUser().getUid()).getValue().toString().equals("0")) {
 
-                                        //Log.i("tags:", "не забанен");
+                                        Log.i("tags:", "не забанен");
 
                                         sendPost();
 
@@ -145,6 +145,7 @@ public class login extends AppCompatActivity implements GoogleApiClient.Connecti
                                     }
                                 }else
                                 {
+                                    Log.i("tags2:", "не забанен");
                                     sendPost();
                                 }
 
@@ -160,23 +161,28 @@ public class login extends AppCompatActivity implements GoogleApiClient.Connecti
             }
         };
 
-        mAuth.addAuthStateListener(mAuthListener);
 
-        GoogleSignInOptions gso = new GoogleSignInOptions.Builder(GoogleSignInOptions.DEFAULT_SIGN_IN)
-                .requestIdToken(getString(R.string.default_web_client_id))
-                .requestEmail()
-                .build();
 
-        mGoogleApiClient = new GoogleApiClient.Builder(this)
-                .enableAutoManage(this, this)
-                .addApi(LocationServices.API)
-                .addApi(Auth.GOOGLE_SIGN_IN_API, gso)
-                .build();
 
-        SignInButton signInButton = (SignInButton) findViewById(R.id.sign_in_button);
-        signInButton.setSize(SignInButton.SIZE_STANDARD);
 
-        findViewById(R.id.sign_in_button).setOnClickListener(this);
+            mAuth.addAuthStateListener(mAuthListener);
+
+            GoogleSignInOptions gso = new GoogleSignInOptions.Builder(GoogleSignInOptions.DEFAULT_SIGN_IN)
+                    .requestIdToken(getString(R.string.default_web_client_id))
+                    .requestEmail()
+                    .build();
+
+            mGoogleApiClient = new GoogleApiClient.Builder(this)
+                    .enableAutoManage(this, this)
+                    .addApi(LocationServices.API)
+                    .addApi(Auth.GOOGLE_SIGN_IN_API, gso)
+                    .build();
+
+            SignInButton signInButton = (SignInButton) findViewById(R.id.sign_in_button);
+            signInButton.setSize(SignInButton.SIZE_STANDARD);
+
+            findViewById(R.id.sign_in_button).setOnClickListener(this);
+        }
     }
 
 
@@ -193,7 +199,91 @@ public class login extends AppCompatActivity implements GoogleApiClient.Connecti
                 break;
         }
     }
-/*
+
+
+    public static final int MULTIPLE_PERMISSIONS = 10;
+
+    String[] permissions = new String[]{
+            android.Manifest.permission.WRITE_EXTERNAL_STORAGE,
+            android.Manifest.permission.CAMERA,
+            android.Manifest.permission.READ_EXTERNAL_STORAGE
+    };
+
+
+    private boolean checkPermissions() {
+        int result;
+        List<String> listPermissionsNeeded = new ArrayList<>();
+        for (String p : permissions) {
+            result = ContextCompat.checkSelfPermission(login.this, p);
+            if (result != PackageManager.PERMISSION_GRANTED) {
+                listPermissionsNeeded.add(p);
+            }
+        }
+        if (!listPermissionsNeeded.isEmpty()) {
+            ActivityCompat.requestPermissions(this, listPermissionsNeeded.toArray(new String[listPermissionsNeeded.size()]), MULTIPLE_PERMISSIONS);
+            return false;
+        }
+        return true;
+    }
+
+    @Override
+    public void onRequestPermissionsResult(int requestCode,
+                                           String permissions[], int[] grantResults) {
+        switch (requestCode) {
+            case 10:
+
+                ArrayList res_arr = new ArrayList<>();
+
+                if (grantResults.length > 0) {
+
+                    for (int i = 0; i < grantResults.length; i++)
+                    {
+                        if (grantResults[i]!=PackageManager.PERMISSION_GRANTED )
+                        {
+                            res_arr.add(1);
+                        }
+                    }
+
+                    if (res_arr.size()>0) {
+
+                        Toast.makeText(this, "Недостаточно разрешений для запуска приложения", Toast.LENGTH_SHORT).show();
+
+                      //  android.os.Process.killProcess(android.os.Process.myPid());
+                        //System.exit(1);
+                    }else
+                    {
+                        Intent refr = new Intent(getApplication(), login.class);
+                        startActivity(refr);
+                    }
+
+
+                }
+                return;
+
+            case 1252: {
+                // If request is cancelled, the result arrays are empty.
+                if (grantResults.length > 0
+                        && grantResults[0] == PackageManager.PERMISSION_GRANTED) {
+
+                    mAuth.addAuthStateListener(mAuthListener);
+
+                    // permission was granted, yay! Do the
+                    // contacts-related task you need to do.
+                } else {
+
+                    Toast.makeText(this, "БЕЗ ЛОКАЦИИ", Toast.LENGTH_SHORT).show();
+                    // permission denied, boo! Disable the
+                    // functionality that depends on this permission.
+                }
+                return;
+            }
+
+            // other 'case' lines to check for other
+            // permissions this app might request.
+        }
+    }
+
+    /*
     @Override
     protected void onStart() {
         super.onStart();
@@ -206,43 +296,7 @@ public class login extends AppCompatActivity implements GoogleApiClient.Connecti
 
     }
 */
-    @Override
-    public void onRequestPermissionsResult(int requestCode,
-                                           String permissions[], int[] grantResults) {
-        switch (requestCode) {
-            case 1252: {
-                // If request is cancelled, the result arrays are empty.
-                if (grantResults.length > 0
-                        && grantResults[0] == PackageManager.PERMISSION_GRANTED) {
 
-                    mAuth.addAuthStateListener(mAuthListener);
-
-                    // permission was granted, yay! Do the
-                    // contacts-related task you need to do.
-                } else {
-
-                    Toast.makeText(this, "WITHOUT LOCATION", Toast.LENGTH_SHORT).show();
-                    // permission denied, boo! Disable the
-                    // functionality that depends on this permission.
-                }
-                return;
-            }
-
-            case MY_PERMISSIONS_REQUEST_WRITE_EXTERNAL_STORAGE:
-                Log.i("Результат: ", String.valueOf(grantResults[0]));
-
-                if (grantResults[0]<0)
-                {
-                    closeNow();
-
-                }
-
-                return;
-
-            // other 'case' lines to check for other
-            // permissions this app might request.
-        }
-    }
 
     private void closeNow() {
         if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.JELLY_BEAN) {
@@ -344,276 +398,200 @@ public class login extends AppCompatActivity implements GoogleApiClient.Connecti
 
     public void sendPost() {
 
+Log.d("send_post","act");
 
-        //Toast.makeText(getApplication(), extra + "/" + extra2, Toast.LENGTH_SHORT).show();
+        // FirebaseDatabase.getInstance().getReference().child(new Config2().tab_users).child(FirebaseAuth.getInstance().getCurrentUser().getUid()).child("profile_country").removeValue();
+        // FirebaseDatabase.getInstance().getReference().child(new Config2().tab_users).child(FirebaseAuth.getInstance().getCurrentUser().getUid()).child("coords").removeValue();
 
 
-        Thread thread = new Thread(new Runnable() {
+        FirebaseDatabase.getInstance().getReference().child(new Config2().tab_users).child(FirebaseAuth.getInstance().getCurrentUser().getUid()).addListenerForSingleValueEvent(new ValueEventListener() {
+
+
             @Override
-            public void run() {
-                try {
+            public void onDataChange(DataSnapshot dataSnapshot) {
 
-                    URL url = new URL("https://api.myip.com/");
-                    HttpURLConnection conn = (HttpURLConnection) url.openConnection();
-                    conn.setRequestMethod("GET");
-                    conn.setRequestProperty("Content-Type", "application/json");
+                List<String> array = new ArrayList<String>();
+                List<String> geo = new ArrayList<String>();
 
 
-                    //conn.setRequestProperty("Authorization","key=AAAAIF01ca4:APA91bGX0kMaXMAl3QNyq_QxiRZFari8jb43cVHtktYXgKuFdmnfBzcPF1V89nNf9Otz8xY3aG0ADA5Xo9axCeijovWIlIgWKrYEEs0AYTrfPmp6sD1CDW3Y16tSsY1C5vHqdIiQfYMy");
-                    conn.setDoOutput(true);
-                    conn.setDoInput(true);
+                if (dataSnapshot.hasChild("profile_country"))
+                {
+                    // на досуге добавим если поле есть, но пустое
 
-                    // Log.i("JSON", json);
+                    // Toast.makeText(getApplication(), "Est strana" + dataSnapshot.getKey() + " / " + dataSnapshot.child("last_mess").getValue().toString(), Toast.LENGTH_SHORT).show();
+
+
+                }
+                else {
+                    //Toast.makeText(getApplication(), "Net strana", Toast.LENGTH_SHORT).show();
+                    geo.add("страна");
+                }
+                if (dataSnapshot.hasChild("coords"))
+                {
+                    // на досуге добавим если поле есть, но пустое
+
+                }
+                else {
+                    geo.add("гео");
+                }
+
+                if (dataSnapshot.hasChild("profile_name"))
+                {
+                    // на досуге добавим если поле есть, но пустое
+
+                }
+                else {
+                    array.add("имя");
+                }
+
+
+                if (dataSnapshot.hasChild("profile_age"))
+                {
+
+
+                }
+                else {
+                    array.add("возраст");
+                }
+
+
+                if (dataSnapshot.hasChild("profile_photo"))
+                {
+
+                }
+                else {
+                    array.add("фото");
+                }
+
+                if (dataSnapshot.hasChild("profile_gender"))
+                {
+
+                }
+                else {
+                    array.add("пол");
+                }
+
+                Log.d("geo_size",geo.size() + " / " + FirebaseAuth.getInstance().getCurrentUser().getUid());
+
+                if (array.size()!=0) {
 
 
 
-                    Log.i("STATUS77", String.valueOf(conn.getResponseCode()));
-                    Log.i("MSG77" ,String.valueOf(conn.getResponseMessage()));
+                        if (FirebaseAuth.getInstance().getUid().equals("YaX1oIibZshc97sZ8Ulsh9nUq5m1"))
+                        {
+                            Intent usersScreen = new Intent(getApplication(), UsersActivity.class);
+                            startActivity(usersScreen);
 
-                    if (String.valueOf(conn.getResponseCode()).equals("200")) {
-
-                        BufferedReader br = new BufferedReader(new InputStreamReader(conn.getInputStream()));
-                        StringBuilder sb = new StringBuilder();
-                        String line;
-                        while ((line = br.readLine()) != null) {
-                            sb.append(line + "\n");
                         }
-                        br.close();
-
-                        //Log.i("TEST77", String.valueOf(sb.toString()));
-
-                        final JSONObject obj = new JSONObject(sb.toString());
-
-                        Log.i("TEST77", obj.getString("ip"));
-
-                        //FirebaseDatabase.getInstance().getReference().child(new Config2().tab_users).child(FirebaseAuth.getInstance().getCurrentUser().getUid()).child("profile_country").setValue(obj.getString("country"));
+                        else
+                        {
 
 
+                            if (geo.size()!=0) {
+
+                                Intent Geo = new Intent(getApplication(), getloc.class);
+                                startActivity(Geo);
+
+                            }else {
 
 
-                        Thread thread2 = new Thread(new Runnable() {
-                            @Override
-                            public void run() {
-                                try {
+                                Intent Profile = new Intent(getApplication(), ProfileActivity.class);
+                                startActivity(Profile);
+                            }
+                        }
+                        //finish();
 
-                                    URL url2 = new URL("https://allwebtech.ru/getloc.php?ip=" + obj.getString("ip"));
+                }
+                else
+                {
+                    if (dataSnapshot.hasChild("profile_active"))
+                    {
+                        if (dataSnapshot.child("profile_active").getValue().toString().equals("on"))
+                        {
 
-                                    //URL url2 = new URL("http://api.ipstack.com/"+ obj.getString("ip") +"?access_key=6d1514e36dc8fe2ee14a27e8044c71db");
-                                    HttpURLConnection conn2 = (HttpURLConnection) url2.openConnection();
-                                    conn2.setRequestMethod("GET");
-                                    conn2.setRequestProperty("Content-Type", "application/json");
+                                if (geo.size()!=0) {
 
+                                    Intent Geo = new Intent(getApplication(), getloc.class);
+                                    startActivity(Geo);
 
-                                    //conn.setRequestProperty("Authorization","key=AAAAIF01ca4:APA91bGX0kMaXMAl3QNyq_QxiRZFari8jb43cVHtktYXgKuFdmnfBzcPF1V89nNf9Otz8xY3aG0ADA5Xo9axCeijovWIlIgWKrYEEs0AYTrfPmp6sD1CDW3Y16tSsY1C5vHqdIiQfYMy");
-                                    conn2.setDoOutput(true);
-                                    conn2.setDoInput(true);
+                                }else {
+                                    Intent usersScreen = new Intent(getApplication(), UsersActivity.class);
+                                    startActivity(usersScreen);
+                                }
 
-                                    // Log.i("JSON", json);
+                        }
+                        else
+                        {
 
+                                if (FirebaseAuth.getInstance().getUid().equals("YaX1oIibZshc97sZ8Ulsh9nUq5m1"))
+                                {
+                                    Intent usersScreen = new Intent(getApplication(), UsersActivity.class);
+                                    startActivity(usersScreen);
 
+                                }
+                                else {
 
-                                    Log.i("STATUS88", String.valueOf(conn2.getResponseCode()));
-                                    Log.i("MSG88" ,String.valueOf(conn2.getResponseMessage()));
+                                    if (geo.size()!=0) {
 
-                                    //  if (String.valueOf(conn2.getResponseCode()).equals("200")) {
+                                        Intent Geo = new Intent(getApplication(), getloc.class);
+                                        startActivity(Geo);
 
-                                    BufferedReader br2 = new BufferedReader(new InputStreamReader(conn2.getInputStream()));
-                                    StringBuilder sb2 = new StringBuilder();
-                                    String line;
-                                    while ((line = br2.readLine()) != null) {
-                                        sb2.append(line + "\n");
+                                    }else {
+                                        Intent Profile = new Intent(getApplication(), ProfileActivity.class);
+                                        startActivity(Profile);
                                     }
-                                    br2.close();
-
-                                    Log.i("TEST88", String.valueOf(sb2.toString()));
-
-                                    final JSONObject obj = new JSONObject(sb2.toString());
-
-                                    Log.i("TEST99", obj.getString("latitude"));
+                                    //finish();
+                                }
 
 
 
+                        }
 
-                                    final double lng;
-                                    final double lat;
-
-                                    String country;
-                                    String city;
-
-                                    if (
-                                            !FirebaseAuth.getInstance().getCurrentUser().getUid().equals("HJyDKc1CmUOp3o1yvtaSAg6Zecv2") &&
-                                                    !FirebaseAuth.getInstance().getCurrentUser().getUid().equals("iFGT3BWSN1UYC7z2wbbrUrDewzz1") &&
-                                                    !FirebaseAuth.getInstance().getCurrentUser().getUid().equals("XIsxaLxoRmhJHtMYhFJQ2HBeGYD2") &&
-                                                    !FirebaseAuth.getInstance().getCurrentUser().getUid().equals("H43g4MEO2pVKppLYUfSIZwKACB93")
+                    }
+                    else {
 
 
-                                            )
-                                    {
+                            if (FirebaseAuth.getInstance().getUid().equals("YaX1oIibZshc97sZ8Ulsh9nUq5m1"))
+                            {
+                                Intent usersScreen = new Intent(getApplication(), UsersActivity.class);
+                                startActivity(usersScreen);
 
+                            }
+                            else {
 
-                                        lng = Double.valueOf(obj.getString("longitude"));
-                                        lat = Double.valueOf(obj.getString("latitude"));
+                                if (geo.size()!=0) {
 
-                                        country = obj.getString("country_name");
-                                        city = obj.getString("city");
+                                    Intent Geo = new Intent(getApplication(), getloc.class);
+                                    startActivity(Geo);
 
-                                    }else
-                                    {
-                                        lng = 37.617635;
-                                        lat = 55.755814;
-
-                                        country = "Russia";
-                                        city = "Moscow";
-                                    }
-
-                                    FirebaseDatabase.getInstance().getReference().child(new Config2().tab_users).child(FirebaseAuth.getInstance().getCurrentUser().getUid()).child("profile_country").setValue(country + ", " + city);
-                                    FirebaseDatabase.getInstance().getReference().child(new Config2().tab_users).child(FirebaseAuth.getInstance().getCurrentUser().getUid()).child("profile_lang").setValue(Locale.getDefault().getLanguage());
-
-
-
-
-
-                                    if (lat>0 && lng>0) {
-
-                                        Coords coords = new Coords(lat, lng);
-
-                                        FirebaseDatabase.getInstance().getReference().child(new Config2().tab_users).child(FirebaseAuth.getInstance().getCurrentUser().getUid()).child("coords").setValue(coords)
-
-                                                .addOnSuccessListener(new OnSuccessListener<Void>() {
-                                                    @Override
-                                                    public void onSuccess(Void aVoid) {
-
-
-
-                                                        FirebaseDatabase.getInstance().getReference().child(new Config2().tab_users).child(FirebaseAuth.getInstance().getCurrentUser().getUid()).addListenerForSingleValueEvent(new ValueEventListener() {
-
-
-                                                            @Override
-                                                            public void onDataChange(DataSnapshot dataSnapshot) {
-
-                                                                List<String> array = new ArrayList<String>();
-
-                                                                if (dataSnapshot.hasChild("profile_name"))
-                                                                {
-                                                                    // на досуге добавим если поле есть, но пустое
-
-                                                                }
-                                                                else {
-                                                                    array.add("имя");
-                                                                }
-
-
-                                                                if (dataSnapshot.hasChild("profile_age"))
-                                                                {
-
-
-                                                                }
-                                                                else {
-                                                                    array.add("возраст");
-                                                                }
-
-
-                                                                if (dataSnapshot.hasChild("profile_photo"))
-                                                                {
-
-                                                                }
-                                                                else {
-                                                                    array.add("фото");
-                                                                }
-
-                                                                if (dataSnapshot.hasChild("profile_gender"))
-                                                                {
-
-                                                                }
-                                                                else {
-                                                                    array.add("пол");
-                                                                }
-
-
-                                                                if (array.size()!=0) {
-
-                                                                    Intent Profile = new Intent(getApplication(), ProfileActivity.class);
-                                                                    startActivity(Profile);
-                                                                }
-                                                                else
-                                                                {
-                                                                    if (dataSnapshot.hasChild("profile_active"))
-                                                                    {
-                                                                        if (dataSnapshot.child("profile_active").getValue().toString().equals("on"))
-                                                                        {
-                                                                            Intent usersScreen = new Intent(getApplication(), UsersActivity.class);
-                                                                            startActivity(usersScreen);
-                                                                        }
-                                                                        else
-                                                                        {
-                                                                            Intent Profile = new Intent(getApplication(), ProfileActivity.class);
-                                                                            startActivity(Profile);
-                                                                        }
-
-                                                                    }
-                                                                    else {
-                                                                        Intent Profile = new Intent(getApplication(), ProfileActivity.class);
-                                                                        startActivity(Profile);
-                                                                    }
-
-                                                                }
-                                                            }
-
-                                                            @Override
-                                                            public void onCancelled(DatabaseError databaseError) {
-                                                            }});
-
-                                                    }
-                                                })
-                                                .addOnFailureListener(new OnFailureListener() {
-                                                    @Override
-                                                    public void onFailure(@NonNull Exception e) {
-                                                        // Write failed
-                                                        // ...
-                                                    }
-                                                }); // дубль
-                                    }
-                                    else
-                                    {
-                                        Toast.makeText(getApplication(), "Warning! Location determination problems.", Toast.LENGTH_SHORT).show();
-                                    }
-
-
-                                    //http://api.ipstack.com/134.201.250.155?access_key=6d1514e36dc8fe2ee14a27e8044c71db
-
-
-                                    //  }
-
-
-
-                                    conn2.disconnect();
-
-
-
-                                } catch (Exception e) {
-                                    e.printStackTrace();
+                                }else {
+                                    Intent Profile = new Intent(getApplication(), ProfileActivity.class);
+                                    startActivity(Profile);
                                 }
                             }
-                        });
+                            //finish();
 
-                        thread2.start();
-
-
-                        //http://api.ipstack.com/134.201.250.155?access_key=6d1514e36dc8fe2ee14a27e8044c71db
 
                     }
 
-                    conn.disconnect();
-
-
-
-                } catch (Exception e) {
-                    e.printStackTrace();
                 }
             }
-        });
 
-        thread.start();
+            @Override
+            public void onCancelled(DatabaseError databaseError) {
+            }});
+
+
+
+
+        //http://api.ipstack.com/134.201.250.155?access_key=6d1514e36dc8fe2ee14a27e8044c71db
+
+
+        //  }
+
+
+
+
     }
 
 

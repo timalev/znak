@@ -203,7 +203,7 @@ public class getloc extends AppCompatActivity {
 
 
 
-                                URL url2 = new URL("https://inpickup.ru/getloc2.php?lang=" + lang + "&geo=" + geo);
+                                URL url2 = new URL("https://rieltorov.net/getloc2.php?lang=" + lang + "&geo=" + geo);
 
                                 HttpURLConnection conn2 = (HttpURLConnection) url2.openConnection();
                                 conn2.setRequestMethod("GET");
@@ -278,7 +278,7 @@ public class getloc extends AppCompatActivity {
 
 
                                 }else {
-                                    gofromloc = new Intent(getApplication(), login2.class);
+                                    gofromloc = new Intent(getApplication(), login.class);
                                 }
 
                                startActivity(gofromloc);
