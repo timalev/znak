@@ -1,0 +1,62 @@
+<?xml version="1.0" encoding="utf-8"?>
+
+<RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    android:orientation="vertical"
+    android:id="@+id/relLayout"
+    android:layout_width="fill_parent"
+    android:layout_height="fill_parent">
+
+
+
+
+    <EditText
+        android:id="@+id/eventtext"
+        android:layout_marginTop="100dp"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:inputType="text"
+        android:background="@color/grey"
+        android:layout_marginLeft="10dp"
+        android:layout_marginRight="10dp"
+        android:gravity="top"
+        />
+
+    <TextView
+        android:id="@+id/geoloctext"
+        android:layout_below="@+id/eventtext"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:textSize="14dp"
+        android:text="(Например 'Смоленск, ул Ленина')"
+
+        android:layout_marginTop="10dp"
+        android:layout_marginLeft="10dp"
+       />
+
+    <Button
+        android:id="@+id/to_cal"
+        android:layout_marginTop="20dp"
+        android:layout_marginLeft="10dp"
+        android:layout_below="@+id/geoloctext"
+        android:layout_height="wrap_content"
+        android:layout_width="wrap_content"
+        android:text="Установить" />
+
+    <Button
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:visibility="gone"
+        android:text="Отправить сообщение"
+        android:layout_below="@+id/to_cal"
+        android:id="@+id/button"
+        android:layout_gravity="center_horizontal"
+        android:onClick="sendMessage" />
+
+    <include android:id="@+id/toolbar_loc"
+        layout="@layout/toolbar_video_activity" />
+
+
+
+
+
+</RelativeLayout>

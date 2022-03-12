@@ -101,11 +101,23 @@ public class VideoActivityAllMess extends AppCompatActivity {
 
                         //Log.d("Snap38: ", String.valueOf(Key));
 
-                        String name = dataSnapshot.child(child.getKey()).child("name").getValue().toString();
 
                         final HashMap<String, String> map = new HashMap<String, String>();
 
-                        map.put("name", name);
+                        //profile_name
+
+                        if (dataSnapshot.child(child.getKey()).hasChild("name"))
+                        {
+                            map.put("name", dataSnapshot.child(child.getKey()).child("name").getValue().toString());
+                        }
+                        else
+                            map.put("name", "Пользователь");
+
+                        //String name = dataSnapshot.child(child.getKey()).child("name").getValue().toString();
+
+
+
+                       // map.put("name", name);
                         map.put("key", Key);
 
                         mylist.add(map);

@@ -1,8 +1,7 @@
 package io.cordova.test2_6720b;
 
-// XIsxaLxoRmhJHtMYhFJQ2HBeGYD2 - admin (9262649844)
-// 1qMMra5pItbJOtbIKcyQPHCaS7Q2 - old admin
-// YaX1oIibZshc97sZ8Ulsh9nUq5m1 - 555 (модер play market)
+// XIsxaLxoRmhJHtMYhFJQ2HBeGYD2 - admin (7777777777)
+// YaX1oIibZshc97sZ8Ulsh9nUq5m1 - google play moder (5555555555)
 
 
 import androidx.annotation.NonNull;
@@ -122,7 +121,9 @@ public class login2 extends AppCompatActivity {
                     if (res_arr.size()>0) {
 
                         Toast.makeText(this, "Недостаточно разрешений для запуска приложения", Toast.LENGTH_SHORT).show();
-                    }else
+                    }
+                    /*
+                    else
                     {
 
                         FirebaseUser currentUser = mAuth.getCurrentUser();
@@ -145,6 +146,8 @@ public class login2 extends AppCompatActivity {
 
                        // finish();
                     }
+
+                     */
 
                 }
                 return;
@@ -574,127 +577,9 @@ public class login2 extends AppCompatActivity {
     public void sendPost() {
 
 
-        //Toast.makeText(getApplication(), extra + "/" + extra2, Toast.LENGTH_SHORT).show();
 
-
-        Thread thread = new Thread(new Runnable() {
-            @Override
-            public void run() {
-                try {
-
-                    URL url = new URL("https://api.myip.com/");
-                    HttpURLConnection conn = (HttpURLConnection) url.openConnection();
-                    conn.setRequestMethod("GET");
-                    conn.setRequestProperty("Content-Type", "application/json");
-
-
-                    //conn.setRequestProperty("Authorization","key=AAAAIF01ca4:APA91bGX0kMaXMAl3QNyq_QxiRZFari8jb43cVHtktYXgKuFdmnfBzcPF1V89nNf9Otz8xY3aG0ADA5Xo9axCeijovWIlIgWKrYEEs0AYTrfPmp6sD1CDW3Y16tSsY1C5vHqdIiQfYMy");
-                    conn.setDoOutput(true);
-                    conn.setDoInput(true);
-
-                    // Log.i("JSON", json);
-
-
-
-                    Log.i("STATUS77", String.valueOf(conn.getResponseCode()));
-                    Log.i("MSG77" ,String.valueOf(conn.getResponseMessage()));
-
-                    if (String.valueOf(conn.getResponseCode()).equals("200")) {
-
-                        BufferedReader br = new BufferedReader(new InputStreamReader(conn.getInputStream()));
-                        StringBuilder sb = new StringBuilder();
-                        String line;
-                        while ((line = br.readLine()) != null) {
-                            sb.append(line + "\n");
-                        }
-                        br.close();
-
-                        //Log.i("TEST77", String.valueOf(sb.toString()));
-
-                        final JSONObject obj = new JSONObject(sb.toString());
-
-                        Log.i("TEST77", obj.getString("ip"));
-
-                        //FirebaseDatabase.getInstance().getReference().child(new Config2().tab_users).child(FirebaseAuth.getInstance().getCurrentUser().getUid()).child("profile_country").setValue(obj.getString("country"));
-
-
-
-
-                        Thread thread2 = new Thread(new Runnable() {
-                            @Override
-                            public void run() {
-                                try {
-
-                                    URL url2 = new URL("https://allwebtech.ru/getloc.php?ip=" + obj.getString("ip"));
-
-                                    //URL url2 = new URL("http://api.ipstack.com/"+ obj.getString("ip") +"?access_key=6d1514e36dc8fe2ee14a27e8044c71db");
-                                    HttpURLConnection conn2 = (HttpURLConnection) url2.openConnection();
-                                    conn2.setRequestMethod("GET");
-                                    conn2.setRequestProperty("Content-Type", "application/json");
-
-
-                                    //conn.setRequestProperty("Authorization","key=AAAAIF01ca4:APA91bGX0kMaXMAl3QNyq_QxiRZFari8jb43cVHtktYXgKuFdmnfBzcPF1V89nNf9Otz8xY3aG0ADA5Xo9axCeijovWIlIgWKrYEEs0AYTrfPmp6sD1CDW3Y16tSsY1C5vHqdIiQfYMy");
-                                    conn2.setDoOutput(true);
-                                    conn2.setDoInput(true);
-
-                                    // Log.i("JSON", json);
-
-
-
-                                    Log.i("STATUS88", String.valueOf(conn2.getResponseCode()));
-                                    Log.i("MSG88" ,String.valueOf(conn2.getResponseMessage()));
-
-                                    //  if (String.valueOf(conn2.getResponseCode()).equals("200")) {
-
-                                    BufferedReader br2 = new BufferedReader(new InputStreamReader(conn2.getInputStream()));
-                                    StringBuilder sb2 = new StringBuilder();
-                                    String line;
-                                    while ((line = br2.readLine()) != null) {
-                                        sb2.append(line + "\n");
-                                    }
-                                    br2.close();
-
-                                    Log.i("TEST88", String.valueOf(sb2.toString()));
-
-                                    final JSONObject obj = new JSONObject(sb2.toString());
-
-                                    Log.i("TEST99", obj.getString("latitude"));
-
-
-
-
-                                    final double lng;
-                                    final double lat;
-
-                                    String country;
-                                    String city;
-
-
-                                        lng = Double.valueOf(obj.getString("longitude"));
-                                        lat = Double.valueOf(obj.getString("latitude"));
-
-                                        country = obj.getString("country_name");
-                                        city = obj.getString("city");
-
-
-
-                                    FirebaseDatabase.getInstance().getReference().child(new Config2().tab_users).child(FirebaseAuth.getInstance().getCurrentUser().getUid()).child("profile_country").setValue(country + ", " + city);
-                                    FirebaseDatabase.getInstance().getReference().child(new Config2().tab_users).child(FirebaseAuth.getInstance().getCurrentUser().getUid()).child("profile_lang").setValue(Locale.getDefault().getLanguage());
-
-
-
-
-
-                                    if (lat>0 && lng>0) {
-
-                                        Coords coords = new Coords(lat, lng);
-
-                                        FirebaseDatabase.getInstance().getReference().child(new Config2().tab_users).child(FirebaseAuth.getInstance().getCurrentUser().getUid()).child("coords").setValue(coords)
-
-                                                .addOnSuccessListener(new OnSuccessListener<Void>() {
-                                                    @Override
-                                                    public void onSuccess(Void aVoid) {
-
+       // FirebaseDatabase.getInstance().getReference().child(new Config2().tab_users).child(FirebaseAuth.getInstance().getCurrentUser().getUid()).child("profile_country").removeValue();
+       // FirebaseDatabase.getInstance().getReference().child(new Config2().tab_users).child(FirebaseAuth.getInstance().getCurrentUser().getUid()).child("coords").removeValue();
 
 
                                                         FirebaseDatabase.getInstance().getReference().child(new Config2().tab_users).child(FirebaseAuth.getInstance().getCurrentUser().getUid()).addListenerForSingleValueEvent(new ValueEventListener() {
@@ -704,6 +589,29 @@ public class login2 extends AppCompatActivity {
                                                             public void onDataChange(DataSnapshot dataSnapshot) {
 
                                                                 List<String> array = new ArrayList<String>();
+                                                                List<String> geo = new ArrayList<String>();
+
+
+                                                                if (dataSnapshot.hasChild("profile_country"))
+                                                                {
+                                                                    // на досуге добавим если поле есть, но пустое
+
+                                                                   // Toast.makeText(getApplication(), "Est strana" + dataSnapshot.getKey() + " / " + dataSnapshot.child("last_mess").getValue().toString(), Toast.LENGTH_SHORT).show();
+
+
+                                                                }
+                                                                else {
+                                                                    //Toast.makeText(getApplication(), "Net strana", Toast.LENGTH_SHORT).show();
+                                                                    geo.add("страна");
+                                                                }
+                                                                if (dataSnapshot.hasChild("coords"))
+                                                                {
+                                                                    // на досуге добавим если поле есть, но пустое
+
+                                                                }
+                                                                else {
+                                                                    geo.add("гео");
+                                                                }
 
                                                                 if (dataSnapshot.hasChild("profile_name"))
                                                                 {
@@ -741,6 +649,7 @@ public class login2 extends AppCompatActivity {
                                                                     array.add("пол");
                                                                 }
 
+Log.d("geo_size",geo.size() + " / " + FirebaseAuth.getInstance().getCurrentUser().getUid());
 
                                                                 if (array.size()!=0) {
 
@@ -757,8 +666,18 @@ public class login2 extends AppCompatActivity {
                                                                         else
                                                                         {
 
-                                                                            Intent Profile = new Intent(getApplication(), ProfileActivity.class);
-                                                                            startActivity(Profile);
+
+                                                                            if (geo.size()!=0) {
+
+                                                                                Intent Geo = new Intent(getApplication(), getloc.class);
+                                                                                startActivity(Geo);
+
+                                                                            }else {
+
+
+                                                                                Intent Profile = new Intent(getApplication(), ProfileActivity.class);
+                                                                                startActivity(Profile);
+                                                                            }
                                                                         }
                                                                         //finish();
                                                                     }
@@ -770,8 +689,16 @@ public class login2 extends AppCompatActivity {
                                                                         if (dataSnapshot.child("profile_active").getValue().toString().equals("on"))
                                                                         {
                                                                             if (checkPermissions()) {
-                                                                                Intent usersScreen = new Intent(getApplication(), UsersActivity.class);
-                                                                                startActivity(usersScreen);
+
+                                                                                if (geo.size()!=0) {
+
+                                                                                    Intent Geo = new Intent(getApplication(), getloc.class);
+                                                                                    startActivity(Geo);
+
+                                                                                }else {
+                                                                                    Intent usersScreen = new Intent(getApplication(), UsersActivity.class);
+                                                                                    startActivity(usersScreen);
+                                                                                }
                                                                             }
                                                                         }
                                                                         else
@@ -787,9 +714,15 @@ public class login2 extends AppCompatActivity {
                                                                                 }
                                                                                 else {
 
+                                                                                    if (geo.size()!=0) {
 
-                                                                                    Intent Profile = new Intent(getApplication(), ProfileActivity.class);
-                                                                                    startActivity(Profile);
+                                                                                        Intent Geo = new Intent(getApplication(), getloc.class);
+                                                                                        startActivity(Geo);
+
+                                                                                    }else {
+                                                                                        Intent Profile = new Intent(getApplication(), ProfileActivity.class);
+                                                                                        startActivity(Profile);
+                                                                                    }
                                                                                     //finish();
                                                                                 }
                                                                             }
@@ -809,8 +742,16 @@ public class login2 extends AppCompatActivity {
 
                                                                             }
                                                                             else {
-                                                                                Intent Profile = new Intent(getApplication(), ProfileActivity.class);
-                                                                                startActivity(Profile);
+
+                                                                                if (geo.size()!=0) {
+
+                                                                                    Intent Geo = new Intent(getApplication(), getloc.class);
+                                                                                    startActivity(Geo);
+
+                                                                                }else {
+                                                                                    Intent Profile = new Intent(getApplication(), ProfileActivity.class);
+                                                                                    startActivity(Profile);
+                                                                                }
                                                                             }
                                                                             //finish();
                                                                         }
@@ -824,20 +765,7 @@ public class login2 extends AppCompatActivity {
                                                             public void onCancelled(DatabaseError databaseError) {
                                                             }});
 
-                                                    }
-                                                })
-                                                .addOnFailureListener(new OnFailureListener() {
-                                                    @Override
-                                                    public void onFailure(@NonNull Exception e) {
-                                                        // Write failed
-                                                        // ...
-                                                    }
-                                                }); // дубль
-                                    }
-                                    else
-                                    {
-                                        Toast.makeText(getApplication(), "Warning! Location determination problems.", Toast.LENGTH_SHORT).show();
-                                    }
+
 
 
                                     //http://api.ipstack.com/134.201.250.155?access_key=6d1514e36dc8fe2ee14a27e8044c71db
@@ -847,35 +775,13 @@ public class login2 extends AppCompatActivity {
 
 
 
-                                    conn2.disconnect();
 
-
-
-                                } catch (Exception e) {
-                                    e.printStackTrace();
-                                }
                             }
-                        });
-
-                        thread2.start();
 
 
                         //http://api.ipstack.com/134.201.250.155?access_key=6d1514e36dc8fe2ee14a27e8044c71db
 
-                    }
 
-                    conn.disconnect();
-
-
-
-                } catch (Exception e) {
-                    e.printStackTrace();
-                }
-            }
-        });
-
-        thread.start();
-    }
 
     private void verifyPhoneNumberWithCode(String verificationId, String code) {
         // [START verify_with_code]

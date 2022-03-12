@@ -160,9 +160,14 @@ public class ProfileActivity extends AppCompatActivity {
 
         Log.d("screen_px",String.valueOf(width));
 
+        if (getIntent().getExtras()!=null && getIntent().getExtras().containsKey("updloc")) {
+
+            Toast.makeText(this, "Местоположение изменено", Toast.LENGTH_SHORT).show();
+
+        }
 
 
-        File externalAppDir = new File(Environment.getExternalStorageDirectory() + "/Znak");
+            File externalAppDir = new File(Environment.getExternalStorageDirectory() + "/Znak");
 
         Log.i("Опять с файлами гемор:",getPackageName() + " путь: " + Environment.getExternalStorageDirectory() + "/Znak");
 
@@ -315,6 +320,8 @@ public class ProfileActivity extends AppCompatActivity {
         nameTexview.setText(new Languages().ProfileTextviewName());
 
 
+
+
         editname.setHint(new Languages().ProfileEditName());
 
         TextView ageTexview = (TextView) findViewById(R.id.lage);
@@ -330,6 +337,17 @@ public class ProfileActivity extends AppCompatActivity {
 
         TextView femaleTexview = (TextView) findViewById(R.id.female);
         femaleTexview.setText(new Languages().ProfileTextviewFemale());
+
+        TextView changegeo = (TextView) findViewById(R.id.active32);
+
+        changegeo.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View view) {
+                Intent getloc = new Intent(getApplication(), getloc.class);
+                getloc.putExtra("getloc", "ok");
+                startActivity(getloc);
+            }
+        });
 
 
 
@@ -657,6 +675,9 @@ public class ProfileActivity extends AppCompatActivity {
 
     }
 
+
+
+
     public void onClick(View v) {
 
         com.rey.material.widget.RadioButton male = (com.rey.material.widget.RadioButton) findViewById(R.id.male);
@@ -759,6 +780,8 @@ public class ProfileActivity extends AppCompatActivity {
                     }});
                 return;
 
+
+
             case R.id.r_right:
 
                 RotateImage(90);
@@ -823,6 +846,8 @@ public class ProfileActivity extends AppCompatActivity {
                 Log.i("RadioButt2:", String.valueOf(male.isChecked()));
 
                 return;
+
+
 
             case R.id.chgpho:
 
@@ -1172,6 +1197,7 @@ public class ProfileActivity extends AppCompatActivity {
     }
         return(super.onOptionsItemSelected(item));
     }
+
     public void RotateImage(final int degrees)
     {
         FirebaseDatabase.getInstance().getReference().child(new Config2().tab_users).child(FirebaseAuth.getInstance().getCurrentUser().getUid()).addListenerForSingleValueEvent(new ValueEventListener() {
