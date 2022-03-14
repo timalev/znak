@@ -21,64 +21,54 @@ import java.io.IOException;
 import java.io.InputStream;
 import java.io.InputStreamReader;
 import java.io.Reader;
+import java.net.HttpURLConnection;
 import java.net.MalformedURLException;
 import java.net.URL;
 import java.nio.charset.Charset;
 
 public class SwitchActivity extends AppCompatActivity {
 
-
-    private static String readAll(Reader rd) throws IOException {
-        StringBuilder sb = new StringBuilder();
-        int cp;
-        while ((cp = rd.read()) != -1) {
-            sb.append((char) cp);
-        }
-        return sb.toString();
-    }
-
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_switch);
 
-        InputStream is = null;
-        try {
-            is = new URL("https://rieltorov.net/antech.json").openStream();
-        } catch (IOException e) {
-            e.printStackTrace();
-        }
-        try {
-            BufferedReader rd = new BufferedReader(new InputStreamReader(is, Charset.forName("UTF-8")));
-            String jsonText = readAll(rd);
-            JSONObject json = new JSONObject(jsonText);
-            Log.d("test_j:",json.getString("moder"));
+      Log.d("ok","12");
 
-        } catch (JSONException | IOException e) {
-            e.printStackTrace();
-        } finally {
-            try {
-                is.close();
-            } catch (IOException e) {
-                e.printStackTrace();
-            }
-        }
 
-/*
-                    if (dataSnapshot.child("zn_mod").getValue().toString().equals("1")) {
+        new Thread() {
 
-                        Intent refr = new Intent(getApplication(), login2.class);
-                        startActivity(refr);
-                        finish();
+            public void run() {
+                //your "file checking code" goes here like this
+                //write your results to log cat, since you cant do Toast from threads without handlers also...
 
-                    }else
-                    {
-                        Intent refr = new Intent(getApplication(), login.class);
-                        startActivity(refr);
+                try {
+                    HttpURLConnection.setFollowRedirects(false);
+                    // note : you may also need
+                    //HttpURLConnection.setInstanceFollowRedirects(false)
+
+                    HttpURLConnection con =  (HttpURLConnection) new URL("https://rieltorov.net/antech.json").openConnection();
+                    con.setRequestMethod("HEAD");
+                    if( (con.getResponseCode() == HttpURLConnection.HTTP_OK) ) {
+                        Log.d("FILE_EXISTS", "true");
+                        Intent tomoder = new Intent(getApplication(), login2.class);
+                        startActivity(tomoder);
                         finish();
                     }
 
-       */
+                    else {
+                        Log.d("FILE_EXISTS", "false");
+                        Intent touser = new Intent(getApplication(), login.class);
+                        startActivity(touser);
+                        finish();
+                    }
+                }
+                catch (Exception e) {
+                    e.printStackTrace();
+                    Log.d("FILE_EXISTS", "false");;
+                }
+            }
+        }.start();
 
     }
 }
