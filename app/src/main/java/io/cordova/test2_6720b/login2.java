@@ -1,6 +1,7 @@
 package io.cordova.test2_6720b;
 
-// XIsxaLxoRmhJHtMYhFJQ2HBeGYD2 - admin (7777777777)
+// XIsxaLxoRmhJHtMYhFJQ2HBeGYD2 - admin (7777777777) for phone auth
+// Simh5X1gVCbqkH0qPJ5N6ouqKTx1 - admin for google auth
 // YaX1oIibZshc97sZ8Ulsh9nUq5m1 - google play moder (5555555555)
 
 
