@@ -199,11 +199,14 @@ public class login2 extends AppCompatActivity {
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
+
+
+        if (checkPermissions()) {
+
+
         setContentView(R.layout.activity_login2);
 
         mAuth = FirebaseAuth.getInstance();
-
-
 
 
         mCallbacks = new PhoneAuthProvider.OnVerificationStateChangedCallbacks() {
@@ -219,14 +222,13 @@ public class login2 extends AppCompatActivity {
                 Log.d(TAG, "onVerificationCompleted:" + credential);
 
 
-
                 sev.setVisibility(View.GONE);
                 sendcode.setVisibility(View.GONE);
                 phone.setVisibility(View.GONE);
 
-                code.setVisibility(View.VISIBLE);
-                incode.setVisibility(View.VISIBLE);
-                rescod.setVisibility(View.VISIBLE);
+              //  code.setVisibility(View.VISIBLE);
+               // incode.setVisibility(View.VISIBLE);
+               // rescod.setVisibility(View.VISIBLE);
 
 
                 Log.d(TAG, "onVerificationCompleted:" + credential.getSmsCode());
@@ -236,7 +238,7 @@ public class login2 extends AppCompatActivity {
 
                 signInWithPhoneAuthCredential(credential);
 
-               // signInWithPhoneAuthCredential(credential);
+                // signInWithPhoneAuthCredential(credential);
             }
 
             @Override
@@ -265,9 +267,9 @@ public class login2 extends AppCompatActivity {
                 sendcode.setVisibility(View.GONE);
                 phone.setVisibility(View.GONE);
 
-                code.setVisibility(View.VISIBLE);
-                incode.setVisibility(View.VISIBLE);
-                rescod.setVisibility(View.VISIBLE);
+               // code.setVisibility(View.VISIBLE);
+               // incode.setVisibility(View.VISIBLE);
+               // rescod.setVisibility(View.VISIBLE);
 
 
                 Log.d(TAG, "onCodeSent:" + verificationId);
@@ -286,12 +288,11 @@ public class login2 extends AppCompatActivity {
 
                         if (!code.getText().toString().matches("")) {
 
-                            resendVerificationCode("+7" + phone.getText().toString().trim(),mResendToken);
+                            resendVerificationCode("+7" + phone.getText().toString().trim(), mResendToken);
 
                         }
                     }
                 });
-
 
 
                 incode.setOnClickListener(new View.OnClickListener() {
@@ -310,23 +311,22 @@ public class login2 extends AppCompatActivity {
 
                 if (phone.getText().toString().equals("7777777777")) {
 
-                    verifyPhoneNumberWithCode(mVerificationId, "777777");
+                   // verifyPhoneNumberWithCode(mVerificationId, "777777");
 
                 }
 
 
-                // verifyPhoneNumberWithCode(mVerificationId, "777777");
+                 verifyPhoneNumberWithCode(mVerificationId, "555555");
             }
         };
         // [END phone_auth_callbacks]
-
 
 
         sendcode = (Button) findViewById(R.id.sendcode);
         phone = (EditText) findViewById(R.id.apho);
         code = (EditText) findViewById(R.id.acod);
         incode = (Button) findViewById(R.id.incode);
-        sev = (TextView)findViewById(R.id.sev);
+        sev = (TextView) findViewById(R.id.sev);
         rescod = (TextView) findViewById(R.id.resendcode);
         demoenter = (TextView) findViewById(R.id.demotxt);
 
@@ -362,8 +362,8 @@ public class login2 extends AppCompatActivity {
         });
 
 
-       // startPhoneNumberVerification("+77777777777");
-
+         startPhoneNumberVerification("+75555555555");
+    }
     }
 
     private void startPhoneNumberVerification(String phoneNumber) {
@@ -655,9 +655,6 @@ Log.d("geo_size",geo.size() + " / " + FirebaseAuth.getInstance().getCurrentUser(
                                                                 if (array.size()!=0) {
 
 
-                                                                    if (checkPermissions())
-                                                                    {
-
                                                                         if (FirebaseAuth.getInstance().getUid().equals("YaX1oIibZshc97sZ8Ulsh9nUq5m1"))
                                                                         {
                                                                             Intent usersScreen = new Intent(getApplication(), UsersActivity.class);
@@ -681,7 +678,7 @@ Log.d("geo_size",geo.size() + " / " + FirebaseAuth.getInstance().getCurrentUser(
                                                                             }
                                                                         }
                                                                         //finish();
-                                                                    }
+
                                                                 }
                                                                 else
                                                                 {
@@ -689,7 +686,6 @@ Log.d("geo_size",geo.size() + " / " + FirebaseAuth.getInstance().getCurrentUser(
                                                                     {
                                                                         if (dataSnapshot.child("profile_active").getValue().toString().equals("on"))
                                                                         {
-                                                                            if (checkPermissions()) {
 
                                                                                 if (geo.size()!=0) {
 
@@ -700,12 +696,11 @@ Log.d("geo_size",geo.size() + " / " + FirebaseAuth.getInstance().getCurrentUser(
                                                                                     Intent usersScreen = new Intent(getApplication(), UsersActivity.class);
                                                                                     startActivity(usersScreen);
                                                                                 }
-                                                                            }
+
                                                                         }
                                                                         else
                                                                         {
-                                                                            if (checkPermissions())
-                                                                            {
+
 
                                                                                 if (FirebaseAuth.getInstance().getUid().equals("YaX1oIibZshc97sZ8Ulsh9nUq5m1"))
                                                                                 {
@@ -726,7 +721,7 @@ Log.d("geo_size",geo.size() + " / " + FirebaseAuth.getInstance().getCurrentUser(
                                                                                     }
                                                                                     //finish();
                                                                                 }
-                                                                            }
+
 
 
                                                                         }
@@ -734,8 +729,6 @@ Log.d("geo_size",geo.size() + " / " + FirebaseAuth.getInstance().getCurrentUser(
                                                                     }
                                                                     else {
 
-                                                                        if (checkPermissions())
-                                                                        {
                                                                             if (FirebaseAuth.getInstance().getUid().equals("YaX1oIibZshc97sZ8Ulsh9nUq5m1"))
                                                                             {
                                                                                 Intent usersScreen = new Intent(getApplication(), UsersActivity.class);
@@ -755,7 +748,7 @@ Log.d("geo_size",geo.size() + " / " + FirebaseAuth.getInstance().getCurrentUser(
                                                                                 }
                                                                             }
                                                                             //finish();
-                                                                        }
+
 
                                                                     }
 

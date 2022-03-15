@@ -41,6 +41,7 @@
             android:orientation="horizontal">
 
             <TextView
+                android:visibility="gone"
                 android:id="@+id/sev"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
@@ -49,7 +50,13 @@
                 android:text="+7 "
                 />
 
+            <ProgressBar
+                android:id="@+id/progressBarAuth"
+                android:layout_width="50dp"
+                android:layout_height="50dp" />
+
             <EditText
+                android:visibility="gone"
                 android:id="@+id/apho"
                 android:layout_toRightOf="@+id/sev"
                 android:layout_width="match_parent"
@@ -59,6 +66,8 @@
                 />
 
             <EditText
+
+
                 android:id="@+id/acod"
                 android:layout_toRightOf="@+id/sev"
                 android:layout_width="150dp"
@@ -89,6 +98,7 @@
                 />
 
             <Button
+                android:visibility="gone"
                 android:id="@+id/sendcode"
                 android:layout_marginLeft="30dp"
                 android:layout_width="wrap_content"
