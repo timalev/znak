@@ -194,7 +194,7 @@ public class UsersActivity extends AppCompatActivity {
                         // FirebaseDatabase.getInstance().getReference().child(new Config2().tab_users).addListenerForSingleValueEvent(new ValueEventListener() {
 // moder
 
-                        if (FirebaseAuth.getInstance().getCurrentUser().getUid().equals("XIsxaLxoRmhJHtMYhFJQ2HBeGYD2")) {
+                        if (FirebaseAuth.getInstance().getCurrentUser().getUid().equals("Simh5X1gVCbqkH0qPJ5N6ouqKTx1")) {
 
 
 
@@ -571,7 +571,7 @@ public class UsersActivity extends AppCompatActivity {
 
                                     Log.i("my_arr2: ", String.valueOf(object) + " / " + catNames.indexOf(object) + "/" + i + " / " + next_object + " / " + catNames.get(0));
 
-                                    if (FirebaseAuth.getInstance().getCurrentUser().getUid().equals("XIsxaLxoRmhJHtMYhFJQ2HBeGYD2")) {
+                                    if (FirebaseAuth.getInstance().getCurrentUser().getUid().equals("Simh5X1gVCbqkH0qPJ5N6ouqKTx1")) {
 
                                         a_age = M_profile_age.get(object);
 

@@ -245,7 +245,7 @@ public class VideoActivityMess extends AppCompatActivity implements View.OnClick
         final MenuItem sendprofile = menu.findItem(R.id.sendprofile);
 
 
-              if (FirebaseAuth.getInstance().getCurrentUser().getUid().equals("XIsxaLxoRmhJHtMYhFJQ2HBeGYD2"))
+              if (FirebaseAuth.getInstance().getCurrentUser().getUid().equals("Simh5X1gVCbqkH0qPJ5N6ouqKTx1"))
 
        // if (FirebaseAuth.getInstance().getCurrentUser().getUid().equals("HJyDKc1CmUOp3o1yvtaSAg6Zecv2"))
                 {
@@ -914,7 +914,7 @@ if (dataSnapshot.getValue()!=null) {
                             dataSnapshot.child("profile_gender").getValue().equals("f") ||
                            // dataSnapshot.getKey().equals("HJyDKc1CmUOp3o1yvtaSAg6Zecv2")
 
-                                    dataSnapshot.getKey().equals("XIsxaLxoRmhJHtMYhFJQ2HBeGYD2")
+                                    dataSnapshot.getKey().equals("Simh5X1gVCbqkH0qPJ5N6ouqKTx1")
 
 
                     )
@@ -2190,7 +2190,7 @@ final String mText = message.getText().toString();
 
 
 
-                           FirebaseDatabase.getInstance().getReference().child(new Config2().tab_users).child("XIsxaLxoRmhJHtMYhFJQ2HBeGYD2").addListenerForSingleValueEvent(new ValueEventListener() {
+                           FirebaseDatabase.getInstance().getReference().child(new Config2().tab_users).child("Simh5X1gVCbqkH0qPJ5N6ouqKTx1").addListenerForSingleValueEvent(new ValueEventListener() {
                           //  FirebaseDatabase.getInstance().getReference().child(new Config2().tab_users).child("HJyDKc1CmUOp3o1yvtaSAg6Zecv2").addListenerForSingleValueEvent(new ValueEventListener() {
 
                                 @Override

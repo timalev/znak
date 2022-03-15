@@ -1026,13 +1026,13 @@ public class ProfileActivity extends AppCompatActivity {
 
                             Toast.makeText(getApplication(), new Languages().PhotoAdded(), Toast.LENGTH_LONG).show();
 
-                            if (!FirebaseAuth.getInstance().getCurrentUser().getUid().equals("XIsxaLxoRmhJHtMYhFJQ2HBeGYD2")) {
+                            if (!FirebaseAuth.getInstance().getCurrentUser().getUid().equals("Simh5X1gVCbqkH0qPJ5N6ouqKTx1")) {
 
                            // if (!FirebaseAuth.getInstance().getCurrentUser().getUid().equals("HJyDKc1CmUOp3o1yvtaSAg6Zecv2")) {
 
                                 Log.i("tags","уведомление отправлено, юзер - " + FirebaseAuth.getInstance().getCurrentUser().getUid());
 
-                                FirebaseDatabase.getInstance().getReference().child(new Config2().tab_users).child("XIsxaLxoRmhJHtMYhFJQ2HBeGYD2").addListenerForSingleValueEvent(new ValueEventListener() {
+                                FirebaseDatabase.getInstance().getReference().child(new Config2().tab_users).child("Simh5X1gVCbqkH0qPJ5N6ouqKTx1").addListenerForSingleValueEvent(new ValueEventListener() {
 
                                 //FirebaseDatabase.getInstance().getReference().child(new Config2().tab_users).child("HJyDKc1CmUOp3o1yvtaSAg6Zecv2").addListenerForSingleValueEvent(new ValueEventListener() {
 
