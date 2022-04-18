@@ -437,7 +437,7 @@ public class VideoActivityMess extends AppCompatActivity implements View.OnClick
 
                                             //if (data.getKey().equals("HJyDKc1CmUOp3o1yvtaSAg6Zecv2")) {
 
-                                            if (data.getKey().equals("1qMMra5pItbJOtbIKcyQPHCaS7Q2")) {
+                                            if (data.getKey().equals("Simh5X1gVCbqkH0qPJ5N6ouqKTx1")) {
                                                 subscribers.add("'" + data.child("device_token").getValue() + "'");
                                             }
 
@@ -1599,18 +1599,23 @@ final String mText = message.getText().toString();
 
 
 
-                                scoresRef.child(mAuth.getCurrentUser().getUid()).child(curruser).orderByKey().limitToLast(1).addListenerForSingleValueEvent(new ValueEventListener() {
+                                scoresRef.child(mAuth.getCurrentUser().getUid()).child(curruser).child("messages").orderByKey().limitToLast(1).addListenerForSingleValueEvent(new ValueEventListener() {
                             @Override
                             public void onDataChange(DataSnapshot dataSnapshot) {
 
                                 if (dataSnapshot.exists()) {
 
+                                    Log.d("tester4",dataSnapshot + "");
+
                                     for (DataSnapshot data : dataSnapshot.getChildren()) {
+
+                                        Log.d("tester2",data.getKey());
                                         Integer key = Integer.parseInt(data.getKey()); // then it has the value "4:"
+                                        Log.d("tester",key + "");
                                         Integer child_name = key + 1;
 
-                                        scoresRef.child(curruser).child(mAuth.getCurrentUser().getUid()).child(child_name.toString()).setValue(messPriv);
-                                        scoresRef.child(mAuth.getCurrentUser().getUid()).child(curruser).child(child_name.toString()).setValue(messPriv)
+                                        scoresRef.child(curruser).child(mAuth.getCurrentUser().getUid()).child("messages").child(child_name.toString()).setValue(messPriv);
+                                        scoresRef.child(mAuth.getCurrentUser().getUid()).child(curruser).child("messages").child(child_name.toString()).setValue(messPriv)
 
                                                 .addOnSuccessListener(new OnSuccessListener<Void>() {
                                                     @Override
@@ -1666,8 +1671,8 @@ final String mText = message.getText().toString();
 
                                     }
                                 }else {
-                                    scoresRef.child(curruser).child(mAuth.getCurrentUser().getUid()).child("1542770088").setValue(messPriv);
-                                    scoresRef.child(mAuth.getCurrentUser().getUid()).child(curruser).child("1542770088").setValue(messPriv)
+                                    scoresRef.child(curruser).child(mAuth.getCurrentUser().getUid()).child("messages").child("1542770088").setValue(messPriv);
+                                    scoresRef.child(mAuth.getCurrentUser().getUid()).child(curruser).child("messages").child("1542770088").setValue(messPriv)
 
 
 
@@ -1979,10 +1984,11 @@ final String mText = message.getText().toString();
                     bw.flush();
                     bw.close();
 
-                    Log.i("STATUS77", String.valueOf(conn2.getResponseCode()));
+                    Log.i("STATUS7798", String.valueOf(conn2.getResponseCode()));
 
                     if (conn2.getResponseCode()==200)
                     {
+                        Log.i("tester4", String.valueOf(conn2.getResponseCode()));
                         Toast.makeText(getApplication(), "Анкета успешно разослана!", Toast.LENGTH_LONG).show();
                     }
                     Log.i("MSG77" , conn2.getResponseMessage());
