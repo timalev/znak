@@ -203,7 +203,10 @@ public class getloc extends AppCompatActivity {
 
 
 
-                                URL url2 = new URL("https://rieltorov.net/getloc2.php?lang=" + lang + "&geo=" + geo);
+                               // URL url2 = new URL("https://rieltorov.net/getloc2.php?lang=" + lang + "&geo=" + geo);
+                               // URL url2 = new URL("http://95.165.130.226/getloc2.php?lang=" + lang + "&geo=" + geo);
+                                URL url2 = new URL(" https://jovial-edison.31-31-196-234.plesk.page/getloc.aspx?lang=" + lang + "&geo=" + geo);
+
 
                                 HttpURLConnection conn2 = (HttpURLConnection) url2.openConnection();
                                 conn2.setRequestMethod("GET");
@@ -242,7 +245,7 @@ public class getloc extends AppCompatActivity {
                                 String lng = separated[0]; // this will contain "Fruit"
                                 String lat = separated[1]; // this will contain " they taste good"
 
-                                Log.d("json_res:",FirebaseAuth.getInstance().getUid() + " / " + lng + " / " + lat + " / " + country + " / " + city);
+                                Log.d("json_res:",FirebaseAuth.getInstance().getUid() + " / " + geo + " / " + lng + " / " + lat + " / " + country + " / " + city);
 
 
                                 double lngd= Double.parseDouble(lng);
@@ -290,7 +293,7 @@ public class getloc extends AppCompatActivity {
 
                             } catch (Exception e) {
                                 e.printStackTrace();
-                                Log.d("err_res:",e.toString() + " / " + "https://inpickup.ru/getloc2.php?lang=" + lang + "&geo=" + Uri.encode(geo));
+                                Log.d("err_res:",e.toString() + " / " + "http://95.165.130.226/getloc2.php?lang=" + lang + "&geo=" + Uri.encode(geo));
                             }
                         }
                     });

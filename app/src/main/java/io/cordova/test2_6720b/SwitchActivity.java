@@ -35,7 +35,11 @@ public class SwitchActivity extends AppCompatActivity {
 
       Log.d("ok","12");
 
+        Intent touser = new Intent(getApplication(), login.class);
+        startActivity(touser);
+        finish();
 
+/*
         new Thread() {
 
             public void run() {
@@ -69,6 +73,6 @@ public class SwitchActivity extends AppCompatActivity {
                 }
             }
         }.start();
-
+*/
     }
 }

@@ -280,7 +280,7 @@ public class VideoActivityMess extends AppCompatActivity implements View.OnClick
 
 
     //private String filesdir = "Android/data/io.cordova.bizone2/files";
-    private String filesdir =  Environment.getExternalStorageDirectory().toString() + "/Znak/files";
+  //  private String filesdir =  Environment.getExternalStorageDirectory().toString() + "/Znak/files";
 
 
 
@@ -687,7 +687,17 @@ if (dataSnapshot.getValue()!=null) {
                     // Continue only if the File was successfully created
                     if (photoFile != null) {
 
-                        Uri photoURI = Uri.fromFile(photoFile);
+                        Uri photoURI;
+
+                        if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.Q) {
+                            //File file = new File (this.getExternalFilesDir(null) + "/Znak/files");
+                            photoURI = FileProvider.getUriForFile(VideoActivityMess.this, "io.cordova.test2_6720b.fileprovider", photoFile);
+                            Log.d("pic_e:", photoFile.toString() + " # " + getExternalFilesDir(Environment.DIRECTORY_PICTURES));
+                        }else {
+                            photoURI = Uri.fromFile(photoFile);
+                        }
+
+
 
                         //Uri photoURI = FileProvider.getUriForFile(this, this.getApplicationContext().getPackageName() + ".io.cordova.bizone2.provider", photoFile);
 
@@ -757,53 +767,10 @@ if (dataSnapshot.getValue()!=null) {
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
 
-
-
         DatabaseReference scoresRef =  FirebaseDatabase.getInstance().getReference().child(new Config2().tab_messagesPrivate);
         //scoresRef.keepSynced(true);
 
         //FirebaseDatabase.getInstance().getReference().child(new Config2().tab_messagesStat).child(FirebaseAuth.getInstance().getCurrentUser().getUid()).child("currtime").setValue(ts2);
-
-
-        // Создаем директорию для фото
-
-
-/*
-        File externalAppDir = new File(Environment.getExternalStorageDirectory() + "test");
-
-        Log.i("test: ", Environment.getExternalStorageDirectory().getAbsolutePath());
-
-        if (!externalAppDir.exists()) {
-
-            externalAppDir.mkdir();
-
-            Toast.makeText(this, String.valueOf(externalAppDir.mkdir()), Toast.LENGTH_SHORT).show();
-
-        }
-*/
-
-
-/*
-        final File dir = new File(new File(new File(Environment.getExternalStorageDirectory(), "Android"), "data"), "io.cordova.bizone2");
-
-        if (!dir.mkdirs()) {
-
-            Toast.makeText(this, "ХУЙ!!!", Toast.LENGTH_SHORT).show();
-        }
-        */
-
-/*
-        File file = new File(externalAppDir , "FileName.txt");
-        try {
-            file.createNewFile();
-        } catch (IOException e) {
-            e.printStackTrace();
-        }
-*/
-
-        //Log.d("Сервис запущен: ",  String.valueOf(isMyServiceRunning(GeoService.class)));
-
-        // если на мобиле отключена геолокация ставим offline
 
         if (!isLocationEnabled(getApplicationContext())) {
             FirebaseDatabase.getInstance().getReference().child(new Config2().tab_users).child(FirebaseAuth.getInstance().getCurrentUser().getUid()).child("status").setValue("offline");
@@ -896,10 +863,6 @@ if (dataSnapshot.getValue()!=null) {
             final ImageView imageView = (ImageView) findViewById(R.id.UserPho);
             //imageView.setVisibility(View.VISIBLE);
 
-
-
-
-
         FirebaseDatabase.getInstance().getReference().child(new Config2().tab_users).child(FirebaseAuth.getInstance().getCurrentUser().getUid()).addListenerForSingleValueEvent(new ValueEventListener() {
 
             @Override
@@ -967,19 +930,7 @@ if (dataSnapshot.getValue()!=null) {
                             }
                         });
 
-
-
-
-
-
-
-
-
-
                     }
-
-
-
                 }
             }
 
@@ -1403,9 +1354,6 @@ final String mText = message.getText().toString();
 
                                                 //Toast.makeText(getApplication(), String.valueOf(subscribers.size()), Toast.LENGTH_SHORT).show();
 
-
-
-
                                             }
 
                                             @Override
@@ -1419,9 +1367,6 @@ final String mText = message.getText().toString();
                                         updateStat(ts);
 
                                         // FirebaseDatabase.getInstance().getReference().child("messagesStat").child(curruser).child(mAuth.getCurrentUser().getUid()).child("mess_count").setValue(1);
-
-
-
                                     }
                                 })
                                         .addOnFailureListener(new OnFailureListener() {
@@ -1433,9 +1378,6 @@ final String mText = message.getText().toString();
                                         });  // дубль для спросителя
 
                                // FirebaseDatabase.getInstance().getReference().child("notific").child("1542770088").setValue(mess);
-
-
-
                             }
                         }
 
@@ -1450,21 +1392,12 @@ final String mText = message.getText().toString();
 
                         }});
 
-
                     // FirebaseDatabase.getInstance().getReference().child("messagesPrivate").child(ts).child("mess").setValue(message.getText().toString());
                     // FirebaseDatabase.getInstance().getReference().child("messagesPrivate").child(ts).child("page_for_comment").setValue(curruser);
                     //FirebaseDatabase.getInstance().getReference().child("messagesPrivate").child(ts).child("user").setValue(mAuth.getCurrentUser().getUid());
 
                     message.getText().clear();
-
-
-                    // печатаем новые сообщения (после общего подгруженного общего списка)
-
-
                 }
-
-
-
 
                 break;
 
@@ -1505,6 +1438,14 @@ final String mText = message.getText().toString();
     {
         final DatabaseReference scoresRef =  FirebaseDatabase.getInstance().getReference().child(new Config2().tab_messagesPrivate);
        // scoresRef.keepSynced(true);
+
+        String  filesdir;
+
+        if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.Q) {
+            filesdir = getExternalFilesDir(Environment.DIRECTORY_PICTURES).toString();
+        } else {
+            filesdir = Environment.getExternalStorageDirectory().toString() + "/Znak/files";
+        }
 
         final File photo = new File(filesdir,"photo.jpg");
         File photo2;
@@ -1772,6 +1713,13 @@ final String mText = message.getText().toString();
     private File createImageFile(String fileName) throws IOException {
         // Create an image file name
 
+        String filesdir;
+        if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.Q) {
+            filesdir = getExternalFilesDir(Environment.DIRECTORY_PICTURES).toString();
+        } else {
+            filesdir = Environment.getExternalStorageDirectory().toString() + "/Znak/files";
+        }
+
         File image = new File(filesdir,fileName);
 
         // Save a file: path for use with ACTION_VIEW intents
@@ -2013,11 +1961,6 @@ final String mText = message.getText().toString();
 
                 if (dataSnapshot.hasChild("mess_count")) {
 
-
-
-
-
-
                     Integer curr_messes_count = Integer.parseInt(dataSnapshot.child("mess_count").getValue().toString()); // then it has the value "4:"
                     final Integer messes_count = curr_messes_count + 1;
 
@@ -2027,7 +1970,6 @@ final String mText = message.getText().toString();
                     FirebaseDatabase.getInstance().getReference().child(new Config2().tab_users).child(curruser).child("curr_activity").addListenerForSingleValueEvent(new ValueEventListener() {
                         @Override
                         public void onDataChange(DataSnapshot dataSnapshot) {
-
 
                             Log.i("cuss:",curruser + " / " + dataSnapshot.getValue());
 
@@ -2116,6 +2058,13 @@ final String mText = message.getText().toString();
     private void takeScreenshot(final String zal_user, final String zal_name) {
         Date now = new Date();
         android.text.format.DateFormat.format("yyyy-MM-dd_hh:mm:ss", now);
+
+        String filesdir;
+        if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.Q) {
+            filesdir = getExternalFilesDir(Environment.DIRECTORY_PICTURES).toString();
+        } else {
+            filesdir = Environment.getExternalStorageDirectory().toString() + "/Znak/files";
+        }
 
         try {
             // image naming and path  to include sd card  appending name you choose for file

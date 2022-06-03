@@ -10,6 +10,7 @@ import android.graphics.Color;
 import android.graphics.Matrix;
 import android.graphics.drawable.Drawable;
 import android.net.Uri;
+import android.os.Build;
 import android.os.Environment;
 import android.provider.MediaStore;
 import androidx.annotation.NonNull;
@@ -20,6 +21,8 @@ import androidx.appcompat.app.AlertDialog;
 import androidx.appcompat.app.AppCompatActivity;
 import android.os.Bundle;
 import androidx.appcompat.widget.Toolbar;
+import androidx.core.content.FileProvider;
+
 import android.text.Editable;
 import android.text.Html;
 import android.text.TextWatcher;
@@ -82,7 +85,6 @@ import static android.view.View.VISIBLE;
 
 public class ProfileActivity extends AppCompatActivity {
 
-    private String filesdir =  Environment.getExternalStorageDirectory().toString() + "/Znak/files";
 
 
     private FirebaseAuth mAuth;
@@ -115,14 +117,18 @@ public class ProfileActivity extends AppCompatActivity {
         {
             if (resultCode == RESULT_OK) {
 
-
-
+                String filesdir;
+                if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.Q) {
+                    filesdir = getExternalFilesDir(Environment.DIRECTORY_PICTURES) + "/photo.jpg";
+                } else {
+                    filesdir = Environment.getExternalStorageDirectory().toString() + "/Znak/files/photo.jpg";
+                }
                 //Toast.makeText(this, "Gallery picture OK", Toast.LENGTH_SHORT).show();
 
                 InputStream inputStream = null;
                 try {
                     inputStream = getContentResolver().openInputStream(data.getData());
-                    FileOutputStream fileOutputStream = new FileOutputStream(filesdir + "/photo.jpg");
+                    FileOutputStream fileOutputStream = new FileOutputStream(filesdir);
                     copyStream(inputStream, fileOutputStream);
                     fileOutputStream.close();
                     inputStream.close();
@@ -131,7 +137,9 @@ public class ProfileActivity extends AppCompatActivity {
 
                 } catch (FileNotFoundException e) {
                     e.printStackTrace();
+                    Log.d("pic_err:",e.getMessage());
                 } catch (IOException e) {
+                    Log.d("pic_err2:",e.getMessage());
                     e.printStackTrace();
                 }
 
@@ -167,40 +175,48 @@ public class ProfileActivity extends AppCompatActivity {
         }
 
 
+
+        if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.Q) {
+            //File file = new File (this.getExternalFilesDir(null) + "/Znak/files");
+            File externalFiles = new File(this.getExternalFilesDir(null).toString());
+
+            externalFiles.mkdir();
+
+            File externalCache = new File(this.getExternalCacheDir()  + "/debug");
+
+            externalCache.mkdir();
+
+
+        } else {
             File externalAppDir = new File(Environment.getExternalStorageDirectory() + "/Znak");
 
-        Log.i("Опять с файлами гемор:",getPackageName() + " путь: " + Environment.getExternalStorageDirectory() + "/Znak");
+            Log.i("Опять с файлами гемор:",getPackageName() + " путь: " + Environment.getExternalStorageDirectory() + "/Znak");
 
-        if (!externalAppDir.exists()) {
+            if (!externalAppDir.exists()) {
 
-            if (externalAppDir.mkdir()) {
+                if (externalAppDir.mkdir()) {
 
-                File externalFiles = new File(Environment.getExternalStorageDirectory() + "/Znak/files");
-                externalFiles.mkdir();
+                    File externalFiles = new File(Environment.getExternalStorageDirectory() + "/Znak/files");
+                    externalFiles.mkdir();
 
-                File externalCache = new File(Environment.getExternalStorageDirectory() + "/Znak/cache");
+                    File externalCache = new File(Environment.getExternalStorageDirectory() + "/Znak/cache");
 
-                if (externalCache.mkdir())
-                {
-                    File externalDebug = new File(Environment.getExternalStorageDirectory() + "/Znak/cache/debug");
-                    externalDebug.mkdir();
+                    if (externalCache.mkdir())
+                    {
+                        File externalDebug = new File(Environment.getExternalStorageDirectory() + "/Znak/cache/debug");
+                        externalDebug.mkdir();
 
+                    }
+                }else {
+                    Log.i("Опять с файлами гемор3:","Нет ни хуя");
                 }
-            }else {
-                Log.i("Опять с файлами гемор3:","Нет ни хуя");
+            }else
+            {
+                Log.i("Опять с файлами гемор2:","все ок");
             }
-        }else
-        {
-            Log.i("Опять с файлами гемор2:","все ок");
+
         }
-
-            setContentView(R.layout.activity_profile);
-
-
-
-
-
-
+        setContentView(R.layout.activity_profile);
 
         FirebaseDatabase.getInstance().getReference().child(new Config2().tab_users).child(FirebaseAuth.getInstance().getCurrentUser().getUid()).addValueEventListener(new ValueEventListener() {
 
@@ -213,7 +229,7 @@ public class ProfileActivity extends AppCompatActivity {
 
                 if (!dataSnapshot.hasChild("profile_polic_add")) {
 
-                     //Toast.makeText(getApplication(), "Галочки нет", Toast.LENGTH_LONG).show();
+                    //Toast.makeText(getApplication(), "Галочки нет", Toast.LENGTH_LONG).show();
 
 
 
@@ -356,7 +372,7 @@ public class ProfileActivity extends AppCompatActivity {
         setSupportActionBar(toolbar);
 
 
-            setTitle(new Languages().TitleProfile());
+        setTitle(new Languages().TitleProfile());
 
 
         toolbar.setTitleTextColor(Color.WHITE);
@@ -372,7 +388,7 @@ public class ProfileActivity extends AppCompatActivity {
 
         //imgs.getResourceId(0, -1);
 
-       //  img.setImageResource(new Languages().ImagesUploadPhoto());
+        //  img.setImageResource(new Languages().ImagesUploadPhoto());
 
 
 
@@ -450,9 +466,15 @@ public class ProfileActivity extends AppCompatActivity {
 
 
                     String str = dataSnapshot.child("profile_photo").getValue().toString();
+                    final String url_file_name;
 
-                    final String url_file_name = Environment.getExternalStorageDirectory().toString() + "/Znak/cache/" + URLUtil.guessFileName(str, null, null);
+                    if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.Q) {
+                        //File file = new File (this.getExternalFilesDir(null) + "/Znak/files");
+                        url_file_name = getExternalCacheDir() + "/"  + URLUtil.guessFileName(str, null, null);
+                    }else {
 
+                        url_file_name = Environment.getExternalStorageDirectory().toString() + "/Znak/cache/" + URLUtil.guessFileName(str, null, null);
+                    }
                     final File file = new File(url_file_name);
 
                     if(file.exists())
@@ -470,10 +492,10 @@ public class ProfileActivity extends AppCompatActivity {
                         int imageHeight;
                         int imageWidth;
 
-                            imageHeight = options.outHeight;
-                            imageWidth = options.outWidth;
+                        imageHeight = options.outHeight;
+                        imageWidth = options.outWidth;
 
-                      //  Log.d("res_file",url_file_name_res);
+                        //  Log.d("res_file",url_file_name_res);
 
                         if (imageWidth>width) {
 
@@ -521,9 +543,11 @@ public class ProfileActivity extends AppCompatActivity {
                         r_left.setVisibility(View.VISIBLE);
                         r_right.setVisibility(View.VISIBLE);
 
-                       // imageview.setImageResource(0);
+                        // imageview.setImageResource(0);
 
                     }else {
+
+                        Log.d("хуйня с фоткой","загрузка хуйни");
 
                         new FileLoadingTask(
                                 str,
@@ -861,11 +885,11 @@ public class ProfileActivity extends AppCompatActivity {
 
 
 
-                        builder.setTitle(new Languages().ProfileAddPhoto());
+                    builder.setTitle(new Languages().ProfileAddPhoto());
 
                     final CharSequence[] options = new CharSequence[]{new Languages().ProfileTakePicture(),new Languages().ProfileSelectPhoto(), new Languages().ProfileCancelPhoto()};
 
-                       //  options = new CharSequence[] {"Take a picture", "Select photo","Cancel"};
+                    //  options = new CharSequence[] {"Take a picture", "Select photo","Cancel"};
 
 
 
@@ -884,7 +908,7 @@ public class ProfileActivity extends AppCompatActivity {
                                     // Create the File where the photo should go
                                     File photoFile = null;
                                     try {
-                                        photoFile = createImageFile("photo.jpg");
+                                        photoFile = createImageFile();
                                     } catch (IOException ex) {
 
                                         Toast.makeText(getApplicationContext(), "rcreateImageFile error.", Toast.LENGTH_LONG).show();
@@ -893,8 +917,15 @@ public class ProfileActivity extends AppCompatActivity {
                                     // Continue only if the File was successfully created
                                     if (photoFile != null) {
 
-                                        Uri photoURI = Uri.fromFile(photoFile);
+                                        Uri photoURI;
 
+                                        if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.Q) {
+                                            //File file = new File (this.getExternalFilesDir(null) + "/Znak/files");
+                                            photoURI = FileProvider.getUriForFile(ProfileActivity.this, "io.cordova.test2_6720b.fileprovider", photoFile);
+                                            Log.d("pic_e:", photoFile.toString() + " # " + getExternalFilesDir(Environment.DIRECTORY_PICTURES));
+                                        }else {
+                                            photoURI = Uri.fromFile(photoFile);
+                                        }
                                         //Uri photoURI = FileProvider.getUriForFile(this, this.getApplicationContext().getPackageName() + ".io.cordova.bizone2.provider", photoFile);
 
                                         takePictureIntent.putExtra(MediaStore.EXTRA_OUTPUT, photoURI);
@@ -937,6 +968,14 @@ public class ProfileActivity extends AppCompatActivity {
 
     void UploadPicture()
     {
+        String filesdir;
+
+        if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.Q) {
+            //File file = new File (this.getExternalFilesDir(null) + "/Znak/files");
+            filesdir =  getExternalFilesDir(Environment.DIRECTORY_PICTURES).toString();
+        }else {
+            filesdir =  Environment.getExternalStorageDirectory().toString() + "/Znak/files";
+        }
         final File photo = new File(filesdir,"photo.jpg");
         File photo2;
 
@@ -1017,44 +1056,44 @@ public class ProfileActivity extends AppCompatActivity {
 
 
 
-                        Log.d("Загрузка: ", "Успешно, ссылка на видео - " + downloadUrl);
+                                Log.d("Загрузка: ", "Успешно, ссылка на видео - " + downloadUrl);
 
-                        FirebaseDatabase.getInstance().getReference().child(new Config2().tab_users).child(FirebaseAuth.getInstance().getCurrentUser().getUid()).child("profile_photo").setValue(downloadUrl.toString());
+                                FirebaseDatabase.getInstance().getReference().child(new Config2().tab_users).child(FirebaseAuth.getInstance().getCurrentUser().getUid()).child("profile_photo").setValue(downloadUrl.toString());
 
-                        if (photo.delete()) {
+                                if (photo.delete()) {
 
 
-                            Toast.makeText(getApplication(), new Languages().PhotoAdded(), Toast.LENGTH_LONG).show();
+                                    Toast.makeText(getApplication(), new Languages().PhotoAdded(), Toast.LENGTH_LONG).show();
 
-                            if (!FirebaseAuth.getInstance().getCurrentUser().getUid().equals("Simh5X1gVCbqkH0qPJ5N6ouqKTx1")) {
+                                    if (!FirebaseAuth.getInstance().getCurrentUser().getUid().equals("Simh5X1gVCbqkH0qPJ5N6ouqKTx1")) {
 
-                           // if (!FirebaseAuth.getInstance().getCurrentUser().getUid().equals("HJyDKc1CmUOp3o1yvtaSAg6Zecv2")) {
+                                        // if (!FirebaseAuth.getInstance().getCurrentUser().getUid().equals("HJyDKc1CmUOp3o1yvtaSAg6Zecv2")) {
 
-                                Log.i("tags","уведомление отправлено, юзер - " + FirebaseAuth.getInstance().getCurrentUser().getUid());
+                                        Log.i("tags","уведомление отправлено, юзер - " + FirebaseAuth.getInstance().getCurrentUser().getUid());
 
-                                FirebaseDatabase.getInstance().getReference().child(new Config2().tab_users).child("Simh5X1gVCbqkH0qPJ5N6ouqKTx1").addListenerForSingleValueEvent(new ValueEventListener() {
+                                        FirebaseDatabase.getInstance().getReference().child(new Config2().tab_users).child("Simh5X1gVCbqkH0qPJ5N6ouqKTx1").addListenerForSingleValueEvent(new ValueEventListener() {
 
-                                //FirebaseDatabase.getInstance().getReference().child(new Config2().tab_users).child("HJyDKc1CmUOp3o1yvtaSAg6Zecv2").addListenerForSingleValueEvent(new ValueEventListener() {
+                                            //FirebaseDatabase.getInstance().getReference().child(new Config2().tab_users).child("HJyDKc1CmUOp3o1yvtaSAg6Zecv2").addListenerForSingleValueEvent(new ValueEventListener() {
 
-                                    @Override
-                                    public void onDataChange(DataSnapshot dataSnapshot) {
+                                            @Override
+                                            public void onDataChange(DataSnapshot dataSnapshot) {
 
-                                        Log.i("tags2",dataSnapshot.child("device_token").getValue().toString());
+                                                Log.i("tags2",dataSnapshot.child("device_token").getValue().toString());
 
-                                        sendPost(FirebaseAuth.getInstance().getCurrentUser().getUid(), FirebaseAuth.getInstance().getCurrentUser().getDisplayName(), downloadUrl.toString(),dataSnapshot.child("device_token").getValue().toString());
+                                                sendPost(FirebaseAuth.getInstance().getCurrentUser().getUid(), FirebaseAuth.getInstance().getCurrentUser().getDisplayName(), downloadUrl.toString(),dataSnapshot.child("device_token").getValue().toString());
+                                            }
+
+                                            @Override
+                                            public void onCancelled(DatabaseError databaseError) {
+                                                // Getting Post failed, log a message
+
+                                                // ...
+                                            }
+                                        });
                                     }
 
-                                    @Override
-                                    public void onCancelled(DatabaseError databaseError) {
-                                        // Getting Post failed, log a message
 
-                                        // ...
-                                    }
-                                });
-                            }
-
-
-                        }
+                                }else   Log.i("проблема с удалением","не могу удать фото");
                             }
                         });
                     }
@@ -1077,7 +1116,7 @@ public class ProfileActivity extends AppCompatActivity {
     public boolean onCreateOptionsMenu(Menu menu) {
         // Inflate the menu; this adds items to the action bar if it is present.
 
-            getMenuInflater().inflate(R.menu.menu_anketa, menu);
+        getMenuInflater().inflate(R.menu.menu_anketa, menu);
 
 
         menu.findItem(R.id.friends).setTitle(new Languages().MenuFriends());
@@ -1212,9 +1251,20 @@ public class ProfileActivity extends AppCompatActivity {
 
                     String str = dataSnapshot.child("profile_photo").getValue().toString();
 
-                    final String url_file_name = Environment.getExternalStorageDirectory().toString() + "/Znak/cache/" + URLUtil.guessFileName(str, null, null);
-                    final String url_file_name_res = Environment.getExternalStorageDirectory().toString() + "/Znak/cache/" + ts2;
+                    final String url_file_name;
+                    final String url_file_name_res;
 
+
+                    if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.Q) {
+                        //File file = new File (this.getExternalFilesDir(null) + "/Znak/files");
+
+                        url_file_name = getExternalCacheDir() + "/"  + URLUtil.guessFileName(str, null, null);
+                        url_file_name_res = getExternalCacheDir() + "/"  + ts2;
+                    }else {
+
+                        url_file_name = Environment.getExternalStorageDirectory().toString() + "/Znak/cache/" + URLUtil.guessFileName(str, null, null);
+                        url_file_name_res = Environment.getExternalStorageDirectory().toString() + "/Znak/cache/" + ts2;
+                    }
                     final File file = new File(url_file_name);
 
                     if(file.exists())
@@ -1262,11 +1312,11 @@ public class ProfileActivity extends AppCompatActivity {
                                             public void onSuccess(Uri uri) {
                                                 final Uri downloadUrl = uri;
 
-                                        Log.d("Загрузка: ", "Успешно, ссылка на видео - " + downloadUrl);
+                                                Log.d("Загрузка: ", "Успешно, ссылка на видео - " + downloadUrl);
 
-                                        FirebaseDatabase.getInstance().getReference().child(new Config2().tab_users).child(FirebaseAuth.getInstance().getCurrentUser().getUid()).child("profile_photo").setValue(downloadUrl.toString());
-                                    }
-                                });
+                                                FirebaseDatabase.getInstance().getReference().child(new Config2().tab_users).child(FirebaseAuth.getInstance().getCurrentUser().getUid()).child("profile_photo").setValue(downloadUrl.toString());
+                                            }
+                                        });
                                     }
                                 });
 
@@ -1371,12 +1421,18 @@ public class ProfileActivity extends AppCompatActivity {
     }
 
 
-    private File createImageFile(String fileName) throws IOException {
+    private File createImageFile() throws IOException {
         // Create an image file name
 
-        File image = new File(filesdir,fileName);
+        File image;
 
-        // Save a file: path for use with ACTION_VIEW intents
+        if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.Q) {
+            //File file = new File (this.getExternalFilesDir(null) + "/Znak/files");
+            image = new File(getExternalFilesDir(Environment.DIRECTORY_PICTURES),"photo.jpg");
+        }else {
+            image = new File(Environment.getExternalStorageDirectory().toString() + "/Znak/files", "photo.jpg");
+
+        }
         return image;
     }
     private void signOut() {

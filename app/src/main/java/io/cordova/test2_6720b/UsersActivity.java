@@ -684,26 +684,6 @@ public class UsersActivity extends AppCompatActivity {
         //Log.i("curr_act:",this.getClass().getSimpleName());
 
 
-        File externalAppDir = new File(Environment.getExternalStorageDirectory() + "/Znak");
-        if (!externalAppDir.exists()) {
-
-            if (externalAppDir.mkdir()) {
-
-                File externalFiles = new File(Environment.getExternalStorageDirectory() + "/Znak/files");
-                externalFiles.mkdir();
-
-                File externalCache = new File(Environment.getExternalStorageDirectory() + "/Znak/cache");
-
-                if (externalCache.mkdir())
-                {
-                    File externalDebug = new File(Environment.getExternalStorageDirectory() + "/Znak/cache/debug");
-                    externalDebug.mkdir();
-
-                }
-            }
-        }
-
-
     }
 
     @Override

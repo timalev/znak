@@ -4,6 +4,7 @@ import android.content.Context;
 import android.content.Intent;
 import android.graphics.Point;
 import android.graphics.drawable.Drawable;
+import android.os.Build;
 import android.os.Environment;
 import androidx.annotation.Nullable;
 import androidx.core.app.ActivityCompat;
@@ -139,10 +140,16 @@ public class TinderCard {
 
 
         String str = mProfile.getImageUrl();
+        final String url_file_name;
 
-        final String url_file_name = Environment.getExternalStorageDirectory().toString() + "/Znak/cache/" + URLUtil.guessFileName(str, null, null);
-   // final String url_file_name = Environment.getExternalStorageDirectory().toString() + "/Pictures/1627784511724.jpg";
+        if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.Q) {
+            //File file = new File (this.getExternalFilesDir(null) + "/Znak/files");
+            url_file_name = mContext.getExternalCacheDir() + "/"  + URLUtil.guessFileName(str, null, null);
+        }else {
 
+            url_file_name = Environment.getExternalStorageDirectory().toString() + "/Znak/cache/" + URLUtil.guessFileName(str, null, null);
+            // final String url_file_name = Environment.getExternalStorageDirectory().toString() + "/Pictures/1627784511724.jpg";
+        }
 
         final File file = new File(url_file_name);
 
