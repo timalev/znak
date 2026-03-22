@@ -3,6 +3,30 @@ plugins {
 }
 
 android {
+
+
+
+/*
+    signingConfigs {
+        debug {
+            storeFile file('keystore/debug.keystore')
+            keyAlias 'androiddebugkey'
+            keyPassword 'android'
+            storePassword 'android'
+        }
+    }
+    
+ */
+        /*
+        release {
+            storeFile file('release.keystore')
+            storePassword "mystorepassword"
+            keyAlias "mykeyalias"
+            keyPassword "mykeypassword"
+        }
+        */
+
+    /*
     signingConfigs {
         config {
             keyAlias 'timalev'
@@ -11,14 +35,20 @@ android {
             storePassword 'soprod'
         }
     }
-    compileSdkVersion 30
-    buildToolsVersion '27.0.3'
+
+     */
+    namespace 'io.cordova.test2_6720b'
+
+
+
+    compileSdk 35
+
     defaultConfig {
         applicationId "io.cordova.test2_6720b"
         minSdkVersion 19
-        targetSdkVersion 30
-        versionCode 50
-        versionName "3.3.3"
+        targetSdkVersion 35
+        versionCode 51
+        versionName "3.3.4"
         testInstrumentationRunner 'androidx.test.runner.AndroidJUnitRunner'
     }
     buildTypes {
@@ -30,7 +60,7 @@ android {
 }
 
 dependencies {
-    compile fileTree(include: ['*.jar'], dir: 'libs')
+    implementation fileTree(include: ['*.jar'], dir: 'libs')
     androidTestImplementation('androidx.test.espresso:espresso-core:3.1.0', {
         exclude group: 'com.android.support', module: 'support-annotations'
     })
@@ -68,7 +98,7 @@ dependencies {
     implementation 'com.github.bumptech.glide:glide:4.0.+'
     implementation 'com.google.maps.android:android-maps-utils:0.4.+'
     testImplementation 'junit:junit:4.12'
-    compile files('libs/YouTubeAndroidPlayerApi.jar')
+    implementation files('libs/YouTubeAndroidPlayerApi.jar')
 }
 
 

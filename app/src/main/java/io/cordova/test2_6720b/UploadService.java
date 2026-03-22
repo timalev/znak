@@ -24,6 +24,7 @@ import com.google.firebase.storage.UploadTask;
 
 import java.io.File;
 import java.io.FileInputStream;
+import java.io.IOException;
 import java.io.InputStream;
 
 public class UploadService extends Service {
@@ -68,7 +69,13 @@ public class UploadService extends Service {
         retriever.setDataSource("sdcard/" + filesdir + "/story.mp4");
         final int vwidth = Integer.valueOf(retriever.extractMetadata(MediaMetadataRetriever.METADATA_KEY_VIDEO_WIDTH));
         final int vheight = Integer.valueOf(retriever.extractMetadata(MediaMetadataRetriever.METADATA_KEY_VIDEO_HEIGHT));
-        retriever.release();
+
+        try {
+            retriever.release();
+        } catch (IOException e) {
+            e.printStackTrace();
+        }
+
 
         if (video.exists()) {
 

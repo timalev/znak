@@ -19,6 +19,7 @@ import android.widget.ProgressBar;
 import android.widget.TextView;
 import android.widget.Toast;
 
+import com.google.android.gms.auth.api.signin.GoogleSignInStatusCodes;
 import com.google.android.gms.location.LocationServices;
 
 import com.google.android.gms.auth.api.Auth;
@@ -347,7 +348,13 @@ public class login extends AppCompatActivity implements GoogleApiClient.Connecti
 
             //updateUI(true);
         } else {
-            Log.d("Result2: ", "auth faild " + result.getStatus());
+
+            int statusCode = result.getStatus().getStatusCode();
+
+            String statusMessage = GoogleSignInStatusCodes.getStatusCodeString(statusCode);
+
+
+            Log.d("Result2: ", "auth faild " + result.getStatus() + "derail: " + statusMessage);
              Toast.makeText(this, "Error: " +result.getStatus(), Toast.LENGTH_SHORT).show();
         }
     }

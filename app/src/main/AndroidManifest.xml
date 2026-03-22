@@ -1,5 +1,5 @@
 <?xml version="1.0" encoding="utf-8"?>
-<manifest xmlns:android="http://schemas.android.com/apk/res/android" package="io.cordova.test2_6720b">
+<manifest xmlns:android="http://schemas.android.com/apk/res/android" >
 
     <queries>
         <intent>
@@ -32,7 +32,7 @@
     <uses-permission android:name="android.permission.READ_PHONE_STATE" />
 
     <application
-        android:name=".MyFirebaseApp"
+        android:name="io.cordova.test2_6720b.MyFirebaseApp"
         android:allowBackup="true"
         android:configChanges="orientation|keyboardHidden|screenSize"
         android:icon="@mipmap/ic_launcher"
@@ -53,7 +53,7 @@
                 android:resource="@xml/file_paths"></meta-data>
         </provider>
         <activity
-            android:name=".SwitchActivity"
+            android:name="io.cordova.test2_6720b.SwitchActivity"
             android:exported="true">
             <intent-filter>
                 <action android:name="android.intent.action.MAIN" />
@@ -63,7 +63,7 @@
         </activity>
 
         <receiver
-            android:name=".PrintMessage"
+            android:name="io.cordova.test2_6720b.PrintMessage"
             android:enabled="true"
             android:exported="true"
             android:permission="android.permission.RECEIVE_BOOT_COMPLETED">
@@ -72,7 +72,7 @@
             </intent-filter>
         </receiver>
 
-        <activity android:name=".getloc">
+        <activity android:name="io.cordova.test2_6720b.getloc">
 
             <!--
             <intent-filter>
@@ -84,7 +84,8 @@
         </activity>
 
         <activity
-            android:name=".login2"
+            android:exported="true"
+            android:name="io.cordova.test2_6720b.login2"
             android:screenOrientation="portrait">
             <intent-filter>
 
@@ -96,7 +97,8 @@
         </activity>
 
         <activity
-            android:name=".login"
+            android:name="io.cordova.test2_6720b.login"
+            android:exported="true"
             android:screenOrientation="portrait">
             <intent-filter>
               <!--
@@ -105,7 +107,7 @@
                 <category android:name="android.intent.category.LAUNCHER" />
             </intent-filter>
         </activity>
-        <activity android:name=".ActivityLikes">
+        <activity android:name="io.cordova.test2_6720b.ActivityLikes"  android:exported="true">
             <intent-filter>
                 <action android:name="MyAction4" />
 
@@ -113,12 +115,12 @@
             </intent-filter>
         </activity> <!-- android:theme="@style/MyTheme"> -->
         <activity
-            android:name=".MapsActivity"
+            android:name="io.cordova.test2_6720b.MapsActivity"
             android:configChanges="orientation|screenSize|keyboardHidden"
             android:label=""
             android:screenOrientation="portrait" /> <!-- <service android:name=".test" android:label="test"/> -->
         <activity
-            android:name=".UploadScreenActivity"
+            android:name="io.cordova.test2_6720b.UploadScreenActivity"
             android:screenOrientation="portrait" />
         <!--
         <service
@@ -131,21 +133,22 @@
         </service>
         -->
         <activity
-            android:name=".PhotoActivity"
+            android:name="io.cordova.test2_6720b.PhotoActivity"
             android:screenOrientation="portrait" />
         <activity
-            android:name=".BanActivity"
+            android:name="io.cordova.test2_6720b.BanActivity"
             android:label="@string/title_activity_ban"
             android:screenOrientation="portrait"
             android:theme="@style/MyTheme" />
         <activity
-            android:name=".UsersActivity"
+            android:name="io.cordova.test2_6720b.UsersActivity"
             android:screenOrientation="portrait" />
         <activity
-            android:name=".VideoActivityAllMess"
+            android:name="io.cordova.test2_6720b.VideoActivityAllMess"
             android:screenOrientation="portrait" />
         <activity
-            android:name=".VideoActivityMess"
+            android:exported="true"
+            android:name="io.cordova.test2_6720b.VideoActivityMess"
             android:screenOrientation="portrait">
             <intent-filter>
                 <action android:name="MyAction2" />
@@ -154,7 +157,8 @@
             </intent-filter>
         </activity>
         <activity
-            android:name=".VideoActivity"
+            android:exported="true"
+            android:name="io.cordova.test2_6720b.VideoActivity"
             android:label="@string/title_activity_video"
             android:screenOrientation="portrait"
             android:theme="@style/MyTheme"
@@ -166,11 +170,12 @@
             </intent-filter>
         </activity>
         <activity
-            android:name=".DetectLocation"
+            android:name="io.cordova.test2_6720b.DetectLocation"
             android:screenOrientation="portrait" />
-        <activity android:name=".ProfileActivity" />
+        <activity android:name="io.cordova.test2_6720b.ProfileActivity" />
         <activity
-            android:name=".zaloba"
+            android:exported="true"
+            android:name="io.cordova.test2_6720b.zaloba"
             android:screenOrientation="portrait">
             <intent-filter>
                 <action android:name="MyAction3" />
@@ -200,23 +205,23 @@
         </receiver>
 
         <service
-            android:name=".GeoService"
+            android:name="io.cordova.test2_6720b.GeoService"
             android:enabled="true"
             android:exported="true" />
         <service
-            android:name=".UploadService"
+            android:name="io.cordova.test2_6720b.UploadService"
             android:enabled="true"
             android:exported="true" />
         <service
-            android:name=".GeoService2"
+            android:name="io.cordova.test2_6720b.GeoService2"
             android:enabled="true"
             android:exported="true" />
-        <service android:name=".MyFirebaseMessagingService">
+        <service android:name="io.cordova.test2_6720b.MyFirebaseMessagingService"  android:exported="true">
             <intent-filter>
                 <action android:name="com.google.firebase.MESSAGING_EVENT" />
             </intent-filter>
         </service>
-        <service android:name=".MyFirebaseInstanceIDService">
+        <service android:name=".MyFirebaseInstanceIDService"  android:exported="true">
             <intent-filter>
                 <action android:name="com.google.firebase.INSTANCE_ID_EVENT" />
             </intent-filter>
