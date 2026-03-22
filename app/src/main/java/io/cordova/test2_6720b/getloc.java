@@ -205,7 +205,7 @@ public class getloc extends AppCompatActivity {
 
                                // URL url2 = new URL("https://rieltorov.net/getloc2.php?lang=" + lang + "&geo=" + geo);
                                // URL url2 = new URL("http://95.165.130.226/getloc2.php?lang=" + lang + "&geo=" + geo);
-                                URL url2 = new URL(" https://jovial-edison.31-31-196-234.plesk.page/getloc.aspx?lang=" + lang + "&geo=" + geo);
+                                URL url2 = new URL("https://jovial-edison.31-31-196-234.plesk.page/getloc.aspx?lang=" + lang + "&geo=" + geo);
 
 
                                 HttpURLConnection conn2 = (HttpURLConnection) url2.openConnection();
