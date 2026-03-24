@@ -117,6 +117,8 @@ public class TinderCard {
         //https://pbs.twimg.com/profile_images/572905100960485376/GK09QnNG.jpeg
 
 
+
+
        // Toast.makeText(mContext, String.valueOf(mProfile.getKey2()), Toast.LENGTH_LONG).show();
 
 
@@ -143,6 +145,9 @@ public class TinderCard {
 
         String str = mProfile.getImageUrl();
         final String url_file_name;
+
+
+        Log.d("PIDR22",str);
 
         if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.Q) {
             //File file = new File (this.getExternalFilesDir(null) + "/Znak/files");
@@ -223,7 +228,7 @@ public class TinderCard {
                                     })
                                     .into(profileImageView);
 
-                            // Log.d("Файл:","Загрузка завершена, путь файла - " + url_file_name);
+                            Log.d("Файл:","Загрузка завершена, путь файла - " + url_file_name);
 
                             //videoView.setVideoURI(Uri.parse(url_file_name));
 

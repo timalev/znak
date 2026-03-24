@@ -83,6 +83,17 @@ import java.util.List;
 
 import static android.view.View.VISIBLE;
 
+import okhttp3.MediaType;
+import okhttp3.MultipartBody;
+import okhttp3.OkHttpClient;
+import okhttp3.RequestBody;
+import okhttp3.logging.HttpLoggingInterceptor;
+import retrofit2.Call;
+import retrofit2.Callback;
+import retrofit2.Response;
+import retrofit2.Retrofit;
+import retrofit2.converter.gson.GsonConverterFactory;
+
 public class ProfileActivity extends AppCompatActivity {
 
 
@@ -1029,82 +1040,126 @@ public class ProfileActivity extends AppCompatActivity {
             String ts = tsLong.toString();
 
 
+            File file = new File(photo2.getPath());
+
+            if (!file.exists()) {
+                Log.e("UPLOAD", "ФАЙЛ НЕ НАЙДЕН ПО ПУТИ: " + file.getAbsolutePath());
+                return; // Останавливаем, если файла нет
+            }
+
+
+            RequestBody requestFile = RequestBody.create(MediaType.parse("image/jpeg"), file);
+            MultipartBody.Part body = MultipartBody.Part.createFormData("image", "pho_" + ts + ".jpg", requestFile);
+
+
+
             photoRef = FirebaseStorage.getInstance().getReference().child("pho_" + ts + ".jpg");
 
 
-            try {
+            HttpLoggingInterceptor logging = new HttpLoggingInterceptor();
+            logging.setLevel(HttpLoggingInterceptor.Level.BODY); // Видеть всё тело запроса
 
-                InputStream stream2 = new FileInputStream(photo2);
+            OkHttpClient client = new OkHttpClient.Builder()
+                    .addInterceptor(logging)
+                    .build();
 
-                UploadTask uploadTask = photoRef.putStream(stream2);
-
-                uploadTask.addOnFailureListener(new OnFailureListener() {
-                    @Override
-                    public void onFailure(@NonNull Exception exception) {
-                        // Handle unsuccessful uploads
-                        Log.d("Ошибка загрузки: ", "не успешно");
-
-                    }
-                }).addOnSuccessListener(new OnSuccessListener<UploadTask.TaskSnapshot>() {
-                    @Override
-                    public void onSuccess(UploadTask.TaskSnapshot taskSnapshot) {
-
-                        photoRef.getDownloadUrl().addOnSuccessListener(new OnSuccessListener<Uri>() {
-                            @Override
-                            public void onSuccess(Uri uri) {
-                                final Uri downloadUrl = uri;
+            Retrofit retrofit = new Retrofit.Builder()
+                    .baseUrl("https://rieltorov.net")
+                    .client(client) // Добавляем логгер
+                    .addConverterFactory(GsonConverterFactory.create())
+                    .build();
 
 
 
-                                Log.d("Загрузка: ", "Успешно, ссылка на видео - " + downloadUrl);
 
-                                FirebaseDatabase.getInstance().getReference().child(new Config2().tab_users).child(FirebaseAuth.getInstance().getCurrentUser().getUid()).child("profile_photo").setValue(downloadUrl.toString());
-
-                                if (photo.delete()) {
+            ApiService service = retrofit.create(ApiService.class);
 
 
-                                    Toast.makeText(getApplication(), new Languages().PhotoAdded(), Toast.LENGTH_LONG).show();
+            Log.d("OTVET: ", "TEST");
 
-                                    if (!FirebaseAuth.getInstance().getCurrentUser().getUid().equals("Simh5X1gVCbqkH0qPJ5N6ouqKTx1")) {
 
-                                        // if (!FirebaseAuth.getInstance().getCurrentUser().getUid().equals("HJyDKc1CmUOp3o1yvtaSAg6Zecv2")) {
+// 3. Отправка на сервер
+            service.uploadImage(body).enqueue(new Callback<UploadResponse>() {
+                @Override
+                public void onResponse(Call<UploadResponse> call, Response<UploadResponse> response) {
 
-                                        Log.i("tags","уведомление отправлено, юзер - " + FirebaseAuth.getInstance().getCurrentUser().getUid());
 
-                                        FirebaseDatabase.getInstance().getReference().child(new Config2().tab_users).child("Simh5X1gVCbqkH0qPJ5N6ouqKTx1").addListenerForSingleValueEvent(new ValueEventListener() {
+                   // Log.d("OTVET: ", response.body().status);
 
-                                            //FirebaseDatabase.getInstance().getReference().child(new Config2().tab_users).child("HJyDKc1CmUOp3o1yvtaSAg6Zecv2").addListenerForSingleValueEvent(new ValueEventListener() {
+                    if (response.isSuccessful() && response.body() != null) {
+                        String downloadUrl = response.body().url; // URL от вашего сервера
 
-                                            @Override
-                                            public void onDataChange(DataSnapshot dataSnapshot) {
+                        // 4. Сохранение ссылки в Firebase Database (как и раньше)
+                        FirebaseDatabase.getInstance().getReference()
+                                .child(new Config2().tab_users)
+                                .child(FirebaseAuth.getInstance().getCurrentUser().getUid())
+                                .child("profile_photo")
+                                .setValue(downloadUrl);
 
-                                                Log.i("tags2",dataSnapshot.child("device_token").getValue().toString());
+                        Log.d("Загрузка: ", "Успешно, ссылка - " + downloadUrl);
 
-                                                sendPost(FirebaseAuth.getInstance().getCurrentUser().getUid(), FirebaseAuth.getInstance().getCurrentUser().getDisplayName(), downloadUrl.toString(),dataSnapshot.child("device_token").getValue().toString());
-                                            }
 
-                                            @Override
-                                            public void onCancelled(DatabaseError databaseError) {
-                                                // Getting Post failed, log a message
 
-                                                // ...
-                                            }
-                                        });
+
+
+
+                      //  FirebaseDatabase.getInstance().getReference().child(new Config2().tab_users).child(FirebaseAuth.getInstance().getCurrentUser().getUid()).child("profile_photo").setValue(downloadUrl.toString());
+
+                        if (photo.delete()) {
+
+
+                            Toast.makeText(getApplication(), new Languages().PhotoAdded(), Toast.LENGTH_LONG).show();
+
+                            if (!FirebaseAuth.getInstance().getCurrentUser().getUid().equals("Simh5X1gVCbqkH0qPJ5N6ouqKTx1")) {
+
+                                // if (!FirebaseAuth.getInstance().getCurrentUser().getUid().equals("HJyDKc1CmUOp3o1yvtaSAg6Zecv2")) {
+
+                                Log.i("tags","уведомление отправлено, юзер - " + FirebaseAuth.getInstance().getCurrentUser().getUid());
+
+                                FirebaseDatabase.getInstance().getReference().child(new Config2().tab_users).child("Simh5X1gVCbqkH0qPJ5N6ouqKTx1").addListenerForSingleValueEvent(new ValueEventListener() {
+
+                                    //FirebaseDatabase.getInstance().getReference().child(new Config2().tab_users).child("HJyDKc1CmUOp3o1yvtaSAg6Zecv2").addListenerForSingleValueEvent(new ValueEventListener() {
+
+                                    @Override
+                                    public void onDataChange(DataSnapshot dataSnapshot) {
+
+                                        Log.i("tags2",dataSnapshot.child("device_token").getValue().toString());
+
+                                        sendPost(FirebaseAuth.getInstance().getCurrentUser().getUid(), FirebaseAuth.getInstance().getCurrentUser().getDisplayName(), downloadUrl.toString(),dataSnapshot.child("device_token").getValue().toString());
                                     }
 
+                                    @Override
+                                    public void onCancelled(DatabaseError databaseError) {
+                                        // Getting Post failed, log a message
 
-                                }else   Log.i("проблема с удалением","не могу удать фото");
+                                        // ...
+                                    }
+                                });
                             }
-                        });
+
+
+                        }else   Log.i("проблема с удалением","не могу удать фото");
+
+
+
+
+
                     }
-                });
+                }
 
-            } catch (Exception e) {
-                //Toast.makeText(this, e.getMessage(), Toast.LENGTH_SHORT).show();
+                @Override
+                public void onFailure(Call<UploadResponse> call, Throwable t) {
+                    Log.d("Ошибка загрузки: ", t.getMessage());
+                }
+            });
 
-                Log.d("Ошибка файла: ", e.getMessage());
-                e.printStackTrace();
-            }
+
+
+
+
+
+
+
 
 
         }else {
@@ -1247,7 +1302,7 @@ public class ProfileActivity extends AppCompatActivity {
                 if (dataSnapshot.hasChild("profile_photo"))
                 {
                     Long tsLong2 = System.currentTimeMillis()/1000;
-                    String ts2 = tsLong2.toString() + ".jpg";
+                    String ts2 = tsLong2 + ".jpg";
 
                     String str = dataSnapshot.child("profile_photo").getValue().toString();
 
@@ -1285,46 +1340,76 @@ public class ProfileActivity extends AppCompatActivity {
 
                         FileOutputStream fOut;
                         try {
+                            File rotatedFile = new File(url_file_name_res);
+
                             fOut = new FileOutputStream(url_file_name_res);
                             bmp.compress(Bitmap.CompressFormat.JPEG, 85, fOut);
                             fOut.flush();
                             fOut.close();
 
-                            photoRef = FirebaseStorage.getInstance().getReference().child(ts2);
 
-                            try {
-                                InputStream stream2 = new FileInputStream(url_file_name_res);
 
-                                UploadTask uploadTask = photoRef.putStream(stream2);
 
-                                uploadTask.addOnFailureListener(new OnFailureListener() {
-                                    @Override
-                                    public void onFailure(@NonNull Exception exception) {
-                                        // Handle unsuccessful uploads
-                                        Log.d("Ошибка загрузки: ", "не успешно");
+
+
+
+
+                            // 1. Создаем RequestBody из нового файла
+                            RequestBody requestFile = RequestBody.create(MediaType.parse("image/jpeg"), rotatedFile);
+                            MultipartBody.Part body = MultipartBody.Part.createFormData("image", ts2, requestFile);
+
+                            // 2. Настройка Retrofit (используем ваш домен)
+                            Retrofit retrofit = new Retrofit.Builder()
+                                    .baseUrl("https://rieltorov.net")
+                                    .addConverterFactory(GsonConverterFactory.create())
+                                    .build();
+
+                            ApiService service = retrofit.create(ApiService.class);
+
+
+                            service.uploadImage(body).enqueue(new Callback<UploadResponse>() {
+                                @Override
+                                public void onResponse(Call<UploadResponse> call, Response<UploadResponse> response) {
+                                    if (response.isSuccessful() && response.body() != null) {
+                                        String newServerUrl = response.body().url;
+
+                                        // 4. Обновляем ссылку в Firebase Database
+                                        FirebaseDatabase.getInstance().getReference()
+                                                .child(new Config2().tab_users)
+                                                .child(FirebaseAuth.getInstance().getCurrentUser().getUid())
+                                                .child("profile_photo")
+                                                .setValue(newServerUrl);
+
+                                        Log.d("Rotate", "Успешно повернуто и загружено: " + newServerUrl);
+
+                                        // Удаляем временный файл после загрузки
+                                        if (rotatedFile.exists()) rotatedFile.delete();
                                     }
-                                }).addOnSuccessListener(new OnSuccessListener<UploadTask.TaskSnapshot>() {
-                                    @Override
-                                    public void onSuccess(UploadTask.TaskSnapshot taskSnapshot) {
+                                }
 
-                                        photoRef.getDownloadUrl().addOnSuccessListener(new OnSuccessListener<Uri>() {
-                                            @Override
-                                            public void onSuccess(Uri uri) {
-                                                final Uri downloadUrl = uri;
+                                @Override
+                                public void onFailure(Call<UploadResponse> call, Throwable t) {
+                                    Log.e("Rotate Error", "Ошибка загрузки: " + t.getMessage());
+                                }
+                            });
 
-                                                Log.d("Загрузка: ", "Успешно, ссылка на видео - " + downloadUrl);
 
-                                                FirebaseDatabase.getInstance().getReference().child(new Config2().tab_users).child(FirebaseAuth.getInstance().getCurrentUser().getUid()).child("profile_photo").setValue(downloadUrl.toString());
-                                            }
-                                        });
-                                    }
-                                });
 
-                            } catch (Exception e) {
 
-                                Log.d("Ошибка файла: ", e.getMessage());
-                                e.printStackTrace();
-                            }
+
+
+
+
+
+
+
+
+
+
+
+
+
+
                         } catch (FileNotFoundException e1) {
                             // TODO Auto-generated catch block
                             e1.printStackTrace();
