@@ -36,7 +36,9 @@ import android.webkit.URLUtil;
 import android.widget.EditText;
 import android.widget.ImageButton;
 import android.widget.ImageView;
+import android.widget.LinearLayout;
 import android.widget.ProgressBar;
+import android.widget.ScrollView;
 import android.widget.TextView;
 import android.widget.Toast;
 
@@ -227,6 +229,49 @@ public class ProfileActivity extends AppCompatActivity {
             }
 
         }
+
+
+
+
+// Условие (например, если в базе стоит флаг "deleted")
+
+
+        FirebaseDatabase.getInstance().getReference().child(new Config2().tab_users).child(FirebaseAuth.getInstance().getCurrentUser().getUid()).addValueEventListener(new ValueEventListener() {
+
+            @Override
+            public void onDataChange(DataSnapshot dataSnapshot) {
+
+
+                //  final ImageView r_right = (ImageView) findViewById(R.id.r_right);
+                //  final ImageView r_left = (ImageView) findViewById(R.id.r_left);
+                ScrollView mainContent = findViewById(R.id.scrollView1);
+                LinearLayout deletedLayout = findViewById(R.id.deleted_profile_layout);
+
+                if (dataSnapshot.hasChild("profile_delete")) {
+
+                    mainContent.setVisibility(View.GONE);    // Прячем всё
+                    deletedLayout.setVisibility(View.VISIBLE); // Показываем н
+
+                    //Toast.makeText(getApplication(), "Анкета удалена", Toast.LENGTH_LONG).show();
+
+
+                }else
+                {
+                    mainContent.setVisibility(View.VISIBLE);
+                    deletedLayout.setVisibility(View.GONE);
+                }
+
+            }
+
+            @Override
+            public void onCancelled(DatabaseError databaseError) {
+            }
+        });
+
+
+
+
+
         setContentView(R.layout.activity_profile);
 
         FirebaseDatabase.getInstance().getReference().child(new Config2().tab_users).child(FirebaseAuth.getInstance().getCurrentUser().getUid()).addValueEventListener(new ValueEventListener() {
@@ -366,6 +411,77 @@ public class ProfileActivity extends AppCompatActivity {
         femaleTexview.setText(new Languages().ProfileTextviewFemale());
 
         TextView changegeo = (TextView) findViewById(R.id.active32);
+
+
+        TextView delank = (TextView) findViewById(R.id.delank);
+
+
+        delank.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View view) {
+                // Создаем диалоговое окно
+                new AlertDialog.Builder(ProfileActivity.this)
+                        .setTitle("Удаление анкеты")
+                        .setMessage("Вы уверены, что хотите удалить свою анкету? Это действие скроет ваш профиль от других пользователей.")
+                        .setPositiveButton("Удалить", new DialogInterface.OnClickListener() {
+                            public void onClick(DialogInterface dialog, int which) {
+                                // Код удаления (создание поля profile_delete)
+                                FirebaseDatabase.getInstance().getReference()
+                                        .child(new Config2().tab_users)
+                                        .child(FirebaseAuth.getInstance().getCurrentUser().getUid())
+                                        .child("profile_delete")
+                                        .setValue(1);
+
+                                Toast.makeText(getApplicationContext(), "Анкета успешно удалена", Toast.LENGTH_SHORT).show();
+                            }
+                        })
+                        .setNegativeButton("Отмена", new DialogInterface.OnClickListener() {
+                            public void onClick(DialogInterface dialog, int which) {
+                                // Просто закрываем диалог, ничего не делая
+                                dialog.dismiss();
+                            }
+                        })
+                        .setIcon(android.R.drawable.ic_dialog_alert) // Иконка предупреждения
+                        .show();
+            }
+        });
+
+
+
+
+
+
+        TextView restoreank = (TextView) findViewById(R.id.restore_profile_btn);
+
+
+        restoreank.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                // Путь к полю profile_delete для текущего пользователя
+                FirebaseDatabase.getInstance().getReference()
+                        .child(new Config2().tab_users)
+                        .child(FirebaseAuth.getInstance().getCurrentUser().getUid())
+                        .child("profile_delete")
+                        .removeValue() // ЭТО УДАЛЯЕТ ПОЛЕ ПОЛНОСТЬЮ
+                        .addOnSuccessListener(new OnSuccessListener<Void>() {
+                            @Override
+                            public void onSuccess(Void aVoid) {
+                                // После удаления сработает ваш ValueEventListener,
+                                // и интерфейс переключится сам (или можно вызвать recreate())
+                                //recreate();
+                                Toast.makeText(getApplicationContext(), "Профиль восстановлен", Toast.LENGTH_SHORT).show();
+                            }
+                        })
+                        .addOnFailureListener(new OnFailureListener() {
+                            @Override
+                            public void onFailure(@NonNull Exception e) {
+                                Toast.makeText(getApplicationContext(), "Ошибка: " + e.getMessage(), Toast.LENGTH_SHORT).show();
+                            }
+                        });
+            }
+        });
+
+
 
         changegeo.setOnClickListener(new View.OnClickListener() {
             @Override

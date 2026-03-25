@@ -268,6 +268,19 @@
             android:padding="20dp"/>
 
 
+
+        <TextView
+            android:id="@+id/delank"
+            android:layout_width="0dp"
+            android:layout_height="wrap_content"
+            android:layout_weight="1"
+            android:textSize="14dp"
+            android:text="Удалить анкету"
+            android:textColor="@android:color/holo_red_dark"
+            android:layout_marginLeft="15dp"
+            android:padding="20dp"/>
+
+
     </LinearLayout>
 
 
@@ -314,6 +327,40 @@
 
 </LinearLayout>
     </ScrollView>
+
+
+    <LinearLayout
+        android:id="@+id/deleted_profile_layout"
+        android:layout_width="match_parent"
+        android:layout_height="match_parent"
+        android:gravity="center"
+        android:orientation="vertical"
+        android:background="@color/grey"
+        android:visibility="gone">
+
+        <TextView
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:text="Профиль удален"
+            android:textSize="22sp"
+            android:textColor="@color/red"
+            android:textStyle="bold"/>
+
+        <TextView
+            android:id="@+id/restore_profile_btn"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:text="Восстановить профиль"
+            android:textSize="16sp"
+            android:textColor="@color/blue"
+            android:layout_marginTop="20dp"
+            android:padding="10dp"
+            android:background="?android:attr/selectableItemBackground"
+            android:clickable="true"
+            android:focusable="true"/>
+    </LinearLayout>
+
     <include android:id="@+id/toolbar2"
         layout="@layout/toolbar" />
 </FrameLayout>
+

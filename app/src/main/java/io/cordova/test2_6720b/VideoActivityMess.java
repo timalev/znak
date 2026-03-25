@@ -80,6 +80,17 @@ import java.util.Calendar;
 import java.util.Date;
 import java.util.List;
 
+import okhttp3.MediaType;
+import okhttp3.MultipartBody;
+import okhttp3.OkHttpClient;
+import okhttp3.RequestBody;
+import okhttp3.logging.HttpLoggingInterceptor;
+import retrofit2.Call;
+import retrofit2.Callback;
+import retrofit2.Response;
+import retrofit2.Retrofit;
+import retrofit2.converter.gson.GsonConverterFactory;
+
 public class VideoActivityMess extends AppCompatActivity implements View.OnClickListener {
 
     private RecyclerView numbersList;
@@ -1495,32 +1506,65 @@ final String mText = message.getText().toString();
             String ts = tsLong.toString();
 
 
+
+            File file = new File(photo2.getPath());
+
+            if (!file.exists()) {
+                Log.e("UPLOAD", "ФАЙЛ НЕ НАЙДЕН ПО ПУТИ: " + file.getAbsolutePath());
+                return; // Останавливаем, если файла нет
+            }
+
+            RequestBody requestFile = RequestBody.create(MediaType.parse("image/jpeg"), file);
+            MultipartBody.Part body = MultipartBody.Part.createFormData("image", "pho_" + ts + ".jpg", requestFile);
+
+
             photoRef = storageRef.child("pho_" + ts + ".jpg");
 
 
-            try {
+            HttpLoggingInterceptor logging = new HttpLoggingInterceptor();
+            logging.setLevel(HttpLoggingInterceptor.Level.BODY); // Видеть всё тело запроса
 
-                InputStream stream2 = new FileInputStream(photo2);
+            OkHttpClient client = new OkHttpClient.Builder()
+                    .addInterceptor(logging)
+                    .build();
 
-                UploadTask uploadTask = photoRef.putStream(stream2);
+            Retrofit retrofit = new Retrofit.Builder()
+                    .baseUrl("https://rieltorov.net")
+                    .client(client) // Добавляем логгер
+                    .addConverterFactory(GsonConverterFactory.create())
+                    .build();
 
-                uploadTask.addOnFailureListener(new OnFailureListener() {
-                    @Override
-                    public void onFailure(@NonNull Exception exception) {
-                        // Handle unsuccessful uploads
-                        Log.d("Ошибка загрузки: ", "не успешно");
 
-                    }
-                }).addOnSuccessListener(new OnSuccessListener<UploadTask.TaskSnapshot>() {
-                    @Override
-                    public void onSuccess(UploadTask.TaskSnapshot taskSnapshot) {
 
-                        photoRef.getDownloadUrl().addOnSuccessListener(new OnSuccessListener<Uri>() {
-                            @Override
-                            public void onSuccess(Uri uri) {
-                                final Uri downloadUrl = uri;
 
-                        Log.d("Загрузка: ", "Успешно, ссылка на видео - " + downloadUrl);
+            ApiService service = retrofit.create(ApiService.class);
+
+
+            Log.d("OTVET: ", "TEST");
+
+
+
+
+            // 3. Отправка на сервер
+            service.uploadImage(body).enqueue(new Callback<UploadResponse>() {
+                @Override
+                public void onResponse(Call<UploadResponse> call, Response<UploadResponse> response) {
+
+
+                    // Log.d("OTVET: ", response.body().status);
+
+                    if (response.isSuccessful() && response.body() != null) {
+                        String downloadUrl = response.body().url; // URL от вашего сервера
+
+                        // 4. Сохранение ссылки в Firebase Database (как и раньше)
+                        FirebaseDatabase.getInstance().getReference()
+                                .child(new Config2().tab_users)
+                                .child(FirebaseAuth.getInstance().getCurrentUser().getUid())
+                                .child("profile_photo")
+                                .setValue(downloadUrl);
+
+                        Log.d("Загрузка: ", "Успешно, ссылка - " + downloadUrl);
+
 
                         Long tsLong = System.currentTimeMillis()/1000;
                         final String ts = tsLong.toString();
@@ -1534,150 +1578,150 @@ final String mText = message.getText().toString();
 
 
 
-                               // final String mUser = mAuth.getCurrentUser().getDisplayName();
+                                // final String mUser = mAuth.getCurrentUser().getDisplayName();
 
-                        final Messpriv messPriv = new Messpriv(downloadUrl.toString(),curruser,currname,mAuth.getCurrentUser().getUid(),mUser,"","n","n","pic",mUser,ts);
+                                final Messpriv messPriv = new Messpriv(downloadUrl.toString(),curruser,currname,mAuth.getCurrentUser().getUid(),mUser,"","n","n","pic",mUser,ts);
 
 
 
                                 scoresRef.child(mAuth.getCurrentUser().getUid()).child(curruser).child("messages").orderByKey().limitToLast(1).addListenerForSingleValueEvent(new ValueEventListener() {
-                            @Override
-                            public void onDataChange(DataSnapshot dataSnapshot) {
+                                    @Override
+                                    public void onDataChange(DataSnapshot dataSnapshot) {
 
-                                if (dataSnapshot.exists()) {
+                                        if (dataSnapshot.exists()) {
 
-                                    Log.d("tester4",dataSnapshot + "");
+                                            Log.d("tester4",dataSnapshot + "");
 
-                                    for (DataSnapshot data : dataSnapshot.getChildren()) {
+                                            for (DataSnapshot data : dataSnapshot.getChildren()) {
 
-                                        Log.d("tester2",data.getKey());
-                                        Integer key = Integer.parseInt(data.getKey()); // then it has the value "4:"
-                                        Log.d("tester",key + "");
-                                        Integer child_name = key + 1;
+                                                Log.d("tester2",data.getKey());
+                                                Integer key = Integer.parseInt(data.getKey()); // then it has the value "4:"
+                                                Log.d("tester",key + "");
+                                                Integer child_name = key + 1;
 
-                                        scoresRef.child(curruser).child(mAuth.getCurrentUser().getUid()).child("messages").child(child_name.toString()).setValue(messPriv);
-                                        scoresRef.child(mAuth.getCurrentUser().getUid()).child(curruser).child("messages").child(child_name.toString()).setValue(messPriv)
+                                                scoresRef.child(curruser).child(mAuth.getCurrentUser().getUid()).child("messages").child(child_name.toString()).setValue(messPriv);
+                                                scoresRef.child(mAuth.getCurrentUser().getUid()).child(curruser).child("messages").child(child_name.toString()).setValue(messPriv)
 
-                                                .addOnSuccessListener(new OnSuccessListener<Void>() {
-                                                    @Override
-                                                    public void onSuccess(Void aVoid) {
-
-                                                        // После того как вставили данные ищем подписчиков данной страницы (curruser) и найденным подписчикам рассылаем сообщения о новом сообении
-
-                                                        FirebaseDatabase.getInstance().getReference().child(new Config2().tab_users).child(curruser).addListenerForSingleValueEvent(new ValueEventListener() {
-
-                                                            //  FirebaseDatabase.getInstance().getReference().child("messages").orderByChild("page_for_comment").equalTo(curruser).limitToFirst((int) (dataSnapshot2.getChildrenCount() - 1)).addListenerForSingleValueEvent(new ValueEventListener() {
-
+                                                        .addOnSuccessListener(new OnSuccessListener<Void>() {
                                                             @Override
-                                                            public void onDataChange(DataSnapshot dataSnapshot) {
+                                                            public void onSuccess(Void aVoid) {
 
-                                                                if (dataSnapshot.hasChild("device_token")) {
+                                                                // После того как вставили данные ищем подписчиков данной страницы (curruser) и найденным подписчикам рассылаем сообщения о новом сообении
 
-                                                                    sendPost(dataSnapshot.child("device_token").getValue().toString(),mAuth.getCurrentUser().getUid(), mUser, "Фото", "MyAction2");
+                                                                FirebaseDatabase.getInstance().getReference().child(new Config2().tab_users).child(curruser).addListenerForSingleValueEvent(new ValueEventListener() {
 
-                                                                    //Log.i("Key/DToken: ", String.valueOf(dataSnapshot.child("device_token").getValue()));
+                                                                    //  FirebaseDatabase.getInstance().getReference().child("messages").orderByChild("page_for_comment").equalTo(curruser).limitToFirst((int) (dataSnapshot2.getChildrenCount() - 1)).addListenerForSingleValueEvent(new ValueEventListener() {
+
+                                                                    @Override
+                                                                    public void onDataChange(DataSnapshot dataSnapshot) {
+
+                                                                        if (dataSnapshot.hasChild("device_token")) {
+
+                                                                            sendPost(dataSnapshot.child("device_token").getValue().toString(),mAuth.getCurrentUser().getUid(), mUser, "Фото", "MyAction2");
+
+                                                                            //Log.i("Key/DToken: ", String.valueOf(dataSnapshot.child("device_token").getValue()));
+
+                                                                        }
+
+                                                                        //Toast.makeText(getApplication(), String.valueOf(subscribers.size()), Toast.LENGTH_SHORT).show();
+
+
+
+
+                                                                    }
+
+                                                                    @Override
+                                                                    public void onCancelled(DatabaseError databaseError) {
+                                                                        // Getting Post failed, log a message
+
+                                                                        // ...
+                                                                    }
+                                                                });
+
+                                                                updateStat(ts);
+
+
+
+                                                            }
+                                                        })
+                                                        .addOnFailureListener(new OnFailureListener() {
+                                                            @Override
+                                                            public void onFailure(@NonNull Exception e) {
+                                                                // Write failed
+                                                                // ...
+                                                            }
+                                                        }); // дубль для спросителя;
+
+                                                // FirebaseDatabase.getInstance().getReference().child("notific").child(child_name.toString()).setValue(mess);
+
+                                            }
+                                        }else {
+                                            scoresRef.child(curruser).child(mAuth.getCurrentUser().getUid()).child("messages").child("1542770088").setValue(messPriv);
+                                            scoresRef.child(mAuth.getCurrentUser().getUid()).child(curruser).child("messages").child("1542770088").setValue(messPriv)
+
+
+
+                                                    .addOnSuccessListener(new OnSuccessListener<Void>() {
+                                                        @Override
+                                                        public void onSuccess(Void aVoid) {
+
+                                                            // После того как вставили данные ищем подписчиков данной страницы (curruser) и найденным подписчикам рассылаем сообщения о новом сообении
+
+                                                            FirebaseDatabase.getInstance().getReference().child(new Config2().tab_users).child(curruser).addListenerForSingleValueEvent(new ValueEventListener() {
+
+                                                                //  FirebaseDatabase.getInstance().getReference().child("messages").orderByChild("page_for_comment").equalTo(curruser).limitToFirst((int) (dataSnapshot2.getChildrenCount() - 1)).addListenerForSingleValueEvent(new ValueEventListener() {
+
+                                                                @Override
+                                                                public void onDataChange(DataSnapshot dataSnapshot) {
+
+                                                                    if (dataSnapshot.hasChild("device_token")) {
+
+                                                                        sendPost(dataSnapshot.child("device_token").getValue().toString(),mAuth.getCurrentUser().getUid(), mUser, "Фото","MyAction2");
+
+                                                                        //Log.i("Key/DToken: ", String.valueOf(dataSnapshot.child("device_token").getValue()));
+
+                                                                    }
+
+                                                                    //Toast.makeText(getApplication(), String.valueOf(subscribers.size()), Toast.LENGTH_SHORT).show();
+
+
+
 
                                                                 }
 
-                                                                //Toast.makeText(getApplication(), String.valueOf(subscribers.size()), Toast.LENGTH_SHORT).show();
+                                                                @Override
+                                                                public void onCancelled(DatabaseError databaseError) {
+                                                                    // Getting Post failed, log a message
+
+                                                                    // ...
+                                                                }
+                                                            });
+
+                                                            updateStat(ts);
+
+                                                            // FirebaseDatabase.getInstance().getReference().child("messagesStat").child(curruser).child(mAuth.getCurrentUser().getUid()).child("mess_count").setValue(1);
 
 
 
+                                                        }
+                                                    })
+                                                    .addOnFailureListener(new OnFailureListener() {
+                                                        @Override
+                                                        public void onFailure(@NonNull Exception e) {
+                                                            // Write failed
+                                                            // ...
+                                                        }
+                                                    });  // дубль для спросителя// дубль для спросителя
 
-                                                            }
-
-                                                            @Override
-                                                            public void onCancelled(DatabaseError databaseError) {
-                                                                // Getting Post failed, log a message
-
-                                                                // ...
-                                                            }
-                                                        });
-
-                                                        updateStat(ts);
-
-
-
-                                                    }
-                                                })
-                                                .addOnFailureListener(new OnFailureListener() {
-                                                    @Override
-                                                    public void onFailure(@NonNull Exception e) {
-                                                        // Write failed
-                                                        // ...
-                                                    }
-                                                }); // дубль для спросителя;
-
-                                       // FirebaseDatabase.getInstance().getReference().child("notific").child(child_name.toString()).setValue(mess);
-
-                                    }
-                                }else {
-                                    scoresRef.child(curruser).child(mAuth.getCurrentUser().getUid()).child("messages").child("1542770088").setValue(messPriv);
-                                    scoresRef.child(mAuth.getCurrentUser().getUid()).child(curruser).child("messages").child("1542770088").setValue(messPriv)
-
-
-
-                                        .addOnSuccessListener(new OnSuccessListener<Void>() {
-                                        @Override
-                                        public void onSuccess(Void aVoid) {
-
-                                            // После того как вставили данные ищем подписчиков данной страницы (curruser) и найденным подписчикам рассылаем сообщения о новом сообении
-
-                                            FirebaseDatabase.getInstance().getReference().child(new Config2().tab_users).child(curruser).addListenerForSingleValueEvent(new ValueEventListener() {
-
-                                                //  FirebaseDatabase.getInstance().getReference().child("messages").orderByChild("page_for_comment").equalTo(curruser).limitToFirst((int) (dataSnapshot2.getChildrenCount() - 1)).addListenerForSingleValueEvent(new ValueEventListener() {
-
-                                                @Override
-                                                public void onDataChange(DataSnapshot dataSnapshot) {
-
-                                                    if (dataSnapshot.hasChild("device_token")) {
-
-                                                        sendPost(dataSnapshot.child("device_token").getValue().toString(),mAuth.getCurrentUser().getUid(), mUser, "Фото","MyAction2");
-
-                                                        //Log.i("Key/DToken: ", String.valueOf(dataSnapshot.child("device_token").getValue()));
-
-                                                    }
-
-                                                    //Toast.makeText(getApplication(), String.valueOf(subscribers.size()), Toast.LENGTH_SHORT).show();
-
-
-
-
-                                                }
-
-                                                @Override
-                                                public void onCancelled(DatabaseError databaseError) {
-                                                    // Getting Post failed, log a message
-
-                                                    // ...
-                                                }
-                                            });
-
-                                            updateStat(ts);
-
-                                            // FirebaseDatabase.getInstance().getReference().child("messagesStat").child(curruser).child(mAuth.getCurrentUser().getUid()).child("mess_count").setValue(1);
-
-
+                                            // FirebaseDatabase.getInstance().getReference().child("notific").child("1542770088").setValue(mess);
 
                                         }
-                                    })
-                                            .addOnFailureListener(new OnFailureListener() {
-                                                @Override
-                                                public void onFailure(@NonNull Exception e) {
-                                                    // Write failed
-                                                    // ...
-                                                }
-                                            });  // дубль для спросителя// дубль для спросителя
+                                    }
 
-                                   // FirebaseDatabase.getInstance().getReference().child("notific").child("1542770088").setValue(mess);
+                                    @Override
+                                    public void onCancelled(DatabaseError databaseError) {
 
-                                }
-                            }
-
-                            @Override
-                            public void onCancelled(DatabaseError databaseError) {
-
-                            }});
+                                    }});
 
                             }
 
@@ -1694,17 +1738,16 @@ final String mText = message.getText().toString();
                             Toast.makeText(getApplication(), new Languages().PhotoAdded(), Toast.LENGTH_LONG).show();
 
                         }
-                            }
-                        });
+
+
                     }
-                });
+                }
 
-            } catch (Exception e) {
-                //Toast.makeText(this, e.getMessage(), Toast.LENGTH_SHORT).show();
-
-                Log.d("Ошибка файла: ", e.getMessage());
-                e.printStackTrace();
-            }
+                @Override
+                public void onFailure(Call<UploadResponse> call, Throwable t) {
+                    Log.d("Ошибка загрузки: ", t.getMessage());
+                }
+            });
 
 
         }

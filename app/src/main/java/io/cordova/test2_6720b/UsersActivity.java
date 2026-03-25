@@ -10,6 +10,8 @@ import android.location.Location;
 import android.os.Build;
 import android.os.Bundle;
 import android.os.Environment;
+
+import androidx.annotation.NonNull;
 import androidx.constraintlayout.solver.widgets.Snapshot;
 import androidx.core.app.ActivityCompat;
 import androidx.core.content.ContextCompat;
@@ -26,8 +28,12 @@ import android.view.MotionEvent;
 import android.view.View;
 import android.widget.ImageButton;
 import android.widget.LinearLayout;
+import android.widget.ScrollView;
 import android.widget.TextView;
+import android.widget.Toast;
 
+import com.google.android.gms.tasks.OnFailureListener;
+import com.google.android.gms.tasks.OnSuccessListener;
 import com.google.firebase.auth.FirebaseAuth;
 import com.google.firebase.database.DataSnapshot;
 import com.google.firebase.database.DatabaseError;
@@ -77,6 +83,12 @@ public class UsersActivity extends AppCompatActivity {
         Log.d("Curr admin: ", FirebaseAuth.getInstance().getUid());
 
 
+
+
+
+
+
+
         // БАня
 
         FirebaseDatabase.getInstance().getReference().child(new Config2().tab_banlist).addValueEventListener(new ValueEventListener() {
@@ -111,7 +123,84 @@ public class UsersActivity extends AppCompatActivity {
         String ts2 = tsLong2.toString();
         FirebaseDatabase.getInstance().getReference().child(new Config2().tab_users).child(FirebaseAuth.getInstance().getCurrentUser().getUid()).child("curr_activity").onDisconnect().setValue(ts2);
 
+
+
+
+
+
+        FirebaseDatabase.getInstance().getReference().child(new Config2().tab_users).child(FirebaseAuth.getInstance().getCurrentUser().getUid()).addValueEventListener(new ValueEventListener() {
+
+            @Override
+            public void onDataChange(DataSnapshot dataSnapshot) {
+
+
+                //  final ImageView r_right = (ImageView) findViewById(R.id.r_right);
+                //  final ImageView r_left = (ImageView) findViewById(R.id.r_left);
+                mSwipeView = (SwipePlaceHolderView) findViewById(R.id.swipeView);
+
+                LinearLayout deletedLayout = findViewById(R.id.deleted_profile_layout);
+
+                if (dataSnapshot.hasChild("profile_delete")) {
+
+                    mSwipeView.setVisibility(View.GONE);    // Прячем всё
+                    deletedLayout.setVisibility(View.VISIBLE); // Показываем н
+
+                    //Toast.makeText(getApplication(), "Анкета удалена", Toast.LENGTH_LONG).show();
+
+
+                }else
+                {
+                    mSwipeView.setVisibility(View.VISIBLE);
+                    deletedLayout.setVisibility(View.GONE);
+                }
+
+            }
+
+            @Override
+            public void onCancelled(DatabaseError databaseError) {
+            }
+        });
+
+
+
+
+
+
         setContentView(R.layout.activity_main);
+
+
+        TextView restoreank = (TextView) findViewById(R.id.restore_profile_btn);
+
+
+        restoreank.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                // Путь к полю profile_delete для текущего пользователя
+                FirebaseDatabase.getInstance().getReference()
+                        .child(new Config2().tab_users)
+                        .child(FirebaseAuth.getInstance().getCurrentUser().getUid())
+                        .child("profile_delete")
+                        .removeValue() // ЭТО УДАЛЯЕТ ПОЛЕ ПОЛНОСТЬЮ
+                        .addOnSuccessListener(new OnSuccessListener<Void>() {
+                            @Override
+                            public void onSuccess(Void aVoid) {
+                                // После удаления сработает ваш ValueEventListener,
+                                // и интерфейс переключится сам (или можно вызвать recreate())
+                                //recreate();
+                                Toast.makeText(getApplicationContext(), "Профиль восстановлен", Toast.LENGTH_SHORT).show();
+                            }
+                        })
+                        .addOnFailureListener(new OnFailureListener() {
+                            @Override
+                            public void onFailure(@NonNull Exception e) {
+                                Toast.makeText(getApplicationContext(), "Ошибка: " + e.getMessage(), Toast.LENGTH_SHORT).show();
+                            }
+                        });
+            }
+        });
+
+
+
 
         ImageButton imbt = (ImageButton) findViewById(R.id.writeBtn);
 
@@ -228,7 +317,7 @@ public class UsersActivity extends AppCompatActivity {
 
                                         final String Key = child.getKey();
 
-                                            if (child.hasChild("profile_photo")) {
+                                            if (child.hasChild("profile_photo") && !child.hasChild("profile_delete")) {
 
                                                     array.add(1);
 
