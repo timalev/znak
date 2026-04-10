@@ -422,14 +422,29 @@ public class TinderCard {
     @Click(R.id.towrite)
     public void toWrite(){
 
-        Intent nextScreen = new Intent(mContext, VideoActivityMess.class);
+        Log.d("user_data:", mContext + ", " + mProfile.getKey() + ", " + mProfile.getName());
+        try {
+            Log.d("FCM_DEBUG", "Клик сработал для: " + mProfile.getName());
 
-        nextScreen.putExtra("curruser", mProfile.getKey());
-        nextScreen.putExtra("currname", mProfile.getName());
+            if (mContext == null) {
+                Log.e("FCM_DEBUG", "ОШИБКА: mContext is NULL!");
+                return;
+            }
 
-        nextScreen.setFlags(Intent.FLAG_ACTIVITY_NEW_TASK);
+            Intent nextScreen = new Intent(mContext, VideoActivityMess.class);
+            nextScreen.putExtra("curruser", mProfile.getKey());
+            nextScreen.putExtra("currname", mProfile.getName());
 
-        mContext.startActivity(nextScreen);
+            // Флаг NEW_TASK обязателен, если контекст не является Activity
+            nextScreen.setFlags(Intent.FLAG_ACTIVITY_NEW_TASK | Intent.FLAG_ACTIVITY_CLEAR_TOP);
+
+            mContext.startActivity(nextScreen);
+            Log.d("FCM_DEBUG", "startActivity вызван успешно");
+
+        } catch (Exception e) {
+            Log.e("FCM_DEBUG", "ФАТАЛЬНАЯ ОШИБКА при клике: " + e.getMessage());
+            e.printStackTrace();
+        }
     }
 
     @SwipeOut

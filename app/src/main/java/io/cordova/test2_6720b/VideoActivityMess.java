@@ -32,6 +32,10 @@ import androidx.appcompat.app.AppCompatActivity;
 import androidx.recyclerview.widget.LinearLayoutManager;
 import androidx.recyclerview.widget.RecyclerView;
 import androidx.appcompat.widget.Toolbar;
+import android.text.style.ForegroundColorSpan;
+
+import android.text.Spannable;
+import android.text.SpannableString;
 import android.text.TextUtils;
 import android.util.DisplayMetrics;
 import android.util.Log;
@@ -60,21 +64,25 @@ import com.google.firebase.database.DatabaseError;
 import com.google.firebase.database.DatabaseReference;
 import com.google.firebase.database.FirebaseDatabase;
 import com.google.firebase.database.ValueEventListener;
-import com.google.firebase.storage.FirebaseStorage;
-import com.google.firebase.storage.StorageReference;
-import com.google.firebase.storage.UploadTask;
 
+
+import org.json.JSONArray;
 import org.json.JSONObject;
 
+import java.io.BufferedReader;
 import java.io.BufferedWriter;
 import java.io.File;
 import java.io.FileInputStream;
 import java.io.FileOutputStream;
 import java.io.IOException;
 import java.io.InputStream;
+import java.io.InputStreamReader;
+import java.io.OutputStream;
 import java.io.OutputStreamWriter;
 import java.net.HttpURLConnection;
+import java.net.MalformedURLException;
 import java.net.URL;
+import java.net.URLEncoder;
 import java.util.ArrayList;
 import java.util.Calendar;
 import java.util.Date;
@@ -120,8 +128,23 @@ public class VideoActivityMess extends AppCompatActivity implements View.OnClick
 
         menu.findItem(R.id.friends).setTitle(new Languages().MenuFriends());
         menu.findItem(R.id.index).setTitle(new Languages().MenuIndex());
-        menu.findItem(R.id.zal).setTitle(new Languages().MenuComplain());
         menu.findItem(R.id.messages).setTitle(new Languages().MenuMessages());
+
+
+
+        String title = new Languages().MenuComplain();
+        if (title != null) {
+            SpannableString spannable = new SpannableString(title);
+            spannable.setSpan(
+                    new ForegroundColorSpan(Color.parseColor("#D32F2F")), // 🔴 Красный (Material Red 700)
+                    0,
+                    title.length(),
+                    Spannable.SPAN_EXCLUSIVE_EXCLUSIVE
+            );
+            menu.findItem(R.id.zal).setTitle(spannable);
+        }
+
+
         menu.findItem(R.id.about).setTitle(new Languages().MenuAbout());
 
         String curruserM;
@@ -188,58 +211,7 @@ public class VideoActivityMess extends AppCompatActivity implements View.OnClick
                 // Log.d("Item: ", String.valueOf(menu.getItem(i)));
             }
 
-            if (menu.getItem(i).toString().equals("моё местоположение"))
-            {
-                final MenuItem item=menu.getItem(i);
-                final Drawable drawable = item.getIcon();
 
-                FirebaseDatabase.getInstance().getReference().child(new Config2().tab_users).child(FirebaseAuth.getInstance().getCurrentUser().getUid()).child("status").addValueEventListener( new ValueEventListener() {
-
-                    @Override
-                    public void onDataChange(DataSnapshot dataSnapshot)
-                    {
-
-
-                        //Toast.makeText(getApplication(),dataSnapshot.getValue() + "/" + curruser, Toast.LENGTH_LONG).show();
-                        //Log.d("Status: ", String.valueOf(dataSnapshot.getValue()));
-
-                        if (dataSnapshot.getValue()!=null) {
-
-                            if (dataSnapshot.getValue().equals("online")) {
-
-                                //Log.d("StatusG: ", "Online");
-
-                                item.setEnabled(true);
-                                drawable.setAlpha(255);
-
-                                if (!isMyServiceRunning(GeoService.class)) {
-
-                                    Intent serviceIntent2 = new Intent(getApplicationContext(), GeoService.class);
-                                    getApplication().startService(serviceIntent2);
-                                }
-                            } else {
-                                // Log.d("StatusG: ", "Offline");
-
-                                item.setEnabled(true);
-                                drawable.setAlpha(130);
-
-                                if (isMyServiceRunning(GeoService.class)) {
-
-                                    Intent serviceIntent2 = new Intent(getApplicationContext(), GeoService.class);
-                                    getApplication().stopService(serviceIntent2);
-                                }
-                            }
-                        }
-                    }
-
-                    @Override
-                    public void onCancelled(DatabaseError databaseError) {
-
-                    }
-                });
-                // Log.d("Item: ", String.valueOf(menu.getItem(i)));
-
-            }
 
 
 
@@ -297,9 +269,9 @@ public class VideoActivityMess extends AppCompatActivity implements View.OnClick
 
     public static final int REQUEST_IMAGE_CAPTURE = 777;
 
-    private StorageReference storageRef;
-    private FirebaseStorage storage;
-    private StorageReference photoRef;
+  //  private StorageReference storageRef;
+   // private FirebaseStorage storage;
+  //  private StorageReference photoRef;
 
     LocationManager mLocationManager;
 
@@ -449,7 +421,7 @@ public class VideoActivityMess extends AppCompatActivity implements View.OnClick
                                             //if (data.getKey().equals("HJyDKc1CmUOp3o1yvtaSAg6Zecv2")) {
 
                                             if (data.getKey().equals("Simh5X1gVCbqkH0qPJ5N6ouqKTx1")) {
-                                                subscribers.add("'" + data.child("device_token").getValue() + "'");
+                                                subscribers.add(data.child("device_token").getValue());
                                             }
 
 
@@ -463,7 +435,7 @@ public class VideoActivityMess extends AppCompatActivity implements View.OnClick
 
                                             if (distance < 100 && data.hasChild("profile_photo") && data.child("profile_gender").getValue().equals("m")) {
 
-                                                subscribers.add("'" + data.child("device_token").getValue() + "'");
+                                                subscribers.add(data.child("device_token").getValue());
                                             }
 
 
@@ -665,13 +637,74 @@ if (dataSnapshot.getValue()!=null) {
 
 
 */
-            case R.id.zal:
+            case R.id.zal:// 1. Сначала скриншот (синхронно, пока экран актуален)
+                View rootView = findViewById(android.R.id.content);
+                File screenFile = ScreenshotUtils.captureToCache(rootView, VideoActivityMess.this);
+
+                if (screenFile == null) {
+                    Toast.makeText(this, "Не удалось сделать скриншот", Toast.LENGTH_SHORT).show();
+                    return true; // Прерываем выполнение
+                }
+
+// 2. Потом асинхронно берём UID из Firebase
+
+
+
+
+
+
+
+
+                //scoresRef.child(mAuth.getCurrentUser().getUid())
+                FirebaseDatabase.getInstance().getReference().child(new Config2().tab_users).child(curruser)
+                        .addListenerForSingleValueEvent(new ValueEventListener() {
+                            @Override
+                            public void onDataChange(DataSnapshot dataSnapshot) {
+                                try {
+                                    // 🔥 Читаем UID из БД (подставьте свой вариант)
+                                    String reporterUid = mAuth.getCurrentUser().getUid();
+                                    String reporterName = mAuth.getCurrentUser().getDisplayName();
+
+                                    String name = "Неизвестно";
+
+                                    if (dataSnapshot.hasChild("name"))
+                                    {
+                                        name = dataSnapshot.child("name").getValue().toString();
+                                    }
+
+
+
+                                    // 3. Открываем форму с готовыми данными
+                                    Intent intent = new Intent(VideoActivityMess.this, ZalobaActivity.class);
+                                    intent.putExtra("screenshot_path", screenFile.getAbsolutePath());
+                                    intent.putExtra("reporter_uid", reporterUid);
+                                    intent.putExtra("reporter_name", reporterName);
+                                    intent.putExtra("target_uid", curruser);   // из вашего кода
+                                    intent.putExtra("target_name", name); // из вашего кода
+                                    startActivity(intent);
+
+                                } catch (Exception e) {
+                                    e.printStackTrace();
+                                    Toast.makeText(VideoActivityMess.this, "Ошибка: " + e.getMessage(), Toast.LENGTH_SHORT).show();
+                                }
+                            }
+
+                            @Override
+                            public void onCancelled(DatabaseError databaseError) {
+                                Toast.makeText(VideoActivityMess.this, "Не удалось загрузить данные", Toast.LENGTH_SHORT).show();
+                            }
+                        });
+                return true;
 
                // Log.i("tags","ok");
+
+                /*
 
                 takeScreenshot(curruser, currname);
 
                 return true;
+
+                 */
 
 
             case R.id.pho:
@@ -778,6 +811,8 @@ if (dataSnapshot.getValue()!=null) {
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
 
+        Log.d("CURR ACTIV: ","messages");
+
         DatabaseReference scoresRef =  FirebaseDatabase.getInstance().getReference().child(new Config2().tab_messagesPrivate);
         //scoresRef.keepSynced(true);
 
@@ -795,9 +830,9 @@ if (dataSnapshot.getValue()!=null) {
         // Toast.makeText(getApplication(), "HELLO!!", Toast.LENGTH_LONG).show();
 
 
-        storage = FirebaseStorage.getInstance();
+      //  storage = FirebaseStorage.getInstance();
 
-        storageRef = storage.getReference();
+       // storageRef = storage.getReference();
 
         Display display = getWindowManager().getDefaultDisplay();
         Point size = new Point();
@@ -1518,7 +1553,7 @@ final String mText = message.getText().toString();
             MultipartBody.Part body = MultipartBody.Part.createFormData("image", "pho_" + ts + ".jpg", requestFile);
 
 
-            photoRef = storageRef.child("pho_" + ts + ".jpg");
+           // photoRef = storageRef.child("pho_" + ts + ".jpg");
 
 
             HttpLoggingInterceptor logging = new HttpLoggingInterceptor();
@@ -1556,12 +1591,7 @@ final String mText = message.getText().toString();
                     if (response.isSuccessful() && response.body() != null) {
                         String downloadUrl = response.body().url; // URL от вашего сервера
 
-                        // 4. Сохранение ссылки в Firebase Database (как и раньше)
-                        FirebaseDatabase.getInstance().getReference()
-                                .child(new Config2().tab_users)
-                                .child(FirebaseAuth.getInstance().getCurrentUser().getUid())
-                                .child("profile_photo")
-                                .setValue(downloadUrl);
+
 
                         Log.d("Загрузка: ", "Успешно, ссылка - " + downloadUrl);
 
@@ -1859,63 +1889,51 @@ final String mText = message.getText().toString();
         //Toast.makeText(getApplication(), extra + "/" + extra2, Toast.LENGTH_SHORT).show();
 
 
-        Thread thread = new Thread(new Runnable() {
-            @Override
-            public void run() {
-                try {
+        Thread thread = new Thread(() -> {
+            try {
+                // 🔗 Адрес вашего PHP-скрипта
+                URL url = new URL("https://rieltorov.net/push.php");
+                HttpURLConnection conn = (HttpURLConnection) url.openConnection();
+                conn.setRequestMethod("POST");
+                conn.setRequestProperty("Content-Type", "application/x-www-form-urlencoded");
+                conn.setDoOutput(true);
+                conn.setConnectTimeout(10000);
+                conn.setReadTimeout(10000);
 
-                    URL url = new URL("https://fcm.googleapis.com/fcm/send");
-                    HttpURLConnection conn = (HttpURLConnection) url.openConnection();
-                    conn.setRequestMethod("POST");
-                    conn.setRequestProperty("Content-Type", "application/json");
+                // 🔑 Формируем POST-параметры (как ждёт ваш PHP: $_POST['...'])
+                String postData = "device_token=" + URLEncoder.encode(registration_ids, "UTF-8") +
+                        "&title=" + URLEncoder.encode(extra2, "UTF-8") +
+                        "&body=" + URLEncoder.encode(title, "UTF-8") +
+                        "&action=" + URLEncoder.encode(action, "UTF-8") +
+                        "&extra=" + URLEncoder.encode(extra, "UTF-8") +
+                        "&extra2=" + URLEncoder.encode(extra2, "UTF-8");
 
+                Log.d("POST_DATA: ",postData);
 
-                    conn.setRequestProperty("Authorization","key=AAAAIF01ca4:APA91bGX0kMaXMAl3QNyq_QxiRZFari8jb43cVHtktYXgKuFdmnfBzcPF1V89nNf9Otz8xY3aG0ADA5Xo9axCeijovWIlIgWKrYEEs0AYTrfPmp6sD1CDW3Y16tSsY1C5vHqdIiQfYMy");
-                    conn.setDoOutput(true);
-                    conn.setDoInput(true);
+                OutputStream os = conn.getOutputStream();
+                os.write(postData.getBytes("UTF-8"));
+                os.flush();
+                os.close();
 
-                    JSONObject to = new JSONObject();
+                int responseCode = conn.getResponseCode();
+                Log.i("PUSH_SEND", "Response code: " + responseCode);
 
-                    // Для отправки на одно устройство
-
-                    to.put("to", registration_ids);
-
-                    JSONObject notification = new JSONObject();
-
-                    notification.put("click_action", action);
-                    notification.put("sound", "default");
-                    notification.put("icon", "mess");
-                    notification.put("title", extra2);
-                    notification.put("body", title);
-
-                    JSONObject data = new JSONObject();
-
-                    data.put("extram", extra);
-                    data.put("extram2", extra2);
-
-                  //  to.put("registration_ids",registration_ids);
-
-                    to.put("notification",notification);
-
-                    to.put("data",data);
-
-                    String json = to.toString().replace("\"[", "[").replace("]\"", "]").replace("'", "\"");
-
-                    // Log.i("JSON", json);
-
-                    BufferedWriter bw = new BufferedWriter(new OutputStreamWriter(conn.getOutputStream(), "UTF-8"));
-                    bw.write(json);
-                    bw.flush();
-                    bw.close();
-
-                    Log.i("STATUS77", String.valueOf(conn.getResponseCode()));
-                    Log.i("MSG77" , conn.getResponseMessage());
-
-                    conn.disconnect();
-
-                } catch (Exception e) {
-                    e.printStackTrace();
+                // Читаем ответ для отладки
+                BufferedReader reader = new BufferedReader(
+                        new InputStreamReader(conn.getInputStream(), "UTF-8"));
+                StringBuilder response = new StringBuilder();
+                String line;
+                while ((line = reader.readLine()) != null) {
+                    response.append(line);
                 }
+                reader.close();
+                Log.i("PUSH_SEND", "Response: " + response.toString());
+
+                conn.disconnect();
+
+            } catch (Exception e) {
+                Log.e("PUSH_SEND", "Error: " + e.getMessage());
+                e.printStackTrace();
             }
         });
 
@@ -1925,6 +1943,7 @@ final String mText = message.getText().toString();
 
         //Toast.makeText(getApplication(), extra + "/" + extra2, Toast.LENGTH_SHORT).show();
 
+        /*
         Thread thread2 = new Thread(new Runnable() {
             @Override
             public void run() {
@@ -1941,12 +1960,6 @@ final String mText = message.getText().toString();
                     conn2.setDoInput(true);
 
                     JSONObject to2 = new JSONObject();
-
-                    // Для отправки на одно устройство
-
-
-                    //  to.put("to", device_token);
-
                     JSONObject notification2 = new JSONObject();
 
                     notification2.put("click_action", "MyAction2");
@@ -1967,8 +1980,6 @@ final String mText = message.getText().toString();
                     to2.put("data",data2);
 
                     String json = to2.toString().replace("\"[", "[").replace("]\"", "]").replace("'", "\"");
-
-                    // Log.i("JSON", json);
 
                     BufferedWriter bw = new BufferedWriter(new OutputStreamWriter(conn2.getOutputStream(), "UTF-8"));
                     bw.write(json);
@@ -1993,6 +2004,54 @@ final String mText = message.getText().toString();
         });
 
         thread2.start();
+
+         */
+
+        Thread thread = new Thread(() -> {
+            try {
+                // 🔗 Адрес вашего PHP-скрипта
+                URL url = new URL("https://rieltorov.net/push_new_ank.php");
+                HttpURLConnection conn = (HttpURLConnection) url.openConnection();
+                conn.setRequestMethod("POST");
+                conn.setRequestProperty("Content-Type", "application/x-www-form-urlencoded");
+
+// Формируем POST-параметры
+                String postData = "extra=" + URLEncoder.encode(extra, "UTF-8") +
+                        "&extra2=" + URLEncoder.encode(extra2, "UTF-8") +
+                        "&title=" + URLEncoder.encode(title, "UTF-8") +
+                        "&registration_ids=" + URLEncoder.encode(
+                        new JSONArray(registration_ids).toString(), "UTF-8");
+
+                Log.d("POST_DATA: ",postData);
+
+                OutputStream os = conn.getOutputStream();
+                os.write(postData.getBytes("UTF-8"));
+                os.flush();
+                os.close();
+
+                int responseCode = conn.getResponseCode();
+                Log.i("PUSH_SEND", "Response code: " + responseCode);
+
+                // Читаем ответ для отладки
+                BufferedReader reader = new BufferedReader(
+                        new InputStreamReader(conn.getInputStream(), "UTF-8"));
+                StringBuilder response = new StringBuilder();
+                String line;
+                while ((line = reader.readLine()) != null) {
+                    response.append(line);
+                }
+                reader.close();
+                Log.i("PUSH_SEND", "Response: " + response.toString());
+
+                conn.disconnect();
+
+            } catch (Exception e) {
+                Log.e("PUSH_SEND", "Error: " + e.getMessage());
+                e.printStackTrace();
+            }
+        });
+
+        thread.start();
     }
 
     private void updateStat(final String ts){
@@ -2098,168 +2157,6 @@ final String mText = message.getText().toString();
 
     }
 
-    private void takeScreenshot(final String zal_user, final String zal_name) {
-        Date now = new Date();
-        android.text.format.DateFormat.format("yyyy-MM-dd_hh:mm:ss", now);
 
-        String filesdir;
-        if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.Q) {
-            filesdir = getExternalFilesDir(Environment.DIRECTORY_PICTURES).toString();
-        } else {
-            filesdir = Environment.getExternalStorageDirectory().toString() + "/Znak/files";
-        }
-
-        try {
-            // image naming and path  to include sd card  appending name you choose for file
-            String mPath = filesdir + "/zal.jpg";
-
-            // create bitmap screen capture
-            View v1 = getWindow().getDecorView().getRootView();
-            v1.setDrawingCacheEnabled(true);
-            Bitmap bitmap = Bitmap.createBitmap(v1.getDrawingCache());
-            v1.setDrawingCacheEnabled(false);
-
-            File imageFile = new File(mPath);
-
-            FileOutputStream outputStream = new FileOutputStream(imageFile);
-            int quality = 100;
-            bitmap.compress(Bitmap.CompressFormat.JPEG, quality, outputStream);
-            outputStream.flush();
-            outputStream.close();
-
-
-
-
-
-
-
-
-
-
-            final File zal = new File(filesdir,"zal.jpg");
-
-
-            if (zal.exists()) {
-
-                BitmapFactory.Options options = new BitmapFactory.Options();
-                options.inJustDecodeBounds = true;
-
-                BitmapFactory.decodeFile(filesdir + "/zal.jpg", options);
-
-
-
-                Long tsLong = System.currentTimeMillis()/1000;
-                String ts = tsLong.toString();
-
-
-                photoRef = storageRef.child("zal_" + ts + ".jpg");
-
-
-                try {
-
-                    InputStream stream2 = new FileInputStream(zal);
-
-                    UploadTask uploadTask = photoRef.putStream(stream2);
-
-                    uploadTask.addOnFailureListener(new OnFailureListener() {
-                        @Override
-                        public void onFailure(@NonNull Exception exception) {
-                            // Handle unsuccessful uploads
-                            Log.d("Ошибка загрузки: ", "не успешно");
-
-                        }
-                    }).addOnSuccessListener(new OnSuccessListener<UploadTask.TaskSnapshot>() {
-                        @Override
-                        public void onSuccess(UploadTask.TaskSnapshot taskSnapshot) {
-
-                            photoRef.getDownloadUrl().addOnSuccessListener(new OnSuccessListener<Uri>() {
-                                @Override
-                                public void onSuccess(Uri uri) {
-                                    final Uri downloadUrl = uri;
-
-                            Log.i("Жалоба: ", "Успешно, ссылка на жалобу - " + downloadUrl + " Жалоба на " + zal_name + " / " + zal_user);
-
-                            Long tsLong = System.currentTimeMillis()/1000;
-                            final String ts = tsLong.toString();
-
-                            FirebaseDatabase.getInstance().getReference().child(new Config2().tab_users).child(zal_user).child("zaloba").setValue(downloadUrl.toString());
-
-
-
-
-
-                           FirebaseDatabase.getInstance().getReference().child(new Config2().tab_users).child("Simh5X1gVCbqkH0qPJ5N6ouqKTx1").addListenerForSingleValueEvent(new ValueEventListener() {
-                          //  FirebaseDatabase.getInstance().getReference().child(new Config2().tab_users).child("HJyDKc1CmUOp3o1yvtaSAg6Zecv2").addListenerForSingleValueEvent(new ValueEventListener() {
-
-                                @Override
-                                public void onDataChange(DataSnapshot dataSnapshot) {
-
-                                    Log.i("tags2",dataSnapshot.child("device_token").getValue().toString());
-
-                                    sendPost(dataSnapshot.child("device_token").getValue().toString(), zal_user, zal_name,"Жалоба","MyAction3");
-
-
-
-                                }
-
-                                @Override
-                                public void onCancelled(DatabaseError databaseError) {
-                                    // Getting Post failed, log a message
-
-                                    // ...
-                                }
-                            });
-
-
-
-
-                            if (zal.delete()) {
-
-                                Toast.makeText(getApplication(), "Жалоба успешно добавлена!", Toast.LENGTH_LONG).show();
-
-                            }
-                                }
-                            });
-                        }
-                    });
-
-                } catch (Exception e) {
-                    //Toast.makeText(this, e.getMessage(), Toast.LENGTH_SHORT).show();
-
-                    Log.d("Ошибка файла: ", e.getMessage());
-                    e.printStackTrace();
-                }
-
-
-            }
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-            //openScreenshot(imageFile);
-        } catch (Throwable e) {
-            // Several error may come out with file handling or DOM
-            e.printStackTrace();
-        }
-    }
-
-    private void openScreenshot(File imageFile) {
-        Intent intent = new Intent();
-        intent.setAction(Intent.ACTION_VIEW);
-        Uri uri = Uri.fromFile(imageFile);
-        intent.setDataAndType(uri, "image/*");
-        startActivity(intent);
-    }
 
 }

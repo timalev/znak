@@ -16,6 +16,7 @@
 
     <uses-permission android:name="android.permission.ACCESS_FINE_LOCATION" />
     <uses-permission android:name="android.permission.CAMERA" />
+    <uses-permission android:name="android.permission.POST_NOTIFICATIONS" />
     <uses-permission android:name="android.permission.RECORD_AUDIO" />
     <uses-permission android:name="android.permission.WRITE_EXTERNAL_STORAGE" />
     <uses-permission android:name="android.permission.READ_EXTERNAL_STORAGE" />
@@ -52,25 +53,9 @@
                 android:name="android.support.FILE_PROVIDER_PATHS"
                 android:resource="@xml/file_paths"></meta-data>
         </provider>
-        <activity
-            android:name="io.cordova.test2_6720b.SwitchActivity"
-            android:exported="true">
-            <intent-filter>
-                <action android:name="android.intent.action.MAIN" />
 
-                <category android:name="android.intent.category.LAUNCHER" />
-            </intent-filter>
-        </activity>
 
-        <receiver
-            android:name="io.cordova.test2_6720b.PrintMessage"
-            android:enabled="true"
-            android:exported="true"
-            android:permission="android.permission.RECEIVE_BOOT_COMPLETED">
-            <intent-filter>
-                <action android:name="ru.alexanderklimov.action.CAT" />
-            </intent-filter>
-        </receiver>
+
 
         <activity android:name="io.cordova.test2_6720b.getloc">
 
@@ -101,9 +86,9 @@
             android:exported="true"
             android:screenOrientation="portrait">
             <intent-filter>
-              <!--
+
                 <action android:name="android.intent.action.MAIN" />
--->
+
                 <category android:name="android.intent.category.LAUNCHER" />
             </intent-filter>
         </activity>
@@ -114,24 +99,7 @@
                 <category android:name="android.intent.category.DEFAULT" />
             </intent-filter>
         </activity> <!-- android:theme="@style/MyTheme"> -->
-        <activity
-            android:name="io.cordova.test2_6720b.MapsActivity"
-            android:configChanges="orientation|screenSize|keyboardHidden"
-            android:label=""
-            android:screenOrientation="portrait" /> <!-- <service android:name=".test" android:label="test"/> -->
-        <activity
-            android:name="io.cordova.test2_6720b.UploadScreenActivity"
-            android:screenOrientation="portrait" />
-        <!--
-        <service
-            android:name=".MyGcmListenerService"
-            android:enabled="true"
-            android:exported="false">
-            <intent-filter>
-                <action android:name="com.google.android.c2dm.intent.RECEIVE" />
-            </intent-filter>
-        </service>
-        -->
+
         <activity
             android:name="io.cordova.test2_6720b.PhotoActivity"
             android:screenOrientation="portrait" />
@@ -146,6 +114,9 @@
         <activity
             android:name="io.cordova.test2_6720b.VideoActivityAllMess"
             android:screenOrientation="portrait" />
+
+
+
         <activity
             android:exported="true"
             android:name="io.cordova.test2_6720b.VideoActivityMess"
@@ -156,76 +127,24 @@
                 <category android:name="android.intent.category.DEFAULT" />
             </intent-filter>
         </activity>
-        <activity
-            android:exported="true"
-            android:name="io.cordova.test2_6720b.VideoActivity"
-            android:label="@string/title_activity_video"
-            android:screenOrientation="portrait"
-            android:theme="@style/MyTheme"
-            android:windowSoftInputMode="stateHidden">
-            <intent-filter>
-                <action android:name="MyAction" />
 
-                <category android:name="android.intent.category.DEFAULT" />
-            </intent-filter>
-        </activity>
-        <activity
-            android:name="io.cordova.test2_6720b.DetectLocation"
-            android:screenOrientation="portrait" />
+
         <activity android:name="io.cordova.test2_6720b.ProfileActivity" />
+
+
         <activity
-            android:exported="true"
-            android:name="io.cordova.test2_6720b.zaloba"
-            android:screenOrientation="portrait">
-            <intent-filter>
-                <action android:name="MyAction3" />
+            android:name="io.cordova.test2_6720b.ZalobaActivity"
+            android:exported="false"
+            android:screenOrientation="portrait"
+            android:windowSoftInputMode="adjustResize" />
 
-                <category android:name="android.intent.category.DEFAULT" />
-            </intent-filter>
-        </activity>
 
-        <meta-data
-            android:name="com.google.android.geo.API_KEY"
-            android:value="@string/google_maps_key" />
-
-        <receiver
-            android:name="com.google.android.gms.gcm.GcmReceiver"
-            android:exported="true"
-            android:permission="com.google.android.c2dm.permission.SEND">
-            <intent-filter>
-                <action android:name="com.google.android.c2dm.intent.RECEIVE" />
-
-                <category android:name="io.cordova.test2_6720b" />
-            </intent-filter>
-            <intent-filter>
-                <action android:name="com.google.android.c2dm.intent.REGISTRATION" />
-
-                <category android:name="io.cordova.test2_6720b" />
-            </intent-filter>
-        </receiver>
-
-        <service
-            android:name="io.cordova.test2_6720b.GeoService"
-            android:enabled="true"
-            android:exported="true" />
-        <service
-            android:name="io.cordova.test2_6720b.UploadService"
-            android:enabled="true"
-            android:exported="true" />
-        <service
-            android:name="io.cordova.test2_6720b.GeoService2"
-            android:enabled="true"
-            android:exported="true" />
         <service android:name="io.cordova.test2_6720b.MyFirebaseMessagingService"  android:exported="true">
             <intent-filter>
                 <action android:name="com.google.firebase.MESSAGING_EVENT" />
             </intent-filter>
         </service>
-        <service android:name=".MyFirebaseInstanceIDService"  android:exported="true">
-            <intent-filter>
-                <action android:name="com.google.firebase.INSTANCE_ID_EVENT" />
-            </intent-filter>
-        </service>
+
 
         <uses-library
             android:name="org.apache.http.legacy"

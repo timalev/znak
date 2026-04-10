@@ -207,14 +207,22 @@ public class login extends AppCompatActivity implements GoogleApiClient.Connecti
     String[] permissions = new String[]{
             android.Manifest.permission.WRITE_EXTERNAL_STORAGE,
             android.Manifest.permission.CAMERA,
-            android.Manifest.permission.READ_EXTERNAL_STORAGE
+            android.Manifest.permission.READ_EXTERNAL_STORAGE,
+            android.Manifest.permission.POST_NOTIFICATIONS
     };
 
 
     private boolean checkPermissions() {
         int result;
         List<String> listPermissionsNeeded = new ArrayList<>();
+
         for (String p : permissions) {
+
+            if (Build.VERSION.SDK_INT < Build.VERSION_CODES.TIRAMISU &&
+                    p.equals(android.Manifest.permission.POST_NOTIFICATIONS)) {
+                continue;
+            }
+
             result = ContextCompat.checkSelfPermission(login.this, p);
             if (result != PackageManager.PERMISSION_GRANTED) {
                 listPermissionsNeeded.add(p);

@@ -147,12 +147,12 @@ public class Languages {
     }
     public String ProfileCheckAge()
     {
-        hashMap.put("ru","возраст");
-        hashMap.put("en","age");
-        hashMap.put("de","alter");
-        hashMap.put("zh","年龄");
-        hashMap.put("es","la edad");
-        hashMap.put("ar","عمر");
+        hashMap.put("ru","возраст (18+)");
+        hashMap.put("en","age (18+)");
+        hashMap.put("de","alter (18+)");
+        hashMap.put("zh","年龄 (18+)");
+        hashMap.put("es","la edad (18+)");
+        hashMap.put("ar"," (18+)عمر");
 
         return hashMap.get(lang);
     }

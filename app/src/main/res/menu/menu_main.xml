@@ -9,17 +9,18 @@
         tools:ignore="MenuTitle" />
     <item
         android:id="@+id/index"
-        android:orderInCategory="300"
+        android:orderInCategory="200"
         app:showAsAction="never"
         tools:ignore="MenuTitle" />
+
     <item
-        android:id="@+id/zal"
+        android:id="@+id/messages"
         android:orderInCategory="250"
         app:showAsAction="never"
         tools:ignore="MenuTitle" />
     <item
-        android:id="@+id/messages"
-        android:orderInCategory="200"
+        android:id="@+id/zal"
+        android:orderInCategory="300"
         app:showAsAction="never"
         tools:ignore="MenuTitle" />
 

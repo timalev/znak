@@ -81,7 +81,8 @@ public class login2 extends AppCompatActivity {
     String[] permissions = new String[]{
             android.Manifest.permission.WRITE_EXTERNAL_STORAGE,
             android.Manifest.permission.CAMERA,
-            android.Manifest.permission.READ_EXTERNAL_STORAGE
+            android.Manifest.permission.READ_EXTERNAL_STORAGE,
+            android.Manifest.permission.POST_NOTIFICATIONS
     };
 
 
@@ -89,6 +90,12 @@ public class login2 extends AppCompatActivity {
         int result;
         List<String> listPermissionsNeeded = new ArrayList<>();
         for (String p : permissions) {
+
+            if (Build.VERSION.SDK_INT < Build.VERSION_CODES.TIRAMISU &&
+                    p.equals(android.Manifest.permission.POST_NOTIFICATIONS)) {
+                continue;
+            }
+
             result = ContextCompat.checkSelfPermission(login2.this, p);
             if (result != PackageManager.PERMISSION_GRANTED) {
                 listPermissionsNeeded.add(p);

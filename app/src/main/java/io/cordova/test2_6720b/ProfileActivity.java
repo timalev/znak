@@ -60,12 +60,12 @@ import com.google.firebase.database.DataSnapshot;
 import com.google.firebase.database.DatabaseError;
 import com.google.firebase.database.FirebaseDatabase;
 import com.google.firebase.database.ValueEventListener;
-import com.google.firebase.storage.FirebaseStorage;
-import com.google.firebase.storage.StorageReference;
-import com.google.firebase.storage.UploadTask;
 
+
+import org.json.JSONArray;
 import org.json.JSONObject;
 
+import java.io.BufferedReader;
 import java.io.BufferedWriter;
 import java.io.File;
 import java.io.FileInputStream;
@@ -73,10 +73,12 @@ import java.io.FileNotFoundException;
 import java.io.FileOutputStream;
 import java.io.IOException;
 import java.io.InputStream;
+import java.io.InputStreamReader;
 import java.io.OutputStream;
 import java.io.OutputStreamWriter;
 import java.net.HttpURLConnection;
 import java.net.URL;
+import java.net.URLEncoder;
 import java.util.ArrayList;
 import java.util.List;
 
@@ -101,9 +103,7 @@ public class ProfileActivity extends AppCompatActivity {
 
 
     private FirebaseAuth mAuth;
-    private StorageReference storageRef;
-    private FirebaseStorage storage;
-    private StorageReference photoRef;
+
 
     private GoogleApiClient mGoogleApiClient;
 
@@ -523,6 +523,8 @@ public class ProfileActivity extends AppCompatActivity {
 
         // Log.i("RadioButt:", String.valueOf(male.isChecked()));
 
+
+
         editage.addTextChangedListener(new TextWatcher() {
             @Override
             public void onTextChanged(CharSequence s, int start, int before, int count) {
@@ -866,7 +868,11 @@ public class ProfileActivity extends AppCompatActivity {
                         if (dataSnapshot.hasChild("profile_age"))
                         {
 
-
+                            if (Integer.parseInt(dataSnapshot.child("profile_age").getValue().toString())<18)
+                            {
+                                Log.d("curr_age: ", dataSnapshot.child("profile_age").getValue().toString());
+                                array.add(new Languages().ProfileCheckAge());
+                            }
                         }
                         else {
                             array.add(new Languages().ProfileCheckAge());
@@ -1169,7 +1175,6 @@ public class ProfileActivity extends AppCompatActivity {
 
 
 
-            photoRef = FirebaseStorage.getInstance().getReference().child("pho_" + ts + ".jpg");
 
 
             HttpLoggingInterceptor logging = new HttpLoggingInterceptor();
@@ -1191,7 +1196,7 @@ public class ProfileActivity extends AppCompatActivity {
             ApiService service = retrofit.create(ApiService.class);
 
 
-            Log.d("OTVET: ", "TEST");
+
 
 
 // 3. Отправка на сервер
@@ -1200,9 +1205,12 @@ public class ProfileActivity extends AppCompatActivity {
                 public void onResponse(Call<UploadResponse> call, Response<UploadResponse> response) {
 
 
-                   // Log.d("OTVET: ", response.body().status);
+                    Log.d("OTVET3: ", response.body().status);
 
                     if (response.isSuccessful() && response.body() != null) {
+
+                        Log.d("OTVET3: ", response.body().status);
+
                         String downloadUrl = response.body().url; // URL от вашего сервера
 
                         // 4. Сохранение ссылки в Firebase Database (как и раньше)
@@ -1554,9 +1562,9 @@ public class ProfileActivity extends AppCompatActivity {
     public void sendPost(final String extra, final String extra2, final String title, final String device_token) {
 
 
-        //Toast.makeText(getApplication(), extra + "/" + extra2, Toast.LENGTH_SHORT).show();
 
 
+/*
         Thread thread = new Thread(new Runnable() {
             @Override
             public void run() {
@@ -1615,6 +1623,52 @@ public class ProfileActivity extends AppCompatActivity {
                 } catch (Exception e) {
                     e.printStackTrace();
                 }
+            }
+        });
+
+        thread.start();
+
+ */
+        Thread thread = new Thread(() -> {
+            try {
+                // 🔗 Адрес вашего PHP-скрипта
+                URL url = new URL("https://rieltorov.net/push_new_ank.php");
+                HttpURLConnection conn = (HttpURLConnection) url.openConnection();
+                conn.setRequestMethod("POST");
+                conn.setRequestProperty("Content-Type", "application/x-www-form-urlencoded");
+
+// Формируем POST-параметры
+                String postData = "extra=" + URLEncoder.encode(extra, "UTF-8") +
+                        "&extra2=" + URLEncoder.encode(extra2, "UTF-8") +
+                        "&title=" + URLEncoder.encode(title, "UTF-8") +
+                        "&registration_ids=" + URLEncoder.encode(device_token, "UTF-8");
+
+                Log.d("POST_DATA: ",postData);
+
+                OutputStream os = conn.getOutputStream();
+                os.write(postData.getBytes("UTF-8"));
+                os.flush();
+                os.close();
+
+                int responseCode = conn.getResponseCode();
+                Log.i("PUSH_SEND", "Response code: " + responseCode);
+
+                // Читаем ответ для отладки
+                BufferedReader reader = new BufferedReader(
+                        new InputStreamReader(conn.getInputStream(), "UTF-8"));
+                StringBuilder response = new StringBuilder();
+                String line;
+                while ((line = reader.readLine()) != null) {
+                    response.append(line);
+                }
+                reader.close();
+                Log.i("PUSH_SEND", "Response: " + response.toString());
+
+                conn.disconnect();
+
+            } catch (Exception e) {
+                Log.e("PUSH_SEND", "Error: " + e.getMessage());
+                e.printStackTrace();
             }
         });
 
