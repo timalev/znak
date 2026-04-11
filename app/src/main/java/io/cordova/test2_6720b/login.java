@@ -333,7 +333,8 @@ public class login extends AppCompatActivity implements GoogleApiClient.Connecti
     public void onActivityResult(int requestCode, int resultCode, Intent data) {
         super.onActivityResult(requestCode, resultCode, data);
 
-        Log.d("Result: ", requestCode + ", " + resultCode);
+        Log.d("GOOGLE_AUTH", "requestCode=" + requestCode + ", resultCode=" + resultCode);
+        Log.d("GOOGLE_AUTH", "Intent data: " + (data != null ? data.getAction() : "null"));
 
         // Result returned from launching the Intent from GoogleSignInApi.getSignInIntent(...);
         if (requestCode == RC_SIGN_IN) {

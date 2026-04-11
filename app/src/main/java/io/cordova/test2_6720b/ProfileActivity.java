@@ -50,6 +50,8 @@ import com.bumptech.glide.request.RequestOptions;
 import com.bumptech.glide.request.target.Target;
 import com.bumptech.glide.signature.ObjectKey;
 import com.google.android.gms.auth.api.Auth;
+import com.google.android.gms.auth.api.signin.GoogleSignIn;
+import com.google.android.gms.auth.api.signin.GoogleSignInOptions;
 import com.google.android.gms.common.api.GoogleApiClient;
 import com.google.android.gms.common.api.ResultCallback;
 import com.google.android.gms.common.api.Status;
@@ -1232,6 +1234,8 @@ public class ProfileActivity extends AppCompatActivity {
                         if (photo.delete()) {
 
 
+
+
                             Toast.makeText(getApplication(), new Languages().PhotoAdded(), Toast.LENGTH_LONG).show();
 
                             if (!FirebaseAuth.getInstance().getCurrentUser().getUid().equals("Simh5X1gVCbqkH0qPJ5N6ouqKTx1")) {
@@ -1690,42 +1694,71 @@ public class ProfileActivity extends AppCompatActivity {
         }
         return image;
     }
+
     private void signOut() {
+        Long tsLong = System.currentTimeMillis() / 1000;
+        String ts = String.valueOf(tsLong);
+        String uid = FirebaseAuth.getInstance().getCurrentUser() != null
+                ? FirebaseAuth.getInstance().getCurrentUser().getUid()
+                : null;
 
-        Long tsLong2 = System.currentTimeMillis()/1000;
-        String ts2 = tsLong2.toString();
+        if (uid == null) {
+            // Если пользователь уже не в Firebase — просто идём на логин
+            goToLogin();
+            return;
+        }
 
-        FirebaseDatabase.getInstance().getReference().child(new Config2().tab_users).child(FirebaseAuth.getInstance().getCurrentUser().getUid()).child("curr_activity").setValue(ts2)
+        // 1. Обновляем last_activity в Firebase
+        FirebaseDatabase.getInstance()
+                .getReference()
+                .child(new Config2().tab_users)
+                .child(uid)
+                .child("curr_activity")
+                .setValue(ts)
+                .addOnSuccessListener(aVoid -> {
+                    // 2. Выход из Firebase Auth
+                    FirebaseAuth.getInstance().signOut();
 
-                .addOnSuccessListener(new OnSuccessListener<Void>() {
+                    // 3. 🔥 Современный выход из Google (НЕ требует mGoogleApiClient!)
+                    GoogleSignIn.getClient(ProfileActivity.this, GoogleSignInOptions.DEFAULT_SIGN_IN)
+                            .signOut()
+                            .addOnCompleteListener(ProfileActivity.this, task -> {
+                                Log.i("GOOGLE_AUTH", "✅ Google signOut completed: " +
+                                        (task.isSuccessful() ? "success" : task.getException()));
 
-                    @Override
-                    public void onSuccess(Void aVoid) {
+                                // 4. Очистка локальных данных
+                                clearLocalSession();
 
-                        FirebaseAuth.getInstance().signOut();
-
-                        Auth.GoogleSignInApi.signOut(mGoogleApiClient).setResultCallback(
-
-                                new ResultCallback<Status>() {
-                                    @Override
-                                    public void onResult(Status status) {
-
-                                        Log.i("tags:",String.valueOf(status));
-
-                                        Intent login = new Intent(getApplication(), login.class);
-                                        startActivity(login);
-                                    }
-                                });
-                    }
+                                // 5. Переход на экран входа
+                                goToLogin();
+                            });
                 })
-                .addOnFailureListener(new OnFailureListener() {
-                    @Override
-                    public void onFailure(@NonNull Exception e) {
-
-                        //  Toast.makeText(getApplicationContext(), "Ошибка с баном юзера.", Toast.LENGTH_SHORT).show();
-
-                    }
+                .addOnFailureListener(e -> {
+                    // Даже если не удалось обновить timestamp — всё равно выходим
+                    Log.w("SIGN_OUT", "Failed to update curr_activity: " + e.getMessage());
+                    FirebaseAuth.getInstance().signOut();
+                    clearLocalSession();
+                    goToLogin();
                 });
+    }
 
+    // 🔹 Вспомогательный метод: переход на логин
+    private void goToLogin() {
+        Intent login = new Intent(ProfileActivity.this, login.class);
+        login.setFlags(Intent.FLAG_ACTIVITY_NEW_TASK | Intent.FLAG_ACTIVITY_CLEAR_TASK); // 🔥 Сброс стека активностей
+        startActivity(login);
+        finish(); // Закрываем текущую, чтобы нельзя было вернуться назад
+    }
+
+    // 🔹 Вспомогательный метод: полная очистка сессии
+    private void clearLocalSession() {
+        // Очистка SharedPreferences
+        getSharedPreferences("app_prefs", MODE_PRIVATE).edit().clear().apply();
+
+        // Сброс глобальных переменных (если есть)
+        // currentUser = null;
+        // userToken = null;
+
+        Log.d("SESSION", "🧹 Local session cleared");
     }
 }
