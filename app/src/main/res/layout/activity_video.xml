@@ -4,7 +4,8 @@
     xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
-    tools:context="io.cordova.test2_6720b.VideoActivity">
+    tools:context="io.cordova.test2_6720b.VideoActivityMess"
+    android:fitsSystemWindows="true">
 
 
     <ImageView

@@ -204,6 +204,33 @@ public class login extends AppCompatActivity implements GoogleApiClient.Connecti
 
     public static final int MULTIPLE_PERMISSIONS = 10;
 
+
+    // 🔥 Удали старый массив, создай метод для получения актуальных разрешений:
+    private String[] getRequiredPermissions() {
+        List<String> permissionsList = new ArrayList<>();
+
+        // 📸 Камера — нужна всегда
+        permissionsList.add(Manifest.permission.CAMERA);
+
+        // 🔔 Уведомления — только для Android 13+
+        if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.TIRAMISU) {
+            permissionsList.add(Manifest.permission.POST_NOTIFICATIONS);
+        }
+
+        // 🖼️ Доступ к фото/видео — зависит от версии
+        if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.TIRAMISU) {
+            // ✅ Android 13+: новые разрешения
+            permissionsList.add(Manifest.permission.READ_MEDIA_IMAGES);
+            permissionsList.add(Manifest.permission.READ_MEDIA_VIDEO);
+        } else {
+            // ✅ Android 12 и ниже: старые разрешения
+            permissionsList.add(Manifest.permission.READ_EXTERNAL_STORAGE);
+            permissionsList.add(Manifest.permission.WRITE_EXTERNAL_STORAGE);
+        }
+
+        return permissionsList.toArray(new String[0]);
+    }
+/*
     String[] permissions = new String[]{
             android.Manifest.permission.WRITE_EXTERNAL_STORAGE,
             android.Manifest.permission.CAMERA,
@@ -211,101 +238,63 @@ public class login extends AppCompatActivity implements GoogleApiClient.Connecti
             android.Manifest.permission.POST_NOTIFICATIONS
     };
 
-
-    private boolean checkPermissions() {
-        int result;
-        List<String> listPermissionsNeeded = new ArrayList<>();
-
-        for (String p : permissions) {
-
-            if (Build.VERSION.SDK_INT < Build.VERSION_CODES.TIRAMISU &&
-                    p.equals(android.Manifest.permission.POST_NOTIFICATIONS)) {
-                continue;
-            }
-
-            result = ContextCompat.checkSelfPermission(login.this, p);
-            if (result != PackageManager.PERMISSION_GRANTED) {
-                listPermissionsNeeded.add(p);
-            }
-        }
-        if (!listPermissionsNeeded.isEmpty()) {
-            ActivityCompat.requestPermissions(this, listPermissionsNeeded.toArray(new String[listPermissionsNeeded.size()]), MULTIPLE_PERMISSIONS);
-            return false;
-        }
-        return true;
-    }
-
-    @Override
-    public void onRequestPermissionsResult(int requestCode,
-                                           String permissions[], int[] grantResults) {
-        switch (requestCode) {
-            case 10:
-
-                ArrayList res_arr = new ArrayList<>();
-
-                if (grantResults.length > 0) {
-
-                    for (int i = 0; i < grantResults.length; i++)
-                    {
-                        if (grantResults[i]!=PackageManager.PERMISSION_GRANTED )
-                        {
-                            res_arr.add(1);
-                        }
-                    }
-
-                    if (res_arr.size()>0) {
-
-                        Toast.makeText(this, "Недостаточно разрешений для запуска приложения", Toast.LENGTH_SHORT).show();
-
-                      //  android.os.Process.killProcess(android.os.Process.myPid());
-                        //System.exit(1);
-                    }else
-                    {
-                        Intent refr = new Intent(getApplication(), login.class);
-                        startActivity(refr);
-                    }
-
-
-                }
-                return;
-
-            case 1252: {
-                // If request is cancelled, the result arrays are empty.
-                if (grantResults.length > 0
-                        && grantResults[0] == PackageManager.PERMISSION_GRANTED) {
-
-                    mAuth.addAuthStateListener(mAuthListener);
-
-                    // permission was granted, yay! Do the
-                    // contacts-related task you need to do.
-                } else {
-
-                    Toast.makeText(this, "БЕЗ ЛОКАЦИИ", Toast.LENGTH_SHORT).show();
-                    // permission denied, boo! Disable the
-                    // functionality that depends on this permission.
-                }
-                return;
-            }
-
-            // other 'case' lines to check for other
-            // permissions this app might request.
-        }
-    }
-
-    /*
-    @Override
-    protected void onStart() {
-        super.onStart();
-
-
-
-        mAuth.addAuthStateListener(mAuthListener);
-
-
-
-    }
 */
+private boolean checkPermissions() {
+    String[] permissions = getRequiredPermissions();
+    List<String> listPermissionsNeeded = new ArrayList<>();
 
+    for (String p : permissions) {
+        int result = ContextCompat.checkSelfPermission(login.this, p);
+        if (result != PackageManager.PERMISSION_GRANTED) {
+            listPermissionsNeeded.add(p);
+        }
+    }
+
+    if (!listPermissionsNeeded.isEmpty()) {
+        ActivityCompat.requestPermissions(
+                this,
+                listPermissionsNeeded.toArray(new String[0]),
+                MULTIPLE_PERMISSIONS
+        );
+        return false;
+    }
+    return true;
+}
+
+    @Override
+    public void onRequestPermissionsResult(int requestCode, String permissions[], int[] grantResults) {
+        if (requestCode == MULTIPLE_PERMISSIONS) {
+            boolean allGranted = true;
+
+            for (int result : grantResults) {
+                if (result != PackageManager.PERMISSION_GRANTED) {
+                    allGranted = false;
+                    break;
+                }
+            }
+
+            if (!allGranted) {
+                // 🔴 Показываем понятное сообщение, а не просто "недостаточно разрешений"
+                new AlertDialog.Builder(this)
+                        .setTitle("⚠️ Требуется доступ")
+                        .setMessage("Приложению нужен доступ к фото и камере для загрузки изображений. Разрешите в настройках.")
+                        .setPositiveButton("Настройки", (dialog, which) -> {
+                            // Открываем настройки приложения
+                            Intent intent = new Intent(android.provider.Settings.ACTION_APPLICATION_DETAILS_SETTINGS);
+                            intent.setData(android.net.Uri.fromParts("package", getPackageName(), null));
+                            startActivity(intent);
+                        })
+                        .setNegativeButton("Отмена", null)
+                        .show();
+            } else {
+                // ✅ Все разрешения получены — можно перезагрузить активность или продолжить
+                recreate(); // или просто продолжить выполнение
+            }
+            return;
+        }
+
+        // Остальные case...
+    }
 
     private void closeNow() {
         if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.JELLY_BEAN) {

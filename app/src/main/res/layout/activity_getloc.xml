@@ -4,7 +4,8 @@
     android:orientation="vertical"
     android:id="@+id/relLayout"
     android:layout_width="fill_parent"
-    android:layout_height="fill_parent">
+    android:layout_height="fill_parent"
+    android:fitsSystemWindows="true">
 
 
 

@@ -854,6 +854,8 @@ if (dataSnapshot.getValue()!=null) {
 
         setContentView(R.layout.activity_video);
 
+
+
         EditText message = (EditText) findViewById(R.id.editText1);
 
         message.setHint(new Languages().TexteditHint());
@@ -881,10 +883,6 @@ if (dataSnapshot.getValue()!=null) {
 
         videoView.setMediaController(mediaController);
 */
-        final LinearLayout linearLayout = (LinearLayout) this.findViewById(R.id.linearlayout1);
-
-
-        final LinearLayout linearLayout2 = (LinearLayout) this.findViewById(R.id.linearlayout2);
 
 
         if (getIntent().getExtras().containsKey("extram")) {
