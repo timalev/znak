@@ -10,6 +10,7 @@ import androidx.appcompat.app.AppCompatActivity;
 import androidx.core.app.ActivityCompat;
 import androidx.core.content.ContextCompat;
 
+import android.content.DialogInterface;
 import android.content.Intent;
 import android.content.pm.PackageManager;
 import android.os.Build;
@@ -20,6 +21,7 @@ import android.util.Log;
 import android.view.View;
 import android.widget.Button;
 import android.widget.EditText;
+import android.widget.ProgressBar;
 import android.widget.TextView;
 import android.widget.Toast;
 
@@ -40,8 +42,8 @@ import com.google.firebase.database.DataSnapshot;
 import com.google.firebase.database.DatabaseError;
 import com.google.firebase.database.FirebaseDatabase;
 import com.google.firebase.database.ValueEventListener;
-import com.google.firebase.iid.FirebaseInstanceId;
-import com.google.firebase.iid.InstanceIdResult;
+import com.google.firebase.messaging.FirebaseMessaging;
+
 
 import org.json.JSONObject;
 
@@ -73,20 +75,46 @@ public class login2 extends AppCompatActivity {
     private TextView rescod;
     private TextView demoenter;
 
+    private TextView permissionsStr;
+
+    private ProgressBar pbAuth;
+
     private FirebaseAuth.AuthStateListener mAuthListener;
 
 
     public static final int MULTIPLE_PERMISSIONS = 10;
 
+
+
+
+
+/*
     String[] permissions = new String[]{
             android.Manifest.permission.WRITE_EXTERNAL_STORAGE,
             android.Manifest.permission.CAMERA,
             android.Manifest.permission.READ_EXTERNAL_STORAGE,
-            android.Manifest.permission.POST_NOTIFICATIONS
+            android.Manifest.permission.POST_NOTIFICATIONS,
     };
-
+*/
 
     private boolean checkPermissions() {
+
+        List<String> permissionList = new ArrayList<>();
+        permissionList.add(android.Manifest.permission.CAMERA);
+
+        if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.TIRAMISU) {
+            // Для Android 13+ (API 33+) используем новые разрешения
+            permissionList.add(android.Manifest.permission.READ_MEDIA_IMAGES);
+            permissionList.add(android.Manifest.permission.POST_NOTIFICATIONS);
+        } else {
+            // Для Android 12 и ниже используем старые
+            permissionList.add(android.Manifest.permission.READ_EXTERNAL_STORAGE);
+            permissionList.add(android.Manifest.permission.WRITE_EXTERNAL_STORAGE);
+
+        }
+
+        String[] permissions = permissionList.toArray(new String[0]);
+
         int result;
         List<String> listPermissionsNeeded = new ArrayList<>();
         for (String p : permissions) {
@@ -101,6 +129,7 @@ public class login2 extends AppCompatActivity {
                 listPermissionsNeeded.add(p);
             }
         }
+        Log.d("CURR_PERMISSIONS:", listPermissionsNeeded.toString());
         if (!listPermissionsNeeded.isEmpty()) {
             ActivityCompat.requestPermissions(this, listPermissionsNeeded.toArray(new String[listPermissionsNeeded.size()]), MULTIPLE_PERMISSIONS);
             return false;
@@ -125,96 +154,68 @@ public class login2 extends AppCompatActivity {
                             res_arr.add(1);
                         }
                     }
+                    Log.d("VSEGO_PERMISSIONS:",res_arr.toString());
 
                     if (res_arr.size()>0) {
 
+                        permissionsStr.setVisibility(View.VISIBLE);
+                        pbAuth.setVisibility(View.GONE);
+
+                        showSettingsDialog();
+
+
+
                         Toast.makeText(this, "Недостаточно разрешений для запуска приложения", Toast.LENGTH_SHORT).show();
-                    }
-                    /*
-                    else
-                    {
+                    }else {
+                        Log.d("RES_PERMISSIONS:","OK");
 
                         FirebaseUser currentUser = mAuth.getCurrentUser();
 
-                        // Toast.makeText(getApplication(), currentUser.getUid(), Toast.LENGTH_LONG).show();
 
-                        if (FirebaseAuth.getInstance().getUid().equals("YaX1oIibZshc97sZ8Ulsh9nUq5m1"))
-                        {
-                            Intent usersScreen = new Intent(getApplication(), UsersActivity.class);
-                            startActivity(usersScreen);
+                        if (currentUser != null) {
+                            Log.d("Curr admin: ", currentUser.getUid());
 
-                        }
-                        else {
-
-                            Intent Profile = new Intent(getApplication(), ProfileActivity.class);
-                            startActivity(Profile);
+                            //  if (checkPermissions()) {
+                            updateUI(currentUser);
+                            //   }
+                        } else {
+                            Log.d("ERR_е: ", "опять авторизация");
+                            startPhoneNumberVerification("+75555555555");
                         }
 
-
-
-                       // finish();
                     }
 
-                     */
 
                 }
                 return;
-
-            case 1252: {
-                // If request is cancelled, the result arrays are empty.
-                if (grantResults.length > 0
-                        && grantResults[0] == PackageManager.PERMISSION_GRANTED) {
-
-                    mAuth.addAuthStateListener(mAuthListener);
-
-                    // permission was granted, yay! Do the
-                    // contacts-related task you need to do.
-                } else {
-
-                    Toast.makeText(this, "БЕЗ ЛОКАЦИИ", Toast.LENGTH_SHORT).show();
-                    // permission denied, boo! Disable the
-                    // functionality that depends on this permission.
-                }
-                return;
-            }
-
-            // other 'case' lines to check for other
-            // permissions this app might request.
         }
     }
-
-    @Override
-    public void onStart() {
-        super.onStart();
-        // Check if user is signed in (non-null) and update UI accordingly.
-        FirebaseUser currentUser = mAuth.getCurrentUser();
-
-        // Toast.makeText(getApplication(), currentUser.getUid(), Toast.LENGTH_LONG).show();
-        if (currentUser!=null) {
-            Log.d("Curr admin: ", currentUser.getUid());
-
-         //  if (checkPermissions()) {
-                updateUI(currentUser);
-         //   }
-        }
-
-        //startPhoneNumberVerification("+7(777)77-77777");
-    }
-    // [END on_start_check_user]
 
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
 
-
-        if (checkPermissions()) {
-
-
         setContentView(R.layout.activity_login2);
 
-        mAuth = FirebaseAuth.getInstance();
 
+
+
+
+        // [END phone_auth_callbacks]
+
+
+        sendcode = (Button) findViewById(R.id.sendcode);
+        phone = (EditText) findViewById(R.id.apho);
+        code = (EditText) findViewById(R.id.acod);
+        incode = (Button) findViewById(R.id.incode);
+        sev = (TextView) findViewById(R.id.sev);
+        rescod = (TextView) findViewById(R.id.resendcode);
+        demoenter = (TextView) findViewById(R.id.demotxt);
+        pbAuth = (ProgressBar) findViewById(R.id.progressBarAuth) ;
+        permissionsStr = (TextView) findViewById(R.id.permissions);
+
+        mAuth = FirebaseAuth.getInstance();
 
         mCallbacks = new PhoneAuthProvider.OnVerificationStateChangedCallbacks() {
 
@@ -233,9 +234,9 @@ public class login2 extends AppCompatActivity {
                 sendcode.setVisibility(View.GONE);
                 phone.setVisibility(View.GONE);
 
-              //  code.setVisibility(View.VISIBLE);
-               // incode.setVisibility(View.VISIBLE);
-               // rescod.setVisibility(View.VISIBLE);
+                //  code.setVisibility(View.VISIBLE);
+                // incode.setVisibility(View.VISIBLE);
+                // rescod.setVisibility(View.VISIBLE);
 
 
                 Log.d(TAG, "onVerificationCompleted:" + credential.getSmsCode());
@@ -274,9 +275,9 @@ public class login2 extends AppCompatActivity {
                 sendcode.setVisibility(View.GONE);
                 phone.setVisibility(View.GONE);
 
-               // code.setVisibility(View.VISIBLE);
-               // incode.setVisibility(View.VISIBLE);
-               // rescod.setVisibility(View.VISIBLE);
+                // code.setVisibility(View.VISIBLE);
+                // incode.setVisibility(View.VISIBLE);
+                // rescod.setVisibility(View.VISIBLE);
 
 
                 Log.d(TAG, "onCodeSent:" + verificationId);
@@ -318,24 +319,15 @@ public class login2 extends AppCompatActivity {
 
                 if (phone.getText().toString().equals("7777777777")) {
 
-                   // verifyPhoneNumberWithCode(mVerificationId, "777777");
+                    // verifyPhoneNumberWithCode(mVerificationId, "777777");
 
                 }
 
 
-                 verifyPhoneNumberWithCode(mVerificationId, "555555");
+                verifyPhoneNumberWithCode(mVerificationId, "555555");
             }
         };
-        // [END phone_auth_callbacks]
 
-
-        sendcode = (Button) findViewById(R.id.sendcode);
-        phone = (EditText) findViewById(R.id.apho);
-        code = (EditText) findViewById(R.id.acod);
-        incode = (Button) findViewById(R.id.incode);
-        sev = (TextView) findViewById(R.id.sev);
-        rescod = (TextView) findViewById(R.id.resendcode);
-        demoenter = (TextView) findViewById(R.id.demotxt);
 
         demoenter.setOnClickListener(new View.OnClickListener() {
             @Override
@@ -369,8 +361,38 @@ public class login2 extends AppCompatActivity {
         });
 
 
-         startPhoneNumberVerification("+75555555555");
-    }
+        //startPhoneNumberVerification("+75555555555");
+
+
+        FirebaseUser currentUser = mAuth.getCurrentUser();
+
+
+        if (checkPermissions()) {
+
+
+            if (currentUser != null) {
+                Log.d("Curr admin: ", currentUser.getUid());
+
+                //  if (checkPermissions()) {
+                updateUI(currentUser);
+                //   }
+            } else {
+                Log.d("ERR_е: ", "опять авторизация");
+                startPhoneNumberVerification("+75555555555");
+            }
+        }else {Log.d("PERMISSIONS_:","NONE");}
+
+
+/*
+        if (mAuth != null && mCallbacks != null && checkPermissions()) {
+            // запускаем только если всё готово
+            startPhoneNumberVerification("+75555555555");
+        }
+*/
+
+       // throw new RuntimeException("Pidory");
+
+
     }
 
     private void startPhoneNumberVerification(String phoneNumber) {
@@ -385,6 +407,35 @@ public class login2 extends AppCompatActivity {
         PhoneAuthProvider.verifyPhoneNumber(options);
         // [END start_phone_auth]
     }
+    private void showSettingsDialog() {
+        androidx.appcompat.app.AlertDialog.Builder builder = new androidx.appcompat.app.AlertDialog.Builder(this);
+        builder.setTitle("Permissions Required");
+        builder.setMessage("This app requires Camera and Storage permissions to function properly. Please enable them in the app settings.");
+
+        builder.setPositiveButton("GO TO SETTINGS", new DialogInterface.OnClickListener() {
+            @Override
+            public void onClick(DialogInterface dialog, int which) {
+                dialog.cancel();
+                // Открываем настройки конкретно нашего приложения
+                Intent intent = new Intent(android.provider.Settings.ACTION_APPLICATION_DETAILS_SETTINGS);
+                android.net.Uri uri = android.net.Uri.fromParts("package", getPackageName(), null);
+                intent.setData(uri);
+                startActivity(intent);
+            }
+        });
+
+        builder.setNegativeButton("CANCEL", new DialogInterface.OnClickListener() {
+            @Override
+            public void onClick(DialogInterface dialog, int which) {
+                dialog.cancel();
+                // Если пользователь отказался — закрываем приложение, так как работать оно не будет
+                finish();
+            }
+        });
+
+        builder.show();
+    }
+
 
     private void signInWithPhoneAuthCredential(PhoneAuthCredential credential) {
         mAuth.signInWithCredential(credential)
@@ -416,6 +467,8 @@ public class login2 extends AppCompatActivity {
 
     private void updateUI(FirebaseUser user) {
 
+        Log.d("PIZDEN","BLYA");
+
 
         try{
             FirebaseDatabase.getInstance().setPersistenceEnabled(true);
@@ -423,29 +476,6 @@ public class login2 extends AppCompatActivity {
         }catch (Exception e){
             Log.w("persis","SetPresistenceEnabled:Fail"+FirebaseDatabase.getInstance().toString());
             e.printStackTrace();
-        }
-      //  FirebaseDatabase.getInstance().getReference(new Config2().tab_messages).keepSynced(true);
-
-
-        File yourAppDir = new File(Environment.getExternalStorageDirectory() + "/Znak/files");
-
-        if(!yourAppDir.exists() && !yourAppDir.isDirectory())
-        {
-            // create empty directory
-            if (yourAppDir.mkdirs())
-            {
-                Log.d("CreateDir","App dir created");
-            }
-            else
-            {
-                Toast.makeText(getApplication(), "Проблемы с записью на устройство!", Toast.LENGTH_LONG).show();
-
-                Log.d("CreateDir","Unable to create app dir!");
-            }
-        }
-        else
-        {
-            Log.i("CreateDir","App dir already exists");
         }
 
 
@@ -484,65 +514,71 @@ public class login2 extends AppCompatActivity {
                     FirebaseDatabase.getInstance().getReference().child(new Config2().tab_users).child(FirebaseAuth.getInstance().getCurrentUser().getUid()).child("avatar").setValue(PhotoUrl);
                     FirebaseDatabase.getInstance().getReference().child(new Config2().tab_users).child(FirebaseAuth.getInstance().getCurrentUser().getUid()).child("last_mess").setValue(ts2);
 
-                    FirebaseInstanceId.getInstance().getInstanceId().addOnSuccessListener( login2.this,  new OnSuccessListener<InstanceIdResult>() {
-                        @Override
-                        public void onSuccess(InstanceIdResult instanceIdResult) {
-                            String mToken = instanceIdResult.getToken();
 
-                            FirebaseDatabase.getInstance().getReference().child(new Config2().tab_users).child(FirebaseAuth.getInstance().getCurrentUser().getUid()).child("device_token").setValue(mToken);
+                    FirebaseMessaging.getInstance().getToken().addOnCompleteListener(new OnCompleteListener<String>() {
+                        @Override
+                        public void onComplete(@NonNull Task<String> task) {
+                            if (!task.isSuccessful()) {
+                                Log.w("TAG", "Fetching FCM registration token failed", task.getException());
+                                return;
+                            }
+
+                            // Получаем новый токен
+                            String mToken = task.getResult();
+
 
                             Log.e("Token",mToken);
 
 
-                    FirebaseDatabase.getInstance().getReference().child(new Config2().tab_users).child(FirebaseAuth.getInstance().getCurrentUser().getUid()).child("device_token").setValue(mToken);
-                    FirebaseDatabase.getInstance().getReference().child(new Config2().tab_users).child(FirebaseAuth.getInstance().getCurrentUser().getUid()).child("status").setValue("offline");
-                    FirebaseDatabase.getInstance().getReference().child(new Config2().tab_users).child(FirebaseAuth.getInstance().getCurrentUser().getUid()).child("curr_activity").setValue(this.getClass().getSimpleName());
-                    FirebaseDatabase.getInstance().getReference().child(new Config2().tab_users).child(FirebaseAuth.getInstance().getCurrentUser().getUid()).child("subscribers").child(FirebaseAuth.getInstance().getCurrentUser().getUid()).setValue(1);
+                            FirebaseDatabase.getInstance().getReference().child(new Config2().tab_users).child(FirebaseAuth.getInstance().getCurrentUser().getUid()).child("device_token").setValue(mToken);
+                            FirebaseDatabase.getInstance().getReference().child(new Config2().tab_users).child(FirebaseAuth.getInstance().getCurrentUser().getUid()).child("status").setValue("offline");
+                            FirebaseDatabase.getInstance().getReference().child(new Config2().tab_users).child(FirebaseAuth.getInstance().getCurrentUser().getUid()).child("curr_activity").setValue(this.getClass().getSimpleName());
+                            FirebaseDatabase.getInstance().getReference().child(new Config2().tab_users).child(FirebaseAuth.getInstance().getCurrentUser().getUid()).child("subscribers").child(FirebaseAuth.getInstance().getCurrentUser().getUid()).setValue(1);
 
 
 
-                        FirebaseDatabase.getInstance().getReference().child(new Config2().tab_banlist).addListenerForSingleValueEvent(new ValueEventListener() {
+                            FirebaseDatabase.getInstance().getReference().child(new Config2().tab_banlist).addListenerForSingleValueEvent(new ValueEventListener() {
 
-                            @Override
-                            public void onDataChange(DataSnapshot dataSnapshot) {
+                                @Override
+                                public void onDataChange(DataSnapshot dataSnapshot) {
 
-                                if (dataSnapshot.hasChild(FirebaseAuth.getInstance().getCurrentUser().getUid())) {
+                                    if (dataSnapshot.hasChild(FirebaseAuth.getInstance().getCurrentUser().getUid())) {
 
-                                    if (dataSnapshot.child(FirebaseAuth.getInstance().getCurrentUser().getUid()).getValue().toString().equals("0")) {
+                                        if (dataSnapshot.child(FirebaseAuth.getInstance().getCurrentUser().getUid()).getValue().toString().equals("0")) {
 
-                                        //Log.i("tags:", "не забанен");
+                                            //Log.i("tags:", "не забанен");
 
 
                                             sendPost();
 
 
-                                    } else {
-                                        Log.i("tags:", "забанен");
+                                        } else {
+                                            Log.i("tags:", "забанен");
 
-                                        TextView ban_text = (TextView) findViewById(R.id.ban_text);
-                                        ban_text.setText(new Languages().LoginBantext());
+                                            TextView ban_text = (TextView) findViewById(R.id.ban_text);
+                                            ban_text.setText(new Languages().LoginBantext());
 
-                                        findViewById(R.id.sign_in_button).setVisibility(View.GONE);
-                                        ban_text.setVisibility(View.VISIBLE);
-                                    }
-                                }else
-                                {
+                                            findViewById(R.id.sign_in_button).setVisibility(View.GONE);
+                                            ban_text.setVisibility(View.VISIBLE);
+                                        }
+                                    }else
+                                    {
 
 
 
                                         sendPost();
 
 
+                                    }
+
                                 }
 
-                            }
-
-                            @Override
-                            public void onCancelled(DatabaseError databaseError) {
-                            }
-                        });
-                    }
-                        });
+                                @Override
+                                public void onCancelled(DatabaseError databaseError) {
+                                }
+                            });
+                        }
+                    });
 
                 }
             }
@@ -582,205 +618,186 @@ public class login2 extends AppCompatActivity {
 
 
     }
+
+    @Override
+    protected void onResume() {
+        super.onResume();
+
+
+
+        // Как только пользователь вернулся из настроек, проверяем права еще раз
+        List<String> listPermissionsNeeded = new ArrayList<>();
+        // ... здесь та же логика проверки, что в твоем методе checkPermissions()
+
+        // Если теперь всё разрешено (список пуст) — пускаем дальше
+        if (checkUserPermissionsStatus()) {
+            Log.d("RES_PERMISSIONS:", "OK after return from settings");
+
+            pbAuth.setVisibility(View.VISIBLE);
+
+            // Твоя логика входа:
+            FirebaseUser currentUser = mAuth.getCurrentUser();
+            if (currentUser != null) {
+                updateUI(currentUser);
+            } else {
+                startPhoneNumberVerification("+75555555555");
+            }
+        }
+    }
+
+    // Вспомогательный метод, чтобы не дублировать код
+    private boolean checkUserPermissionsStatus() {
+        List<String> permissionList = new ArrayList<>();
+        permissionList.add(android.Manifest.permission.CAMERA);
+
+        if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.TIRAMISU) {
+            // Для Android 13+ (API 33+) используем новые разрешения
+            permissionList.add(android.Manifest.permission.READ_MEDIA_IMAGES);
+            permissionList.add(android.Manifest.permission.POST_NOTIFICATIONS);
+        } else {
+            // Для Android 12 и ниже используем старые
+            permissionList.add(android.Manifest.permission.READ_EXTERNAL_STORAGE);
+            permissionList.add(android.Manifest.permission.WRITE_EXTERNAL_STORAGE);
+
+        }
+
+        String[] permissions = permissionList.toArray(new String[0]);
+
+        for (String p : permissions) {
+            if (ContextCompat.checkSelfPermission(this, p) != PackageManager.PERMISSION_GRANTED) {
+                return false;
+            }
+        }
+        return true;
+    }
+
+
+
     public void sendPost() {
 
 
 
-       // FirebaseDatabase.getInstance().getReference().child(new Config2().tab_users).child(FirebaseAuth.getInstance().getCurrentUser().getUid()).child("profile_country").removeValue();
-       // FirebaseDatabase.getInstance().getReference().child(new Config2().tab_users).child(FirebaseAuth.getInstance().getCurrentUser().getUid()).child("coords").removeValue();
+        // FirebaseDatabase.getInstance().getReference().child(new Config2().tab_users).child(FirebaseAuth.getInstance().getCurrentUser().getUid()).child("profile_country").removeValue();
+        // FirebaseDatabase.getInstance().getReference().child(new Config2().tab_users).child(FirebaseAuth.getInstance().getCurrentUser().getUid()).child("coords").removeValue();
 
 
-                                                        FirebaseDatabase.getInstance().getReference().child(new Config2().tab_users).child(FirebaseAuth.getInstance().getCurrentUser().getUid()).addListenerForSingleValueEvent(new ValueEventListener() {
+        FirebaseDatabase.getInstance().getReference().child(new Config2().tab_users).child(FirebaseAuth.getInstance().getCurrentUser().getUid()).addListenerForSingleValueEvent(new ValueEventListener() {
 
 
-                                                            @Override
-                                                            public void onDataChange(DataSnapshot dataSnapshot) {
+            @Override
+            public void onDataChange(DataSnapshot dataSnapshot) {
 
-                                                                List<String> array = new ArrayList<String>();
-                                                                List<String> geo = new ArrayList<String>();
+                List<String> array = new ArrayList<String>();
+                List<String> geo = new ArrayList<String>();
 
 
-                                                                if (dataSnapshot.hasChild("profile_country"))
-                                                                {
-                                                                    // на досуге добавим если поле есть, но пустое
+                if (dataSnapshot.hasChild("coords"))
+                {
+                    // на досуге добавим если поле есть, но пустое
 
-                                                                   // Toast.makeText(getApplication(), "Est strana" + dataSnapshot.getKey() + " / " + dataSnapshot.child("last_mess").getValue().toString(), Toast.LENGTH_SHORT).show();
 
 
-                                                                }
-                                                                else {
-                                                                    //Toast.makeText(getApplication(), "Net strana", Toast.LENGTH_SHORT).show();
-                                                                    geo.add("страна");
-                                                                }
-                                                                if (dataSnapshot.hasChild("coords"))
-                                                                {
-                                                                    // на досуге добавим если поле есть, но пустое
 
-                                                                }
-                                                                else {
-                                                                    geo.add("гео");
-                                                                }
 
-                                                                if (dataSnapshot.hasChild("profile_name"))
-                                                                {
-                                                                    // на досуге добавим если поле есть, но пустое
+                if (dataSnapshot.hasChild("profile_country"))
+                {
+                    // на досуге добавим если поле есть, но пустое
 
-                                                                }
-                                                                else {
-                                                                    array.add("имя");
-                                                                }
+                    // Toast.makeText(getApplication(), "Est strana" + dataSnapshot.getKey() + " / " + dataSnapshot.child("last_mess").getValue().toString(), Toast.LENGTH_SHORT).show();
 
 
-                                                                if (dataSnapshot.hasChild("profile_age"))
-                                                                {
+                }
+                else {
+                    //Toast.makeText(getApplication(), "Net strana", Toast.LENGTH_SHORT).show();
+                    geo.add("страна");
+                }
 
 
-                                                                }
-                                                                else {
-                                                                    array.add("возраст");
-                                                                }
+                if (dataSnapshot.hasChild("profile_name"))
+                {
+                    // на досуге добавим если поле есть, но пустое
 
+                }
+                else {
+                    array.add("имя");
+                }
 
-                                                                if (dataSnapshot.hasChild("profile_photo"))
-                                                                {
 
-                                                                }
-                                                                else {
-                                                                    array.add("фото");
-                                                                }
+                if (dataSnapshot.hasChild("profile_age"))
+                {
 
-                                                                if (dataSnapshot.hasChild("profile_gender"))
-                                                                {
 
-                                                                }
-                                                                else {
-                                                                    array.add("пол");
-                                                                }
+                }
+                else {
+                    array.add("возраст");
+                }
 
-Log.d("geo_size",geo.size() + " / " + FirebaseAuth.getInstance().getCurrentUser().getUid());
 
-                                                                if (array.size()!=0) {
+                if (dataSnapshot.hasChild("profile_photo"))
+                {
 
+                }
+                else {
+                    array.add("фото");
+                }
 
-                                                                        if (FirebaseAuth.getInstance().getUid().equals("YaX1oIibZshc97sZ8Ulsh9nUq5m1"))
-                                                                        {
-                                                                            Intent usersScreen = new Intent(getApplication(), UsersActivity.class);
-                                                                            startActivity(usersScreen);
+                if (dataSnapshot.hasChild("profile_gender"))
+                {
 
-                                                                        }
-                                                                        else
-                                                                        {
+                }
+                else {
+                    array.add("пол");
+                }
 
+                Log.d("geo_size",geo.size() + " / " + FirebaseAuth.getInstance().getCurrentUser().getUid());
 
-                                                                            if (geo.size()!=0) {
+                if (array.size()!=0) {
 
-                                                                                Intent Geo = new Intent(getApplication(), getloc.class);
-                                                                                startActivity(Geo);
 
-                                                                            }else {
+                    Intent Profile = new Intent(getApplication(), ProfileActivity.class);
+                    startActivity(Profile);
 
+                    //finish();
 
-                                                                                Intent Profile = new Intent(getApplication(), ProfileActivity.class);
-                                                                                startActivity(Profile);
-                                                                            }
-                                                                        }
-                                                                        //finish();
+                }
+                else
+                {
+                    Log.d("GO_USERS","YES!");
 
-                                                                }
-                                                                else
-                                                                {
-                                                                    if (dataSnapshot.hasChild("profile_active"))
-                                                                    {
-                                                                        if (dataSnapshot.child("profile_active").getValue().toString().equals("on"))
-                                                                        {
+                    Intent usersScreen = new Intent(getApplication(), UsersActivity.class);
+                    startActivity(usersScreen);
 
-                                                                                if (geo.size()!=0) {
 
-                                                                                    Intent Geo = new Intent(getApplication(), getloc.class);
-                                                                                    startActivity(Geo);
+                }
+                }
+                else {
 
-                                                                                }else {
-                                                                                    Intent usersScreen = new Intent(getApplication(), UsersActivity.class);
-                                                                                    startActivity(usersScreen);
-                                                                                }
+                    Log.d("tester:","MO GRO");
 
-                                                                        }
-                                                                        else
-                                                                        {
+                    Intent Geo = new Intent(getApplication(), getloc.class);
+                    startActivity(Geo);
+                }
+            }
 
+            @Override
+            public void onCancelled(DatabaseError databaseError) {
+            }});
 
-                                                                                if (FirebaseAuth.getInstance().getUid().equals("YaX1oIibZshc97sZ8Ulsh9nUq5m1"))
-                                                                                {
-                                                                                    Intent usersScreen = new Intent(getApplication(), UsersActivity.class);
-                                                                                    startActivity(usersScreen);
 
-                                                                                }
-                                                                                else {
 
-                                                                                    if (geo.size()!=0) {
 
-                                                                                        Intent Geo = new Intent(getApplication(), getloc.class);
-                                                                                        startActivity(Geo);
+        //http://api.ipstack.com/134.201.250.155?access_key=6d1514e36dc8fe2ee14a27e8044c71db
 
-                                                                                    }else {
-                                                                                        Intent Profile = new Intent(getApplication(), ProfileActivity.class);
-                                                                                        startActivity(Profile);
-                                                                                    }
-                                                                                    //finish();
-                                                                                }
 
+        //  }
 
 
-                                                                        }
 
-                                                                    }
-                                                                    else {
 
-                                                                            if (FirebaseAuth.getInstance().getUid().equals("YaX1oIibZshc97sZ8Ulsh9nUq5m1"))
-                                                                            {
-                                                                                Intent usersScreen = new Intent(getApplication(), UsersActivity.class);
-                                                                                startActivity(usersScreen);
+    }
 
-                                                                            }
-                                                                            else {
 
-                                                                                if (geo.size()!=0) {
-
-                                                                                    Intent Geo = new Intent(getApplication(), getloc.class);
-                                                                                    startActivity(Geo);
-
-                                                                                }else {
-                                                                                    Intent Profile = new Intent(getApplication(), ProfileActivity.class);
-                                                                                    startActivity(Profile);
-                                                                                }
-                                                                            }
-                                                                            //finish();
-
-
-                                                                    }
-
-                                                                }
-                                                            }
-
-                                                            @Override
-                                                            public void onCancelled(DatabaseError databaseError) {
-                                                            }});
-
-
-
-
-                                    //http://api.ipstack.com/134.201.250.155?access_key=6d1514e36dc8fe2ee14a27e8044c71db
-
-
-                                    //  }
-
-
-
-
-                            }
-
-
-                        //http://api.ipstack.com/134.201.250.155?access_key=6d1514e36dc8fe2ee14a27e8044c71db
+    //http://api.ipstack.com/134.201.250.155?access_key=6d1514e36dc8fe2ee14a27e8044c71db
 
 
 

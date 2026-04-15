@@ -42,7 +42,8 @@ import com.google.firebase.database.DataSnapshot;
 import com.google.firebase.database.DatabaseError;
 import com.google.firebase.database.FirebaseDatabase;
 import com.google.firebase.database.ValueEventListener;
-import com.google.firebase.iid.FirebaseInstanceId;
+import com.google.firebase.messaging.FirebaseMessaging;
+
 
 import org.json.JSONObject;
 
@@ -76,6 +77,8 @@ public class login extends AppCompatActivity implements GoogleApiClient.Connecti
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
 
+        mAuth = FirebaseAuth.getInstance();
+
 
         if (Build.VERSION.SDK_INT >= 24) {
             try {
@@ -91,7 +94,7 @@ public class login extends AppCompatActivity implements GoogleApiClient.Connecti
         setContentView(R.layout.activity_login);
 
 
-        mAuth = FirebaseAuth.getInstance();
+
 
         mAuthListener = new FirebaseAuth.AuthStateListener() {
             @Override
@@ -113,7 +116,26 @@ public class login extends AppCompatActivity implements GoogleApiClient.Connecti
                    // FirebaseDatabase.getInstance().getReference().child(new Config2().tab_users).child(FirebaseAuth.getInstance().getCurrentUser().getUid()).child("avatar").setValue(PhotoUrl);
                     FirebaseDatabase.getInstance().getReference().child(new Config2().tab_users).child(FirebaseAuth.getInstance().getCurrentUser().getUid()).child("last_mess").setValue(ts2);
 
-                    final String device_token = FirebaseInstanceId.getInstance().getToken();
+
+
+
+
+                    FirebaseMessaging.getInstance().getToken().addOnCompleteListener(new OnCompleteListener<String>() {
+                        @Override
+                        public void onComplete(@NonNull Task<String> task) {
+                            if (!task.isSuccessful()) {
+                                Log.w("TAG", "Fetching FCM registration token failed", task.getException());
+                                return;
+                            }
+
+                            // Получаем новый токен
+                            String device_token = task.getResult();
+
+
+
+
+
+
 
                     FirebaseDatabase.getInstance().getReference().child(new Config2().tab_users).child(FirebaseAuth.getInstance().getCurrentUser().getUid()).child("device_token").setValue(device_token);
                     FirebaseDatabase.getInstance().getReference().child(new Config2().tab_users).child(FirebaseAuth.getInstance().getCurrentUser().getUid()).child("status").setValue("offline");
@@ -157,6 +179,11 @@ public class login extends AppCompatActivity implements GoogleApiClient.Connecti
                             }
                         });
                     }
+                            // Вставьте сюда код, который должен идти ПОСЛЕ получения токена
+                            // (например, отправка на ваш сервер или вход в базу)
+                            Log.d("TAG", "Token: " + device_token);
+                        }
+                    });
 
                 }
             }

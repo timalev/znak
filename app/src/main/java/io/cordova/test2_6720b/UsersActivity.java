@@ -12,9 +12,7 @@ import android.os.Bundle;
 import android.os.Environment;
 
 import androidx.annotation.NonNull;
-import androidx.constraintlayout.solver.widgets.Snapshot;
-import androidx.core.app.ActivityCompat;
-import androidx.core.content.ContextCompat;
+
 import androidx.appcompat.app.AppCompatActivity;
 import androidx.recyclerview.widget.RecyclerView;
 import androidx.appcompat.widget.Toolbar;
