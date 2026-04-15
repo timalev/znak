@@ -87,16 +87,6 @@ public class login2 extends AppCompatActivity {
 
 
 
-
-/*
-    String[] permissions = new String[]{
-            android.Manifest.permission.WRITE_EXTERNAL_STORAGE,
-            android.Manifest.permission.CAMERA,
-            android.Manifest.permission.READ_EXTERNAL_STORAGE,
-            android.Manifest.permission.POST_NOTIFICATIONS,
-    };
-*/
-
     private boolean checkPermissions() {
 
         List<String> permissionList = new ArrayList<>();

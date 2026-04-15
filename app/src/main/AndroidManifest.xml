@@ -83,9 +83,9 @@
             android:name="io.cordova.test2_6720b.login2"
             android:screenOrientation="portrait">
             <intent-filter>
-
+<!--
                 <action android:name="android.intent.action.MAIN" />
-
+-->
                 <category android:name="android.intent.category.LAUNCHER" />
             </intent-filter>
         </activity>
@@ -96,10 +96,8 @@
             android:screenOrientation="portrait">
             <intent-filter>
 
-                <!--
                 <action
                     android:name="android.intent.action.MAIN" />
--->
                 <category android:name="android.intent.category.LAUNCHER" />
             </intent-filter>
         </activity>

@@ -2,6 +2,7 @@ package io.cordova.test2_6720b;
 
 
 import android.Manifest;
+import android.content.DialogInterface;
 import android.content.Intent;
 import android.content.pm.PackageManager;
 import android.location.Location;
@@ -68,7 +69,9 @@ public class login extends AppCompatActivity implements GoogleApiClient.Connecti
     private FirebaseAuth mAuth;
     private FirebaseAuth.AuthStateListener mAuthListener;
 
+    private TextView permissionsStr;
 
+    private ProgressBar pbAuth;
 
 
 
@@ -78,6 +81,11 @@ public class login extends AppCompatActivity implements GoogleApiClient.Connecti
         super.onCreate(savedInstanceState);
 
         mAuth = FirebaseAuth.getInstance();
+
+        setContentView(R.layout.activity_login);
+
+        pbAuth = (ProgressBar) findViewById(R.id.progressBar) ;
+        permissionsStr = (TextView) findViewById(R.id.permissions);
 
 
         if (Build.VERSION.SDK_INT >= 24) {
@@ -89,9 +97,9 @@ public class login extends AppCompatActivity implements GoogleApiClient.Connecti
             }
         }
 
-        if (checkPermissions()) {
 
-        setContentView(R.layout.activity_login);
+
+
 
 
 
@@ -155,7 +163,10 @@ public class login extends AppCompatActivity implements GoogleApiClient.Connecti
 
                                         Log.i("tags:", "не забанен");
 
-                                        sendPost();
+                                        if (checkPermissions()) {
+
+                                            sendPost();
+                                        }
 
                                     } else {
                                         Log.i("tags:", "забанен");
@@ -169,7 +180,10 @@ public class login extends AppCompatActivity implements GoogleApiClient.Connecti
                                 }else
                                 {
                                     Log.i("tags2:", "не забанен");
-                                    sendPost();
+
+                                    if (checkPermissions()) {
+                                        sendPost();
+                                    }
                                 }
 
                             }
@@ -193,6 +207,9 @@ public class login extends AppCompatActivity implements GoogleApiClient.Connecti
 
 
 
+
+
+
             mAuth.addAuthStateListener(mAuthListener);
 
             GoogleSignInOptions gso = new GoogleSignInOptions.Builder(GoogleSignInOptions.DEFAULT_SIGN_IN)
@@ -210,9 +227,26 @@ public class login extends AppCompatActivity implements GoogleApiClient.Connecti
             signInButton.setSize(SignInButton.SIZE_STANDARD);
 
             findViewById(R.id.sign_in_button).setOnClickListener(this);
-        }
-    }
 
+    }
+/*
+    @Override
+    protected void onResume() {
+        super.onResume();
+
+        if (checkPermissions()) {
+            FirebaseUser currentUser = mAuth.getCurrentUser();
+            if (currentUser != null) {
+
+
+                sendPost();
+            }
+        }
+
+
+
+    }
+*/
 
     @Override
     public void onClick(View v) {
@@ -241,15 +275,11 @@ public class login extends AppCompatActivity implements GoogleApiClient.Connecti
 
         // 🔔 Уведомления — только для Android 13+
         if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.TIRAMISU) {
+            permissionsList.add(android.Manifest.permission.READ_MEDIA_IMAGES);
             permissionsList.add(Manifest.permission.POST_NOTIFICATIONS);
         }
 
-        // 🖼️ Доступ к фото/видео — зависит от версии
-        if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.TIRAMISU) {
-            // ✅ Android 13+: новые разрешения
-            permissionsList.add(Manifest.permission.READ_MEDIA_IMAGES);
-            permissionsList.add(Manifest.permission.READ_MEDIA_VIDEO);
-        } else {
+        else {
             // ✅ Android 12 и ниже: старые разрешения
             permissionsList.add(Manifest.permission.READ_EXTERNAL_STORAGE);
             permissionsList.add(Manifest.permission.WRITE_EXTERNAL_STORAGE);
@@ -288,40 +318,51 @@ private boolean checkPermissions() {
     return true;
 }
 
+
+
     @Override
-    public void onRequestPermissionsResult(int requestCode, String permissions[], int[] grantResults) {
-        if (requestCode == MULTIPLE_PERMISSIONS) {
-            boolean allGranted = true;
+    public void onRequestPermissionsResult(int requestCode,
+                                           String permissions[], int[] grantResults) {
+        switch (requestCode) {
+            case 10:
 
-            for (int result : grantResults) {
-                if (result != PackageManager.PERMISSION_GRANTED) {
-                    allGranted = false;
-                    break;
+                ArrayList res_arr = new ArrayList<>();
+
+                if (grantResults.length > 0) {
+
+                    for (int i = 0; i < grantResults.length; i++)
+                    {
+                        if (grantResults[i]!=PackageManager.PERMISSION_GRANTED )
+                        {
+                            res_arr.add(1);
+                        }
+                    }
+                    Log.d("VSEGO_PERMISSIONS:",res_arr.toString());
+
+                    if (res_arr.size()>0) {
+
+                        pbAuth = (ProgressBar) findViewById(R.id.progressBar) ;
+                        permissionsStr = (TextView) findViewById(R.id.permissions);
+
+
+
+                        showSettingsDialog();
+
+
+
+                        Toast.makeText(this, "Недостаточно разрешений для запуска приложения", Toast.LENGTH_SHORT).show();
+                    }else {
+                        recreate();
+
+                    }
+
+
                 }
-            }
-
-            if (!allGranted) {
-                // 🔴 Показываем понятное сообщение, а не просто "недостаточно разрешений"
-                new AlertDialog.Builder(this)
-                        .setTitle("⚠️ Требуется доступ")
-                        .setMessage("Приложению нужен доступ к фото и камере для загрузки изображений. Разрешите в настройках.")
-                        .setPositiveButton("Настройки", (dialog, which) -> {
-                            // Открываем настройки приложения
-                            Intent intent = new Intent(android.provider.Settings.ACTION_APPLICATION_DETAILS_SETTINGS);
-                            intent.setData(android.net.Uri.fromParts("package", getPackageName(), null));
-                            startActivity(intent);
-                        })
-                        .setNegativeButton("Отмена", null)
-                        .show();
-            } else {
-                // ✅ Все разрешения получены — можно перезагрузить активность или продолжить
-                recreate(); // или просто продолжить выполнение
-            }
-            return;
+                return;
         }
-
-        // Остальные case...
     }
+
+
 
     private void closeNow() {
         if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.JELLY_BEAN) {
@@ -329,6 +370,35 @@ private boolean checkPermissions() {
         } else {
             finish();
         }
+    }
+
+    private void showSettingsDialog() {
+        androidx.appcompat.app.AlertDialog.Builder builder = new androidx.appcompat.app.AlertDialog.Builder(this);
+        builder.setTitle("Permissions Required");
+        builder.setMessage("This app requires Camera and Storage permissions to function properly. Please enable them in the app settings.");
+
+        builder.setPositiveButton("GO TO SETTINGS", new DialogInterface.OnClickListener() {
+            @Override
+            public void onClick(DialogInterface dialog, int which) {
+                dialog.cancel();
+                // Открываем настройки конкретно нашего приложения
+                Intent intent = new Intent(android.provider.Settings.ACTION_APPLICATION_DETAILS_SETTINGS);
+                android.net.Uri uri = android.net.Uri.fromParts("package", getPackageName(), null);
+                intent.setData(uri);
+                startActivity(intent);
+            }
+        });
+
+        builder.setNegativeButton("CANCEL", new DialogInterface.OnClickListener() {
+            @Override
+            public void onClick(DialogInterface dialog, int which) {
+                dialog.cancel();
+                // Если пользователь отказался — закрываем приложение, так как работать оно не будет
+                finish();
+            }
+        });
+
+        builder.show();
     }
 
     private void signIn() {
@@ -426,6 +496,8 @@ private boolean checkPermissions() {
                     }
                 });
     }
+
+
 
 
     public void sendPost() {
@@ -616,6 +688,9 @@ Log.d("send_post","act");
 
 
 
+
+
+
         //http://api.ipstack.com/134.201.250.155?access_key=6d1514e36dc8fe2ee14a27e8044c71db
 
 
@@ -627,4 +702,6 @@ Log.d("send_post","act");
     }
 
 
+
 }
+
