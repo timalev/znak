@@ -701,6 +701,22 @@ Log.d("send_post","act");
 
     }
 
+    @Override
+    protected void onResume() {
+        super.onResume();
+        if (mAuth.getCurrentUser() != null) {
+            // Проверяем разрешения без запроса
+            boolean ok = true;
+            for (String p : getRequiredPermissions()) {
+                if (ContextCompat.checkSelfPermission(this, p) != PackageManager.PERMISSION_GRANTED) {
+                    ok = false;
+                    break;
+                }
+            }
+            if (ok) sendPost(); // ✅ Все есть → идём дальше
+        }
+    }
+
 
 
 }
