@@ -227,6 +227,8 @@ public class VideoActivityMess extends AppCompatActivity implements View.OnClick
         final MenuItem banuser = menu.findItem(R.id.banuser);
         final MenuItem sendprofile = menu.findItem(R.id.sendprofile);
 
+        Log.d("EBAY:",FirebaseAuth.getInstance().getCurrentUser().getUid());
+
 
               if (FirebaseAuth.getInstance().getCurrentUser().getUid().equals("Simh5X1gVCbqkH0qPJ5N6ouqKTx1"))
 

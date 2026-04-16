@@ -281,7 +281,7 @@ public class getloc extends AppCompatActivity {
 
 
                                 }else {
-                                    gofromloc = new Intent(getApplication(), login.class);
+                                    gofromloc = new Intent(getApplication(), loginEmail.class);
                                 }
 
                                startActivity(gofromloc);

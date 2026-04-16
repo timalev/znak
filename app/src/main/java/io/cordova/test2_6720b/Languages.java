@@ -541,6 +541,18 @@ public class Languages {
 
         return hashMap.get(lang);
     }
+    public String GoogleEnterLink()
+    {
+        hashMap.put("ru","\uD83D\uDD10 Войти через Google");
+        hashMap.put("en","\uD83D\uDD10 Sign in with Google");
+        hashMap.put("de","\uD83D\uDD10 Mit Google anmelden");
+        hashMap.put("zh","\uD83D\uDD10 使用 Google 登入");
+        hashMap.put("es","\uD83D\uDD10 Iniciar sesión con Google");
+        hashMap.put("ar","سجّل الدخول باستخدام حساب جوجل\uD83D\uDD10 ");
+
+
+        return hashMap.get(lang);
+    }
 
     public String NoMoreUsers()
     {

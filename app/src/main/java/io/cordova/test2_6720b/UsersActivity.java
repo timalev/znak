@@ -314,6 +314,8 @@ public class UsersActivity extends AppCompatActivity {
                                     HashMap<String, String> M_device_token = new HashMap<>();
                                     HashMap<String, String> M_profile_gender = new HashMap<>();
 
+                                    Log.d("PIDR","HUYNJA");
+
                                     for (DataSnapshot child : dataSnapshot.getChildren()) {
 
                                         final String Key = child.getKey();
@@ -424,8 +426,10 @@ Log.d("GONFDO",profile_photo + ", " + Key);
                                     pg_layout.setVisibility(View.GONE);
                                     bottom_control.setVisibility(View.VISIBLE);
 
+                                    Log.d("VSEGO_USERS:", "->" + array.size());
 
-                                    if (array.size() == 0) {
+
+                                    if (catNames.size() == 0) {
                                         LinearLayout control_b = findViewById(R.id.bottom_control);
                                         control_b.setVisibility(View.GONE);
 
@@ -533,6 +537,8 @@ Log.d("GONFDO",profile_photo + ", " + Key);
                                             }
 // условие 2
                                             if (distance < limited_dist && child.hasChild("profile_photo")) { // отображение всех в радиусе 100 м
+
+                                                Log.d("GONDON:",Key);
 
                                                 array.add(1);
 
@@ -682,9 +688,9 @@ Log.d("GONFDO",profile_photo + ", " + Key);
 
                                 // adapter.notifyDataSetChanged();
 
-                                //Log.i("Пользователей: ", String.valueOf(array.size()));
+                                Log.i("Пользователей: ", String.valueOf(array.size()));
 
-                                if (array.size() == 0) {
+                                if (catNames.size() == 0) {
                                     LinearLayout control_b = findViewById(R.id.bottom_control);
                                     control_b.setVisibility(View.GONE);
 

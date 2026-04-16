@@ -81,6 +81,18 @@ public class loginEmail extends AppCompatActivity implements View.OnClickListene
 
         btnLogin.setOnClickListener(this);
         btnRegister.setOnClickListener(this);
+
+        // 🔹 Обработчик клика по ссылке на Google
+        TextView tvGoogleLink = findViewById(R.id.tv_google_link);
+
+        tvGoogleLink.setText(new Languages().GoogleEnterLink());
+
+        if (tvGoogleLink != null) {
+            tvGoogleLink.setOnClickListener(v -> {
+                Intent intent = new Intent(loginEmail.this, login.class);
+                startActivity(intent);
+            });
+        }
     }
 
     @Override
