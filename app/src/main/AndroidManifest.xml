@@ -78,36 +78,50 @@
             -->
         </activity>
 
+
+        <activity
+            android:exported="true"
+            android:name="io.cordova.test2_6720b.loginEmail"
+            android:screenOrientation="portrait">
+            <intent-filter>
+
+                               <action android:name="android.intent.action.MAIN" />
+
+                <category android:name="android.intent.category.LAUNCHER" />
+            </intent-filter>
+        </activity>
+
         <activity
             android:exported="true"
             android:name="io.cordova.test2_6720b.login2"
             android:screenOrientation="portrait">
             <intent-filter>
-<!--
-                <action android:name="android.intent.action.MAIN" />
--->
-                <category android:name="android.intent.category.LAUNCHER" />
-            </intent-filter>
-        </activity>
+                <!--
+                               <action android:name="android.intent.action.MAIN" />
+               -->
+                               <category android:name="android.intent.category.LAUNCHER" />
+                           </intent-filter>
+                       </activity>
 
-        <activity
-            android:name="io.cordova.test2_6720b.login"
-            android:exported="true"
-            android:screenOrientation="portrait">
-            <intent-filter>
+                       <activity
+                           android:name="io.cordova.test2_6720b.login"
+                           android:exported="true"
+                           android:screenOrientation="portrait">
+                           <intent-filter>
+                       <!--
+                                       <action
+                                           android:name="android.intent.action.MAIN" />
+                                           -->
+                        <category android:name="android.intent.category.LAUNCHER" />
+                    </intent-filter>
+                </activity>
+                <activity android:name="io.cordova.test2_6720b.ActivityLikes"  android:exported="true">
+                    <intent-filter>
+                        <action android:name="MyAction4" />
 
-                <action
-                    android:name="android.intent.action.MAIN" />
-                <category android:name="android.intent.category.LAUNCHER" />
-            </intent-filter>
-        </activity>
-        <activity android:name="io.cordova.test2_6720b.ActivityLikes"  android:exported="true">
-            <intent-filter>
-                <action android:name="MyAction4" />
-
-                <category android:name="android.intent.category.DEFAULT" />
-            </intent-filter>
-        </activity> <!-- android:theme="@style/MyTheme"> -->
+                        <category android:name="android.intent.category.DEFAULT" />
+                    </intent-filter>
+                </activity> <!-- android:theme="@style/MyTheme"> -->
 
         <activity
             android:name="io.cordova.test2_6720b.PhotoActivity"

@@ -1744,7 +1744,7 @@ public class ProfileActivity extends AppCompatActivity {
 
     // 🔹 Вспомогательный метод: переход на логин
     private void goToLogin() {
-        Intent login = new Intent(ProfileActivity.this, login.class);
+        Intent login = new Intent(ProfileActivity.this, loginEmail.class);
         login.setFlags(Intent.FLAG_ACTIVITY_NEW_TASK | Intent.FLAG_ACTIVITY_CLEAR_TASK); // 🔥 Сброс стека активностей
         startActivity(login);
         finish(); // Закрываем текущую, чтобы нельзя было вернуться назад
