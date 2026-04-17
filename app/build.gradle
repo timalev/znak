@@ -55,8 +55,8 @@ android {
         applicationId "io.cordova.test2_6720b"
         minSdkVersion 23
         targetSdkVersion 35
-        versionCode 61
-        versionName "3.5.3"
+        versionCode 63
+        versionName "3.6.2"
         testInstrumentationRunner 'androidx.test.runner.AndroidJUnitRunner'
         multiDexEnabled true
     }
@@ -80,7 +80,7 @@ dependencies {
     implementation 'androidx.browser:browser:1.8.0'
 
     implementation 'com.google.android.gms:play-services-auth:21.2.0'
-    implementation 'com.google.firebase:firebase-auth:23.0.0'
+    implementation 'com.google.firebase:firebase-auth:24.0.1'
     implementation 'com.google.firebase:firebase-messaging:24.0.0'
     implementation 'com.google.firebase:firebase-database:21.0.0'
     implementation 'com.google.android.gms:play-services-location:21.3.0'
