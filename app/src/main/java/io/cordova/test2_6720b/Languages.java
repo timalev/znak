@@ -20,8 +20,8 @@ public class Languages {
     private Map<String, String> hashMap = new HashMap<>();
     private Map<String, Integer> hashMap2 = new HashMap<>();
 
-   // private String lang = GetLang(Locale.getDefault().getLanguage());
-    private String lang = GetLang("ar");
+   private String lang = GetLang(Locale.getDefault().getLanguage());
+    //private String lang = GetLang("ar");
 
     public String MenuFriends()
     {
