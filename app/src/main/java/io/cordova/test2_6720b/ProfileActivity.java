@@ -413,9 +413,11 @@ public class ProfileActivity extends AppCompatActivity {
         femaleTexview.setText(new Languages().ProfileTextviewFemale());
 
         TextView changegeo = (TextView) findViewById(R.id.active32);
+        changegeo.setText(new Languages().ProfileChangegeo());
 
 
         TextView delank = (TextView) findViewById(R.id.delank);
+        delank.setText(new Languages().ProfileDelank());
 
 
         delank.setOnClickListener(new View.OnClickListener() {

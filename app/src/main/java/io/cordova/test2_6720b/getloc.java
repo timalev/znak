@@ -15,6 +15,7 @@ import android.view.MenuItem;
 import android.view.View;
 import android.widget.Button;
 import android.widget.EditText;
+import android.widget.TextView;
 import android.widget.Toast;
 
 import com.google.android.gms.tasks.OnSuccessListener;
@@ -142,13 +143,24 @@ public class getloc extends AppCompatActivity {
         Toolbar toolbar = (Toolbar) findViewById(R.id.toolbar_loc);
         setSupportActionBar(toolbar);
 
-        setTitle("Местоположение");
+        setTitle(new Languages().LocationText());
         toolbar.setTitleTextColor(Color.WHITE);
 
       //  toolbar.setTitleTextColor(Color.WHITE);
 
 
         final EditText message = (EditText) findViewById(R.id.eventtext);
+
+        TextView  geoloctext = (TextView) findViewById(R.id.geoloctext);
+        geoloctext.setText(new Languages().LocationExample());
+
+        TextView  to_cal = (TextView) findViewById(R.id.to_cal);
+        to_cal.setText(new Languages().SetupLocationBtn());
+
+
+
+
+
 
 
 

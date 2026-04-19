@@ -72,9 +72,16 @@ public class loginEmail extends AppCompatActivity implements View.OnClickListene
 
     private void initViews() {
         etEmail = findViewById(R.id.et_email);
+        etEmail.setHint(new Languages().LoginString());
         etPassword = findViewById(R.id.et_password);
+
+        etPassword.setHint(new Languages().LoginPassword());
+
         btnLogin = findViewById(R.id.btn_login);
+        btnLogin.setText(new Languages().EnterString());
         btnRegister = findViewById(R.id.btn_register);
+        btnRegister.setText(new Languages().RegistrationString());
+
         pbAuth = findViewById(R.id.progressBarAuth);
         tvPermissions = findViewById(R.id.permissions);
         tvBan = findViewById(R.id.ban_text);

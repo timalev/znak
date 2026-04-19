@@ -263,7 +263,6 @@
             android:layout_height="wrap_content"
             android:layout_weight="1"
             android:textSize="14dp"
-            android:text="Изменить локацию"
             android:textColor="@android:color/holo_blue_dark"
             android:layout_marginLeft="15dp"
             android:padding="20dp"/>
@@ -276,7 +275,6 @@
             android:layout_height="wrap_content"
             android:layout_weight="1"
             android:textSize="14dp"
-            android:text="Удалить анкету"
             android:textColor="@android:color/holo_red_dark"
             android:layout_marginLeft="15dp"
             android:padding="20dp"/>

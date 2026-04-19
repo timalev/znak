@@ -20,8 +20,8 @@ public class Languages {
     private Map<String, String> hashMap = new HashMap<>();
     private Map<String, Integer> hashMap2 = new HashMap<>();
 
-    private String lang = GetLang(Locale.getDefault().getLanguage());
-    //private String lang = GetLang("fr");
+   // private String lang = GetLang(Locale.getDefault().getLanguage());
+    private String lang = GetLang("ar");
 
     public String MenuFriends()
     {
@@ -79,14 +79,116 @@ public class Languages {
 
         return hashMap.get(lang);
     }
+    public String ProfileChangegeo()
+    {
+        hashMap.put("ru","Изменить локацию");
+        hashMap.put("en","Change location");
+        hashMap.put("de","Standort ändern");
+        hashMap.put("zh","更改位置");
+        hashMap.put("es","cambiar de ubicación");
+        hashMap.put("ar","تغيير الموقع");
+
+        return hashMap.get(lang);
+    }
     public String MenuLikes()
     {
         hashMap.put("ru","Мои лайки");
         hashMap.put("en","My likes");
-        hashMap.put("de","My likes");
-        hashMap.put("zh","My likes");
-        hashMap.put("es","My likes");
-        hashMap.put("ar","My likes");
+        hashMap.put("de","Meine Vorlieben");
+        hashMap.put("zh","我喜歡");
+        hashMap.put("es","Mis gustos");
+        hashMap.put("ar","ما يعجبني");
+
+        return hashMap.get(lang);
+    }
+    public String EnterString()
+    {
+        hashMap.put("ru","Войти");
+        hashMap.put("en","Enter");
+        hashMap.put("de","Eingeben");
+        hashMap.put("zh","進入");
+        hashMap.put("es","Ingresar");
+        hashMap.put("ar","يدخل");
+
+        return hashMap.get(lang);
+    }
+    public String RegistrationString()
+    {
+        hashMap.put("ru","Регистрация");
+        hashMap.put("en","Registration");
+        hashMap.put("de","Anmeldung");
+        hashMap.put("zh","登記");
+        hashMap.put("es","Registro");
+        hashMap.put("ar","تسجيل");
+
+        return hashMap.get(lang);
+    }
+    public String LoginPassword()
+    {
+        hashMap.put("ru","Пароль");
+        hashMap.put("en","Password");
+        hashMap.put("de","Passwort");
+        hashMap.put("zh","密碼");
+        hashMap.put("es","contraseña");
+        hashMap.put("ar","كلمة المرور");
+
+        return hashMap.get(lang);
+    }
+    public String LoginString()
+    {
+        hashMap.put("ru","Email");
+        hashMap.put("en","E-Mail");
+        hashMap.put("de","E-Mail");
+        hashMap.put("zh","電子郵件");
+        hashMap.put("es","correo electrónico");
+        hashMap.put("ar","بريد إلكتروني");
+
+        return hashMap.get(lang);
+    }
+
+    public String LocationExample()
+    {
+        hashMap.put("ru","(Например 'Смоленск, ул Ленина')");
+        hashMap.put("en","(For example 'New York, Broadway')");
+        hashMap.put("de","(Zum Beispiel 'Berlin, Unter den Linden')");
+        hashMap.put("zh","(例如'上海南京路')");
+        hashMap.put("es","(Por ejemplo, 'Madrid, Gran Vía')");
+        hashMap.put("ar","(على سبيل المثال، 'دبي، شارع الشيخ محمد بن راشد')");
+
+        return hashMap.get(lang);
+    }
+    public String SetupLocationBtn()
+    {
+        hashMap.put("ru","Установить");
+        hashMap.put("en","Save");
+        hashMap.put("de","Speichern");
+        hashMap.put("zh","節省");
+        hashMap.put("es","Ahorrar");
+        hashMap.put("ar","يحفظ");
+
+        return hashMap.get(lang);
+    }
+
+
+    public String LocationText()
+    {
+        hashMap.put("ru","Местоположение");
+        hashMap.put("en","Location");
+        hashMap.put("de","Standort");
+        hashMap.put("zh","地點");
+        hashMap.put("es","Ubicación");
+        hashMap.put("ar","موقع");
+
+        return hashMap.get(lang);
+    }
+    public String  ProfileDelank()
+    {
+        hashMap.put("ru","Удалить анкету");
+        hashMap.put("en","Delete profile");
+        hashMap.put("de","Profil löschen");
+        hashMap.put("zh","刪除個人資料");
+        hashMap.put("es","Eliminar perfil");
+        hashMap.put("ar","حذف الملف الشخصي");
 
         return hashMap.get(lang);
     }

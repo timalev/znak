@@ -26,7 +26,6 @@
         android:layout_height="wrap_content"
         android:layout_below="@id/tv_app_title"
         android:layout_marginTop="40dp"
-        android:hint="Email"
         android:inputType="textEmailAddress"
         android:padding="16dp"
         android:textSize="18sp" />
@@ -38,7 +37,7 @@
         android:layout_height="wrap_content"
         android:layout_below="@id/et_email"
         android:layout_marginTop="12dp"
-        android:hint="Пароль"
+
         android:inputType="textPassword"
         android:padding="16dp"
         android:textSize="18sp" />
@@ -49,8 +48,7 @@
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
         android:layout_below="@id/et_password"
-        android:layout_marginTop="16dp"
-        android:text="Войти" />
+        android:layout_marginTop="16dp" />
 
     <!-- 🔹 Кнопка Регистрация -->
     <Button
@@ -58,8 +56,7 @@
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
         android:layout_below="@id/btn_login"
-        android:layout_marginTop="8dp"
-        android:text="Регистрация" />
+        android:layout_marginTop="8dp" />
 
     <!-- 🔹 ProgressBar (по центру экрана) -->
     <!-- 🔹 ProgressBar (по центру экрана) -->
