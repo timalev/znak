@@ -5,7 +5,7 @@
     android:padding="24dp"
     android:background="@color/grey">
 
-    <!-- 🔹 Заголовок приложения (вверху) -->
+    <!-- 🔹 Заголовок приложения -->
     <TextView
         android:id="@+id/tv_app_title"
         android:layout_width="match_parent"
@@ -19,7 +19,7 @@
         android:textColor="@android:color/black"
         android:lineSpacingExtra="4dp" />
 
-    <!-- 🔹 Поле Email (под заголовком) -->
+    <!-- 🔹 Поле Email -->
     <EditText
         android:id="@+id/et_email"
         android:layout_width="match_parent"
@@ -37,7 +37,6 @@
         android:layout_height="wrap_content"
         android:layout_below="@id/et_email"
         android:layout_marginTop="12dp"
-
         android:inputType="textPassword"
         android:padding="16dp"
         android:textSize="18sp" />
@@ -58,45 +57,9 @@
         android:layout_below="@id/btn_login"
         android:layout_marginTop="8dp" />
 
-    <!-- 🔹 ProgressBar (по центру экрана) -->
-    <!-- 🔹 ProgressBar (по центру экрана) -->
-    <ProgressBar
-        android:id="@+id/progressBarAuth"
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:layout_centerInParent="true"
-        android:layout_below="@id/tv_google_link"
-        android:visibility="gone" />
-
-    <!-- 🔹 Текст о разрешениях (внизу) -->
-    <TextView
-        android:id="@+id/permissions"
-        android:layout_width="match_parent"
-        android:layout_height="wrap_content"
-        android:layout_alignParentBottom="true"
-        android:layout_marginBottom="8dp"
-        android:gravity="center"
-        android:text="Недостаточно разрешений для запуска приложения"
-        android:textColor="#000ecd"
-        android:visibility="gone" />
-
-    <!-- 🔹 Текст бана (над разрешениями) -->
-    <TextView
-        android:id="@+id/ban_text"
-        android:layout_width="match_parent"
-        android:layout_height="wrap_content"
-        android:layout_above="@id/permissions"
-        android:layout_marginBottom="8dp"
-        android:gravity="center"
-        android:textColor="@android:color/holo_red_dark"
-        android:textSize="16sp"
-        android:textStyle="bold"
-        android:visibility="gone" />
-
-
-
     <!-- 🔹 Разделитель -->
     <View
+        android:id="@+id/divider"
         android:layout_width="match_parent"
         android:layout_height="1dp"
         android:background="#CCCCCC"
@@ -109,14 +72,57 @@
         android:id="@+id/tv_google_link"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:layout_below="@id/btn_register"
+        android:layout_below="@id/divider"
         android:layout_centerHorizontal="true"
-        android:layout_marginTop="17dp"
+        android:layout_marginTop="0dp"
         android:textSize="16sp"
         android:textColor="@android:color/holo_blue_dark"
         android:padding="12dp"
         android:clickable="true"
         android:focusable="true"
         android:background="?android:attr/selectableItemBackground" />
+
+    <!-- 🔹 ТЕКСТ С ПОЛИТИКОЙ И УСЛОВИЯМИ (НОВЫЙ) -->
+    <TextView
+        android:id="@+id/tv_policy_terms"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:layout_below="@id/tv_google_link"
+        android:layout_marginTop="16dp"
+        android:gravity="center"
+        android:textSize="12sp"
+        android:textColor="@android:color/darker_gray"
+        android:linksClickable="true"
+        />
+
+    <ProgressBar
+        android:id="@+id/progressBarAuth"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_centerInParent="true"
+        android:visibility="gone" />
+
+    <TextView
+        android:id="@+id/permissions"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:layout_alignParentBottom="true"
+        android:layout_marginBottom="8dp"
+        android:gravity="center"
+        android:text="Недостаточно разрешений для запуска приложения"
+        android:textColor="#000ecd"
+        android:visibility="gone" />
+
+    <TextView
+        android:id="@+id/ban_text"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:layout_above="@id/permissions"
+        android:layout_marginBottom="8dp"
+        android:gravity="center"
+        android:textColor="@android:color/holo_red_dark"
+        android:textSize="16sp"
+        android:textStyle="bold"
+        android:visibility="gone" />
 
 </RelativeLayout>

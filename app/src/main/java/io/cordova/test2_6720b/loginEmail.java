@@ -100,7 +100,88 @@ public class loginEmail extends AppCompatActivity implements View.OnClickListene
                 startActivity(intent);
             });
         }
+        TextView tvPolicy = findViewById(R.id.tv_policy_terms);
+        String fullText = "Регистрируясь, вы соглашаетесь с Условиями пользования и Политикой конфиденциальности";
+        android.text.SpannableString ss = new android.text.SpannableString(fullText);
+
+// Клик по "Условиями пользования"
+        android.text.style.ClickableSpan termsSpan = new android.text.style.ClickableSpan() {
+            @Override
+            public void onClick(android.view.View widget) {
+                // Передаем заголовок и ID ресурса (без getString)
+
+                showDocDialog("Условия пользования", "terms.html");
+
+            }
+        };
+
+        android.text.style.ClickableSpan policySpan = new android.text.style.ClickableSpan() {
+            @Override
+            public void onClick(android.view.View widget) {
+                // Передаем заголовок и ID ресурса (без getString)
+                showDocDialog("Условия пользования", "privacy.html");
+            }
+        };
+
+
+// Укажите индексы слов (проверьте их точность)
+        ss.setSpan(termsSpan, 33, 54, android.text.Spanned.SPAN_EXCLUSIVE_EXCLUSIVE);
+        ss.setSpan(policySpan, 57, 85, android.text.Spanned.SPAN_EXCLUSIVE_EXCLUSIVE);
+
+        tvPolicy.setText(ss);
+        tvPolicy.setMovementMethod(android.text.method.LinkMovementMethod.getInstance());
+
+// Метод для показа окна с текстом
+
+
+
     }
+    private void showDocDialog(String title, String assetFileName) {
+        String rawString = loadHtmlFromAssets(assetFileName);
+
+        // Удаляем стили на всякий случай
+        rawString = rawString.replaceAll("<style([\\s\\S]+?)</style>", "");
+
+        android.text.Spanned formattedText;
+        if (android.os.Build.VERSION.SDK_INT >= android.os.Build.VERSION_CODES.N) {
+            formattedText = android.text.Html.fromHtml(rawString, android.text.Html.FROM_HTML_MODE_LEGACY);
+        } else {
+            formattedText = android.text.Html.fromHtml(rawString);
+        }
+
+        TextView textView = new TextView(this);
+        textView.setText(formattedText);
+        textView.setPadding(60, 40, 60, 40);
+        textView.setTextSize(15);
+        textView.setTextColor(android.graphics.Color.BLACK);
+
+        android.widget.ScrollView scrollView = new android.widget.ScrollView(this);
+        scrollView.addView(textView);
+
+        new android.app.AlertDialog.Builder(this)
+                //.setTitle(title)
+                .setView(scrollView)
+                .setPositiveButton("ОК", null)
+                .show();
+    }
+
+    private String loadHtmlFromAssets(String fileName) {
+        StringBuilder buf = new StringBuilder();
+        try {
+            java.io.InputStream is = getAssets().open(fileName);
+            java.io.BufferedReader in = new java.io.BufferedReader(new java.io.InputStreamReader(is, "UTF-8"));
+            String str;
+            while ((str = in.readLine()) != null) {
+                buf.append(str);
+            }
+            in.close();
+        } catch (java.io.IOException e) {
+            e.printStackTrace();
+        }
+        return buf.toString();
+    }
+
+
 
     @Override
     public void onClick(View v) {
