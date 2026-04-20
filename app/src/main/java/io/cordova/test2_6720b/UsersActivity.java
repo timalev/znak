@@ -138,6 +138,8 @@ public class UsersActivity extends AppCompatActivity {
 
                 LinearLayout deletedLayout = findViewById(R.id.deleted_profile_layout);
 
+                Log.d("GONDON22","BLJA!");
+
                 if (dataSnapshot.hasChild("profile_delete")) {
 
                     mSwipeView.setVisibility(View.GONE);    // Прячем всё
@@ -535,10 +537,12 @@ Log.d("GONFDO",profile_photo + ", " + Key);
                                             } else {
                                                 limited_dist = 100;
                                             }
-// условие 2
-                                            if (distance < limited_dist && child.hasChild("profile_photo")) { // отображение всех в радиусе 100 м
 
-                                                Log.d("GONDON:",Key);
+                                            // главное условие
+// условие 2
+                                            if (distance < limited_dist && child.hasChild("profile_photo") && !child.hasChild("profile_delete") ) { // отображение всех в радиусе 100 м
+
+                                                //Log.d("GONDON:",Key);
 
                                                 array.add(1);
 
@@ -631,13 +635,7 @@ Log.d("GONFDO",profile_photo + ", " + Key);
                                                     //mSwipeView.addView(new TinderCard(mContext, profile3, mSwipeView));
                                                 }
 
-                            /*
 
-                            if (!Key.equals(FirebaseAuth.getInstance().getCurrentUser().getUid())) {
-
-                                mylist.add(map);
-                            }
-                            */
                                             }
                                         }
                                     }
